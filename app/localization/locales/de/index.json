@@ -4096,6 +4096,7 @@
     "empty_rift_instruction_p4": "Dein erstes Portaldeck ist kostenlos und hat zu Beginn 5 Verbesserungen."
   },
   "settings": {
+    "category_window_label": "Fenster",
     "category_visual_label": "Visuell",
     "category_game_label": "Spiel",
     "category_audio_label": "Audio",

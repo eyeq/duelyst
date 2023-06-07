@@ -53,6 +53,9 @@ var UtilityMenuItemView = Backbone.Marionette.CompositeView.extend({
       this.onLoggedOutRender();
     }
 
+    this.$el.find('.buddy-list').on('click', this.toggleBuddyList.bind(this));
+    this.$el.find('.settings').on('click', this.toggleSettingsMenu.bind(this));
+
     this.$el.find('[data-toggle=\'tooltip\']').tooltip({ container: CONFIG.OVERLAY_SELECTOR, trigger: 'hover' });
 
     this.onResize();
@@ -140,15 +143,12 @@ var UtilityMenuItemView = Backbone.Marionette.CompositeView.extend({
         this.onUpdateFriendCount();
       }
     }.bind(this));
-    this.$el.find('.buddy-list').on('click', this.toggleBuddyList.bind(this));
-    this.$el.find('.settings').on('click', this.toggleSettingsMenu.bind(this));
   },
 
   onLoggedOutRender: function () {
     this.updateUnreadConversations(0);
     this.updateFriendCount(0);
     this.$el.find('.buddy-list').addClass('disabled');
-    this.$el.find('.settings').addClass('disabled');
   },
 
   onUpdateUnreadConversations: function () {
@@ -174,7 +174,9 @@ var UtilityMenuItemView = Backbone.Marionette.CompositeView.extend({
   },
 
   toggleBuddyList: function () {
-    NavigationManager.getInstance().toggleModalViewByClass(BuddiesLayout, null);
+    if (ProfileManager.getInstance().get('id')) {
+      NavigationManager.getInstance().toggleModalViewByClass(BuddiesLayout, null);
+    }
   },
 
   toggleSettingsMenu: function () {

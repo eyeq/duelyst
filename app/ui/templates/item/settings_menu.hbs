@@ -7,42 +7,46 @@
 		<div class="modal-body settings">
 			<div class="container-fluid">
 				<div class="row">
-					<div class="col-md-6 col-md-offset-1">
-						<div class="settings-category">
+					<div class="col-md-4">
+            <div class="settings-category window-panel">
+              <h1 class="modal-title"><i class="fa fa-image"></i> {{localize 'settings.category_window_label'}}</h1>
+              <div class="setting setting-single-line">
+                <label for="language">Language</label>
+                <select id="language">
+                  <option value="en" {{#if selected}} selected {{/if}}>English</option>
+                  <option value="de" {{#if selected}} selected {{/if}}>Deutsch</option>
+                  <option value="ja" {{#if selected}} selected {{/if}}>日本語</option>
+                </select>
+              </div>
+              <div class="setting setting-single-line">
+                <label for="resolution">Viewport</label>
+                {{#if resolutionsThatFit}}
+                  <select id="resolution">
+                    {{#if resolutionsThatDontFit}}
+                      <optgroup label="Supported by your window size">
+                        {{#resolutionsThatFit}}
+                          <option value="{{value}}" {{#if selected}} selected {{/if}}>{{localize description}}</option>
+                        {{/resolutionsThatFit}}
+                      </optgroup>
+                      <optgroup label="Bigger than your window size">
+                        {{#resolutionsThatDontFit}}
+                          <option value="{{value}}" {{#if selected}} selected {{/if}}>{{localize description}}</option>
+                        {{/resolutionsThatDontFit}}
+                      </optgroup>
+                    {{else}}
+                      {{#resolutionsThatFit}}
+                        <option value="{{value}}" {{#if selected}} selected {{/if}}>{{localize description}}</option>
+                      {{/resolutionsThatFit}}
+                    {{/if}}
+                  </select>
+                {{else}}
+                  <small class="disabled">{{localize 'settings.viewport_not_supported'}}</small>
+                {{/if}}
+              </div>
+            </div>
+
+						<div class="settings-category visual-panel">
 							<h1 class="modal-title"><i class="fa fa-image"></i> {{localize 'settings.category_visual_label'}}</h1>
-							<div class="setting setting-single-line">
-								<label for="resolution">Viewport</label>
-								{{#if _resolutionsThatFit}}
-									<select id="resolution">
-										{{#if _resolutionsThatDontFit}}
-											<optgroup label="Supported by your window size">
-												{{#_resolutionsThatFit}}
-													<option value="{{value}}" {{#if selected}} selected {{/if}}>{{localize description}}</option>
-												{{/_resolutionsThatFit}}
-											</optgroup>
-											<optgroup label="Bigger than your window size">
-												{{#_resolutionsThatDontFit}}
-													<option value="{{value}}" {{#if selected}} selected {{/if}}>{{localize description}}</option>
-												{{/_resolutionsThatDontFit}}
-											</optgroup>
-										{{else}}
-											{{#_resolutionsThatFit}}
-												<option value="{{value}}" {{#if selected}} selected {{/if}}>{{localize description}}</option>
-											{{/_resolutionsThatFit}}
-										{{/if}}
-									</select>
-								{{else}}
-									<small class="disabled">{{localize 'settings.viewport_not_supported'}}</small>
-								{{/if}}
-							</div>
-							<div class="setting setting-single-line">
-								<label for="language">Language</label>
-									<select id="language">
-                      <option value="en" {{#if selected}} selected {{/if}}>English</option>
-											<option value="de" {{#if selected}} selected {{/if}}>Deutsch</option>
-											<option value="ja" {{#if selected}} selected {{/if}}>日本語</option>
-									</select>
-							</div>
 							<div class="setting setting-single-line" data-toggle="tooltip" data-placement="left" title="{{localize 'settings.hiDPI_tooltip'}}">
 								<label for="checkbox-hi-dpi-enabled">{{localize 'settings.hiDPI_name'}}</label>
 								<div class="switch">
@@ -78,28 +82,30 @@
 								<input type=range id=bloom class="range" min=0.0 max=1.0 step=0.1 />
 							</div>
 						</div>
-						<div class="settings-category">
-							<h1 class="modal-title"><i class="fa fa-volume-up"></i> {{localize 'settings.category_audio_label'}}</h1>
-							<div class="setting setting-single-line">
-								<label for=master-volume class="setting-label range">{{localize 'settings.master_volume_label'}}</label>
-								<input type=range id=master-volume class="range" min=0 max=1 step=0.01 />
-							</div>
-							<div class="setting setting-single-line">
-								<label for=music-volume class="setting-label range">{{localize 'settings.music_volume_label'}}</label>
-								<input type=range id=music-volume class="range" min=0 max=1 step=0.01 />
-							</div>
-							<div class="setting setting-single-line">
-								<label for=voice-volume class="setting-label range">{{localize 'settings.voice_volume_label'}}</label>
-								<input type=range id=voice-volume class="range" min=0 max=1 step=0.01 />
-							</div>
-							<div class="setting setting-single-line">
-								<label for=effects-volume class="setting-labeli range">{{localize 'settings.effects_volume_label'}}</label>
-								<input type=range id=effects-volume class="range" min=0 max=1 step=0.01 />
-							</div>
-						</div>
 					</div>
-					<div class="col-md-6">
-						<div class="settings-category">
+
+					<div class="col-md-4">
+            <div class="settings-category audio-panel">
+              <h1 class="modal-title"><i class="fa fa-volume-up"></i> {{localize 'settings.category_audio_label'}}</h1>
+              <div class="setting setting-single-line">
+                <label for=master-volume class="setting-label range">{{localize 'settings.master_volume_label'}}</label>
+                <input type=range id=master-volume class="range" min=0 max=1 step=0.01 />
+              </div>
+              <div class="setting setting-single-line">
+                <label for=music-volume class="setting-label range">{{localize 'settings.music_volume_label'}}</label>
+                <input type=range id=music-volume class="range" min=0 max=1 step=0.01 />
+              </div>
+              <div class="setting setting-single-line">
+                <label for=voice-volume class="setting-label range">{{localize 'settings.voice_volume_label'}}</label>
+                <input type=range id=voice-volume class="range" min=0 max=1 step=0.01 />
+              </div>
+              <div class="setting setting-single-line">
+                <label for=effects-volume class="setting-labeli range">{{localize 'settings.effects_volume_label'}}</label>
+                <input type=range id=effects-volume class="range" min=0 max=1 step=0.01 />
+              </div>
+            </div>
+
+						<div class="settings-category game-panel">
 							<h1 class="modal-title"><i class="fa fa-gamepad"></i> {{localize 'settings.category_game_label'}}</h1>
 							<div class="setting setting-single-line">
 								<label for="checkbox-always-show-stats">{{localize 'settings.always_show_stats'}}</label>
@@ -144,7 +150,10 @@
 								</div>
 							</div>
 						</div>
-						<div class="settings-category">
+          </div>
+
+          <div class="col-md-4">
+						<div class="settings-category account-panel">
 							<h1 class="modal-title"><i class="fa fa-user"></i> {{localize 'settings.category_account_label'}}</h1>
 							<div class="setting setting-single-line" data-toggle="tooltip" data-placement="right" title="{{localize 'settings.do_not_disturb_tooltip'}}">
 								<label for="checkbox-do-not-disturb">{{localize 'settings.do_not_disturb'}}</label>
@@ -180,6 +189,4 @@
 			<div id='version-tag'></div>
 		</div>
 	</div>
-	<!-- /.modal-content -->
 </div>
-<!-- /.modal-dialog -->

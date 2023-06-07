@@ -99,13 +99,27 @@ var SettingsMenuView = Backbone.Marionette.ItemView.extend({
     'click .redeem-gift-code': 'onRedeemGiftCodePressed',
   },
 
+  templateHelpers: {
+    resolutionsThatFit: function () {
+      return this._resolutionsThatFit;
+    },
+    resolutionsThatDontFit: function () {
+      return this._resolutionsThatDontFit;
+    },
+  },
+
   animateIn: Animations.fadeIn,
   animateOut: Animations.fadeOut,
+
   _requestId: null,
+  _resolutionsThatFit : null,
+  _resolutionsThatDontFit : null,
 
   initialize: function () {
     // generate unique id for requests
     this._requestId = generatePushID();
+    this._resolutionsThatFit = [];
+    this._resolutionsThatDontFit = [];
 
     // check whether changing viewport settings will do anything
     // generate global scale for resolution auto setting
@@ -116,26 +130,20 @@ var SettingsMenuView = Backbone.Marionette.ItemView.extend({
     if (globalScaleExact !== 1.0) {
       // check all resolutions and sort by whether they fit into user's current screen size
       var resolutions = UtilsJavascript.deepCopy(CONFIG.RESOLUTIONS);
-      var resolutionsThatFit = [];
-      var resolutionsThatDontFit = [];
       for (var i = 0, il = resolutions.length; i < il; i++) {
         var resolutionData = resolutions[i];
         if (resolutionData.value === CONFIG.RESOLUTION_AUTO || resolutionData.value === CONFIG.RESOLUTION_PIXEL_PERFECT) {
-          resolutionsThatFit.push(resolutionData);
+          this._resolutionsThatFit.push(resolutionData);
         } else {
           var resolution = $.trim(resolutionData.description);
           var resWidth = parseInt(resolution.replace(/x[\s\t]*?\d+/, ''));
           var resHeight = parseInt(resolution.replace(/\d+[\s\t]*?x/, ''));
           if (resWidth > screenWidth || resHeight > screenHeight) {
-            resolutionsThatDontFit.push(resolutionData);
+            this._resolutionsThatDontFit.push(resolutionData);
           } else {
-            resolutionsThatFit.push(resolutionData);
+            this._resolutionsThatFit.push(resolutionData);
           }
         }
-      }
-      this.model.set('_resolutionsThatFit', resolutionsThatFit);
-      if (resolutionsThatDontFit.length > 0) {
-        this.model.set('_resolutionsThatDontFit', resolutionsThatDontFit);
       }
     }
   },
@@ -153,23 +161,31 @@ var SettingsMenuView = Backbone.Marionette.ItemView.extend({
     var currentLanguageKey = Storage.get('preferredLanguageKey') || 'en';
     this.ui.$language.val(currentLanguageKey);
     this.ui.$checkboxHiDPIEnabled.prop('checked', CONFIG.hiDPIEnabled);
-    this.ui.$bloom.val(parseFloat(this.model.get('bloom')));
-    this.ui.$checkboxDoNotDisturb.prop('checked', this.model.get('doNotDisturb'));
-    this.ui.$checkboxBlockSpectators.prop('checked', this.model.get('blockSpectators'));
-    this.ui.$checkboxAlwaysShowStats.prop('checked', this.model.get('alwaysShowStats'));
-    this.ui.$checkboxShowBattleLog.prop('checked', this.model.get('showBattleLog'));
-    this.ui.$checkboxPlayerDetails.prop('checked', this.model.get('showPlayerDetails'));
-    this.ui.$checkboxStickyTargeting.prop('checked', this.model.get('stickyTargeting'));
-    this.ui.$checkboxShowInGameTips.prop('checked', this.model.get('showInGameTips'));
-    this.ui.$checkboxRazerChromaEnabled.prop('checked', this.model.get('razerChromaEnabled'));
-    this.ui.$masterVolume.val(parseFloat(this.model.get('masterVolume')));
-    this.ui.$musicVolume.val(parseFloat(this.model.get('musicVolume')));
-    this.ui.$voiceVolume.val(parseFloat(this.model.get('voiceVolume')));
-    this.ui.$effectsVolume.val(parseFloat(this.model.get('effectsVolume')));
+    if (this.model) {
+      this.ui.$bloom.val(parseFloat(this.model.get('bloom')));
+      this.ui.$checkboxDoNotDisturb.prop('checked', this.model.get('doNotDisturb'));
+      this.ui.$checkboxBlockSpectators.prop('checked', this.model.get('blockSpectators'));
+      this.ui.$checkboxAlwaysShowStats.prop('checked', this.model.get('alwaysShowStats'));
+      this.ui.$checkboxShowBattleLog.prop('checked', this.model.get('showBattleLog'));
+      this.ui.$checkboxPlayerDetails.prop('checked', this.model.get('showPlayerDetails'));
+      this.ui.$checkboxStickyTargeting.prop('checked', this.model.get('stickyTargeting'));
+      this.ui.$checkboxShowInGameTips.prop('checked', this.model.get('showInGameTips'));
+      this.ui.$checkboxRazerChromaEnabled.prop('checked', this.model.get('razerChromaEnabled'));
+      this.ui.$masterVolume.val(parseFloat(this.model.get('masterVolume')));
+      this.ui.$musicVolume.val(parseFloat(this.model.get('musicVolume')));
+      this.ui.$voiceVolume.val(parseFloat(this.model.get('voiceVolume')));
+      this.ui.$effectsVolume.val(parseFloat(this.model.get('effectsVolume')));
 
-    this._updateLightingQualityUI();
-    this._updateShadowQualityUI();
-    this._updateBoardQualityUI();
+      this._updateLightingQualityUI();
+      this._updateShadowQualityUI();
+      this._updateBoardQualityUI();
+    } else {
+      this.$el.find('.settings-category.visual-panel').remove();
+      this.$el.find('.settings-category.audio-panel').remove();
+      this.$el.find('.settings-category.game-panel').remove();
+      this.$el.find('.settings-category.account-panel').remove();
+      this.$el.find('.logout').remove();
+    }
 
     if (!window.isDesktop) {
       this.$el.find('.desktop-quit').remove();
@@ -193,9 +209,11 @@ var SettingsMenuView = Backbone.Marionette.ItemView.extend({
     this.listenTo(EventBus.getInstance(), EVENTS.resize, this.onResize);
 
     // listen to model events
-    this.listenTo(this.model, 'change:lightingQuality', this._updateLightingQualityUI.bind(this));
-    this.listenTo(this.model, 'change:shadowQuality', this._updateShadowQualityUI.bind(this));
-    this.listenTo(this.model, 'change:boardQuality', this._updateBoardQualityUI.bind(this));
+    if(this.model) {
+      this.listenTo(this.model, 'change:lightingQuality', this._updateLightingQualityUI.bind(this));
+      this.listenTo(this.model, 'change:shadowQuality', this._updateShadowQualityUI.bind(this));
+      this.listenTo(this.model, 'change:boardQuality', this._updateBoardQualityUI.bind(this));
+    }
 
     // change gradient color mapping
     Scene.getInstance().getFX().showGradientColorMap(this._requestId, CONFIG.ANIMATE_FAST_DURATION, {
@@ -270,7 +288,7 @@ var SettingsMenuView = Backbone.Marionette.ItemView.extend({
   changeLanguage: function () {
     var languageKey = this.ui.$language.val();
     var currentLanguageKey = Storage.get('preferredLanguageKey') || 'en';
-    if (currentLanguageKey != languageKey) {
+    if (currentLanguageKey !== languageKey) {
       Storage.set('preferredLanguageKey', languageKey);
       EventBus.getInstance().trigger(EVENTS.request_reload, { id: 'language_changed', message: 'Language Changed.  Please restart.' });
     }
@@ -278,7 +296,7 @@ var SettingsMenuView = Backbone.Marionette.ItemView.extend({
 
   changeHiDPIEnabled: function () {
     var enabled = this.ui.$checkboxHiDPIEnabled.prop('checked');
-    if (CONFIG.hiDPIEnabled != enabled) {
+    if (CONFIG.hiDPIEnabled !== enabled) {
       CONFIG.hiDPIEnabled = enabled;
       Storage.set('hiDPIEnabled', enabled);
       EventBus.getInstance().trigger(EVENTS.request_resize);

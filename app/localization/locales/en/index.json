@@ -4129,6 +4129,7 @@
     "empty_rift_instruction_p4": "Your first Rift Run is free and starts with 5 upgrades."
   },
   "settings": {
+    "category_window_label": "Window",
     "category_visual_label": "Visual",
     "category_game_label": "Game",
     "category_audio_label": "Audio",

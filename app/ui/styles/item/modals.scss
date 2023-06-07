@@ -41,8 +41,8 @@
 		margin: auto;
 		.btn-cancel-primary {
 			position: absolute;
-			top: -0.4rem;
-			right: -8.0rem;
+			top: 0;
+			right: 0;
 		}
 		.modal-content {
 			background:rgba(23,33,42,0.9);
@@ -240,14 +240,14 @@
     justify-content: center;
     z-index: 0;
     .modal-dialog {
-			width: 90.0rem;
+			width: 115.0rem;
 			height: 60.0rem;
 			margin: 0;
 			z-index:0;
 			.btn-cancel-primary {
 				position: absolute;
-				top: 0.4rem;
-				right: -10.9rem;
+				top: 0;
+				right: 0;
 			}
 	    .modal-content {
 	        background-color: rgba(0,0,0,0.0);
