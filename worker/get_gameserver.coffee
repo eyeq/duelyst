@@ -25,13 +25,8 @@ getGameServer = ()->
 
   # Return a domain name in staging and production.
   # TODO: Rework this if we scale beyond one game server.
-  if ['production', 'staging'].includes(config.get('env'))
-    server = config.get('matchmaking.defaultGameServer')
-    Logger.module('GAME').log "Assigning user to game server #{server}"
-    return Promise.resolve(server)
-
-  # Return null in development (defaults to window.location.hostname).
-  Logger.module('GAME').log 'Not assigning game server for dev environment'
-  return Promise.resolve(null)
+  server = config.get('matchmaking.defaultGameServer')
+  Logger.module('GAME').log "Assigning user to game server #{server}"
+  return Promise.resolve(server)
 
 module.exports = getGameServer

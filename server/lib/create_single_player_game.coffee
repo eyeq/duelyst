@@ -186,14 +186,9 @@ createSinglePlayerGame = (userId,name,gameType,deck,cardBackId,battleMapIndexesT
 
     # Return a domain name in staging and production.
     # TODO: Rework this if we scale beyond one SP server.
-    if ['production', 'staging'].includes(config.get('env'))
-      server = config.get('matchmaking.defaultGameServer')
-      Logger.module('SP').log "Assigning user to game server #{server}"
-      return Promise.resolve(server)
-
-    # Return null in development (defaults to window.location.hostname).
-    Logger.module('SP').log 'Not assigning game server for dev environment'
-    return Promise.resolve(null)
+    server = config.get('matchmaking.defaultGameServer')
+    Logger.module('SP').log "Assigning user to game server #{server}"
+    return Promise.resolve(server)
 
   .then (gameServer)->
     createdDate = moment().utc().valueOf()

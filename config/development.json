@@ -17,6 +17,7 @@
 		"enabled": false
 	},
 	"matchmaking": {
-		"allowMatchWithLastOpponent": true
+		"allowMatchWithLastOpponent": true,
+    "defaultGameServer": "localhost"
 	}
 }
