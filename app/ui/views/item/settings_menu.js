@@ -39,6 +39,7 @@ var SettingsMenuView = Backbone.Marionette.ItemView.extend({
   ui: {
     $versionTag: '#version-tag',
     $resolution: '#resolution',
+    $checkboxFullscreen: '#checkbox-fullscreen-enabled',
     $language: '#language',
     $checkboxHiDPIEnabled: '#checkbox-hi-dpi-enabled',
     $buttonLightingQualityLow: '#lighting-quality-low',
@@ -71,6 +72,7 @@ var SettingsMenuView = Backbone.Marionette.ItemView.extend({
     'click button.logout': 'onLogoutClicked',
     'click button.desktop-quit': 'onDesktopQuitClicked',
     'change #resolution': 'changeResolution',
+    'change #checkbox-fullscreen-enabled': 'changeFullscreen',
     'change #language': 'changeLanguage',
     'change #checkbox-hi-dpi-enabled': 'changeHiDPIEnabled',
     'click #lighting-quality-low': 'changeLightingQualityLow',
@@ -126,8 +128,7 @@ var SettingsMenuView = Backbone.Marionette.ItemView.extend({
     var $html = $('html');
     var screenWidth = $html.width();
     var screenHeight = $html.height();
-    var globalScaleExact = CONFIG.getGlobalScaleForResolution(CONFIG.RESOLUTION_EXACT, screenWidth, screenHeight);
-    if (globalScaleExact !== 1.0) {
+
       // check all resolutions and sort by whether they fit into user's current screen size
       var resolutions = UtilsJavascript.deepCopy(CONFIG.RESOLUTIONS);
       for (var i = 0, il = resolutions.length; i < il; i++) {
@@ -145,7 +146,6 @@ var SettingsMenuView = Backbone.Marionette.ItemView.extend({
           }
         }
       }
-    }
   },
 
   onBeforeRender: function () {
@@ -158,6 +158,7 @@ var SettingsMenuView = Backbone.Marionette.ItemView.extend({
     this.ui.$bloom.attr('step', 0.05);
 
     this.ui.$resolution.val(parseFloat(CONFIG.resolution));
+    this.ui.$checkboxFullscreen.prop('checked', Storage.get('fullscreen', true));
     var currentLanguageKey = Storage.get('preferredLanguageKey') || 'en';
     this.ui.$language.val(currentLanguageKey);
     this.ui.$checkboxHiDPIEnabled.prop('checked', CONFIG.hiDPIEnabled);
@@ -189,7 +190,7 @@ var SettingsMenuView = Backbone.Marionette.ItemView.extend({
 
     if (!window.isDesktop) {
       this.$el.find('.desktop-quit').remove();
-      this.$el.find('#razer-chroma-setting').remove();
+      this.$el.find('.desktop-only').remove();
     }
 
     if (moment().utc().isAfter(moment.utc('2016-04-20'))) {
@@ -281,6 +282,20 @@ var SettingsMenuView = Backbone.Marionette.ItemView.extend({
     if (CONFIG.resolution !== res) {
       CONFIG.resolution = res;
       Storage.set('resolution', res);
+      EventBus.getInstance().trigger(EVENTS.request_resize);
+    }
+  },
+
+  changeFullscreen: function () {
+    var enabled = this.ui.$checkboxFullscreen.prop('checked');
+    let current = Storage.get('fullscreen', true);
+    if (current !== enabled) {
+      Storage.set('fullscreen', enabled);
+      if(enabled) {
+        window.ipcRenderer.send('setFullScreen');
+      } else {
+        window.ipcRenderer.send('exitFullScreen');
+      }
       EventBus.getInstance().trigger(EVENTS.request_resize);
     }
   },

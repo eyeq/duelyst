@@ -18,7 +18,7 @@ window.openUrl = electron.shell.openPath;
 // expose electron's ipcRenderer but only whitelist certain channels
 const { ipcRenderer } = require('electron');
 
-const ipcWhiteList = ['create-window']; // Removed discord, discord-update-presence.
+const ipcWhiteList = ['create-window', 'setFullScreen', 'exitFullScreen']; // Removed discord, discord-update-presence.
 window.ipcRenderer = {};
 window.ipcRenderer.send = (channel, ...args) => {
   if (!ipcWhiteList.includes(channel)) return;

@@ -109,10 +109,13 @@ app.on('ready', () => {
 
   mainWindow = window.createWindow(windowOptions);
 
-  // toggle to fullscreen after launch
-  if (!argv.windowed) {
+  ipcMain.on("setFullScreen", () => {
     mainWindow.setFullScreen(true);
-  }
+  });
+
+  ipcMain.on("exitFullScreen", () => {
+    mainWindow.setFullScreen(false);
+  });
 
   // can access at window.__args__ from scripts
   // ran from index.html
@@ -136,10 +139,6 @@ function setupWin32Shortcuts() {
   localShortcut.register('Ctrl+Shift+I', () => {
     const focusedWindow = BrowserWindow.getFocusedWindow();
     if (focusedWindow) focusedWindow.toggleDevTools();
-  });
-  localShortcut.register('Ctrl+Shift+F', () => {
-    const focusedWindow = BrowserWindow.getFocusedWindow();
-    if (focusedWindow) focusedWindow.setFullScreen(!focusedWindow.isFullScreen());
   });
 }
 
@@ -205,14 +204,6 @@ function setupDarwinMenu() {
           click() {
             const focusedWindow = BrowserWindow.getFocusedWindow();
             if (focusedWindow) focusedWindow.webContents.reloadIgnoringCache();
-          },
-        },
-        {
-          label: 'Toggle Full Screen',
-          accelerator: 'Ctrl+Command+F',
-          click() {
-            const focusedWindow = BrowserWindow.getFocusedWindow();
-            if (focusedWindow) focusedWindow.setFullScreen(!focusedWindow.isFullScreen());
           },
         },
         {

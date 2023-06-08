@@ -95,6 +95,12 @@ App.getIsShowingMain = () ->
   return NavigationManager.getInstance().getIsShowingContentViewClass(LoginMenuItemView) or NavigationManager.getInstance().getIsShowingContentViewClass(MainMenuItemView) or NavigationManager.getInstance().getIsShowingContentViewClass(ResumeGameItemView)
 
 App.main = ->
+  if window.isDesktop
+    if Storage.get('fullscreen', true)
+      window.ipcRenderer.send('setFullScreen');
+    else
+      window.ipcRenderer.send('exitFullScreen');
+
   if !App._mainPromise?
     App._mainPromise = App._startPromise.then(() ->
       Logger.module("APPLICATION").log("App:main")
