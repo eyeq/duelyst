@@ -58,8 +58,6 @@ EscMainMenuItemView = require 'app/ui/views/item/esc_main_menu'
 
 LoginMenuItemView = require 'app/ui/views/item/login_menu'
 
-SelectUsernameItemView = require 'app/ui/views/item/select_username'
-
 Scene = require 'app/view/Scene'
 GameLayer = require 'app/view/layers/game/GameLayer'
 
@@ -221,35 +219,6 @@ App._showLoginMenu = (options) ->
         viewPromise,
         contentPromise,
         utilityPromise
-      ])
-    )
-  )
-
-App._showSelectUsername = (data) ->
-  Logger.module("APPLICATION").log("App:_showSelectUsername")
-  return PackageManager.getInstance().loadAndActivateMajorPackage("nongame", null, null,
-    (() ->
-      # show main scene
-      viewPromise = Scene.getInstance().showMain()
-
-      # show selection dialog
-      selectUsernameModel = new Backbone.Model({})
-      selectUsernameItemView = new SelectUsernameItemView({model: selectUsernameModel})
-      selectUsernameItemView.listenToOnce(selectUsernameItemView, "success", () =>
-        # TODO: move this into SelectUsernameItemView
-        # We refresh token so the username property is now included
-        Session.refreshToken()
-        .then (refreshed) ->
-          return
-      )
-
-      contentPromise = NavigationManager.getInstance().showDialogView(selectUsernameItemView)
-
-      return Promise.all([
-        NavigationManager.getInstance().destroyModalView(),
-        NavigationManager.getInstance().destroyContentView(),
-        viewPromise,
-        contentPromise
       ])
     )
   )

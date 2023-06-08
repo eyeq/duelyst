@@ -83,8 +83,6 @@ LoginMenuItemView = require 'app/ui/views/item/login_menu'
 
 Discord = if window.isDesktop then require('app/common/discord') else null
 
-SelectUsernameItemView = require 'app/ui/views/item/select_username'
-
 Scene = require 'app/view/Scene'
 GameLayer = require 'app/view/layers/game/GameLayer'
 
@@ -660,35 +658,6 @@ App._showLoginMenu = (options) ->
     )
   )
 
-App._showSelectUsername = (data) ->
-  Logger.module("APPLICATION").log("App:_showSelectUsername")
-  return PackageManager.getInstance().loadAndActivateMajorPackage("nongame", null, null,
-    (() ->
-      # show main scene
-      viewPromise = Scene.getInstance().showMain()
-
-      # show selection dialog
-      selectUsernameModel = new Backbone.Model({})
-      selectUsernameItemView = new SelectUsernameItemView({model: selectUsernameModel})
-      selectUsernameItemView.listenToOnce(selectUsernameItemView, "success", () =>
-        # TODO: move this into SelectUsernameItemView
-        # We refresh token so the username property is now included
-        Session.refreshToken()
-        .then (refreshed) ->
-          return
-      )
-
-      contentPromise = NavigationManager.getInstance().showDialogView(selectUsernameItemView)
-
-      return Promise.all([
-        NavigationManager.getInstance().destroyModalView(),
-        NavigationManager.getInstance().destroyContentView(),
-        viewPromise,
-        contentPromise
-      ])
-    )
-  )
-
 App._showTerms = (options = {}) ->
   Logger.module("APPLICATION").log("App:_showTerms")
   return PackageManager.getInstance().loadAndActivateMajorPackage("nongame", null, null,
@@ -988,12 +957,6 @@ App.onLogin = (data) ->
   if Landing.isNewSignup()
     Landing.addPixelsToHead()
     Landing.firePixels()
-
-  # check for null username here
-  # dialog should be uncancelleable
-  # dialog success should re-trigger session login so new token contains all required params
-  if !Session.username
-    return App._showSelectUsername(data)
 
   # Trigger the eventbus login event for the utilty menus
   EventBus.getInstance().trigger EVENTS.session_logged_in
