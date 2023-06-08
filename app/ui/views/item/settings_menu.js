@@ -64,7 +64,6 @@ var SettingsMenuView = Backbone.Marionette.ItemView.extend({
     $voiceVolume: '#voice-volume',
     $effectsVolume: '#effects-volume',
     $resetInventorySection: '#reset_inventory_section',
-    // "click .manage-data" : "onManageDataPressed"
   },
 
   /* Ui events hash */
