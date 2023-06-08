@@ -20,7 +20,6 @@ var RegistrationItemView = FormPromptModalItemView.extend({
     $username: '.username',
     $password: '.password',
     $passwordConfirm: '.password-confirm',
-    $inviteCode: '.invite-code',
     $friendReferralCode: '.friend-referral-code',
     $submit: '.prompt-submit',
     $submitted: '.prompt-submitted',
@@ -36,19 +35,12 @@ var RegistrationItemView = FormPromptModalItemView.extend({
     'click .prompt-cancel': 'onCancel',
     'input .form-control': 'onFormControlChangeContent',
     'blur .form-control': 'onFormControlBlur',
-    'click #show_friend_referral_code_button': 'onFriendReferralButtonPressed',
-  },
-
-  templateHelpers: {
-    areInviteCodesActive: function () { return process.env.INVITE_CODES_ACTIVE; },
-    isRecaptchaActive: function () { return process.env.RECAPTCHA_ACTIVE; },
   },
 
   isValid: false,
   _hasModifiedUsername: false,
   _hasModifiedPassword: false,
   _hasModifiedPasswordConfirm: false,
-  _hasModifiedInviteCode: false,
   _usernameUnavailable: false,
   _userNavLockId: 'RegistrationUserNavLockId',
 
@@ -56,15 +48,6 @@ var RegistrationItemView = FormPromptModalItemView.extend({
 
   onRender: function () {
     FormPromptModalItemView.prototype.onRender.apply(this, arguments);
-    if (process.env.RECAPTCHA_ACTIVE) {
-      $.getScript('https://www.google.com/recaptcha/api.js?onload=onRecaptchaReady&render=explicit');
-      window.onRecaptchaReady = function () {
-        grecaptcha.render('recaptcha', {
-          sitekey: process.env.RECAPTCHA_SITE_KEY,
-          theme: 'dark',
-        });
-      };
-    }
   },
 
   onShow: function () {
@@ -82,8 +65,6 @@ var RegistrationItemView = FormPromptModalItemView.extend({
       this._hasModifiedPassword = true;
     } else if (this.ui.$passwordConfirm.is($target)) {
       this._hasModifiedPasswordConfirm = true;
-    } else if (this.ui.$inviteCode.is($target)) {
-      this._hasModifiedInviteCode = true;
     }
 
     FormPromptModalItemView.prototype.onFormControlChangeContent.apply(this, arguments);
@@ -95,7 +76,6 @@ var RegistrationItemView = FormPromptModalItemView.extend({
     var username = this.ui.$username.val();
     var password = this.ui.$password.val();
     var passwordConfirm = this.ui.$passwordConfirm.val();
-    var inviteCode = this.ui.$inviteCode.val();
     var isValid = true;
 
     // check username
@@ -131,19 +111,8 @@ var RegistrationItemView = FormPromptModalItemView.extend({
       this.showValidFormControl(this.ui.$passwordConfirm);
     }
 
-    // check invite code
-    if (isValid && this._hasModifiedInviteCode && !validator.isLength(inviteCode, 8)) {
-      this.showInvalidFormControl(this.ui.$inviteCode, i18next.t('registration.registration_validation_invite_code_invalid'));
-      isValid = false;
-    } else {
-      this.showValidFormControl(this.ui.$inviteCode);
-    }
-
     // ...
     isValid = isValid && this._hasModifiedUsername && this._hasModifiedPassword && this._hasModifiedPasswordConfirm;
-
-    if (process.env.INVITE_CODES_ACTIVE)
-      isValid = isValid && this._hasModifiedInviteCode;
 
     // set final valid state
     this.isValid = isValid;
@@ -155,16 +124,14 @@ var RegistrationItemView = FormPromptModalItemView.extend({
     // register
     var username = this.ui.$username.val().trim();
     var password = this.ui.$password.val().trim();
-    var inviteCode = this.ui.$inviteCode.val().trim();
     var friendReferralCode = this.ui.$friendReferralCode.val().trim();
-    var captcha = $('#g-recaptcha-response').val();
 
     Session.register({
       username: username,
       password: password,
-      keycode: inviteCode.length > 0 ? inviteCode : undefined,
+      keycode: undefined,
       friend_referral_code: friendReferralCode.length > 0 ? friendReferralCode : undefined,
-      captcha: captcha,
+      captcha: undefined,
     })
       .bind(this)
       .then(function (res) {
@@ -198,14 +165,7 @@ var RegistrationItemView = FormPromptModalItemView.extend({
       this.showInvalidFormControl(this.ui.$username, errorMessage);
     } else if (/password/i.test(errorMessage)) {
       this.showInvalidFormControl(this.ui.$password, errorMessage);
-    } else if (/invite/i.test(errorMessage)) {
-      this.showInvalidFormControl(this.ui.$inviteCode, errorMessage);
     }
-  },
-
-  onFriendReferralButtonPressed: function () {
-    this.ui.$formGroupFriendReferralButton.addClass('hide');
-    this.ui.$formGroupFriendReferralInput.removeClass('hide');
   },
 
   /* endregion EVENTS */

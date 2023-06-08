@@ -327,27 +327,6 @@ const config = convict({
     format: Number,
     default: 1000,
   },
-  inviteCodesActive: {
-    doc: 'Are invite codes required for this environment?',
-    format: Boolean,
-    default: false,
-    env: 'INVITE_CODES_ACTIVE',
-  },
-  recaptcha: {
-    enabled: {
-      doc: 'Recaptcha Enabled',
-      default: false,
-    },
-    siteKey: {
-      doc: 'Site key for Google RECAPTCHA.',
-      default: '',
-      env: 'RECAPTCHA_SITE_KEY',
-    },
-    secret: {
-      doc: 'Recaptcha Secret',
-      default: '',
-    },
-  },
   matchmaking: {
     allowMatchWithLastOpponent: {
       doc: 'Should matchmaking allow matching with the same opponent twice in a row?',

@@ -8,14 +8,10 @@
 		"ttl": 3600,
 		"password": ""
 	},
-	"inviteCodesActive": false,
 	"datGuiEditorEnabled": true,
 	"aiToolsEnabled": true,
 	"allCardsAvailable": true,
 	"watchSectionMinCurrentVersionGameCount": 1,
-	"recaptcha": {
-		"enabled": false
-	},
 	"matchmaking": {
 		"allowMatchWithLastOpponent": true,
     "defaultGameServer": "localhost"

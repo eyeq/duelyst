@@ -87,13 +87,6 @@ describe('users module', () => {
       ]));
 
     describe('registration - when invite codes are active', () => {
-      //
-      let invitesActiveBefore = null;
-      before(() => {
-        invitesActiveBefore = config.get('inviteCodesActive');
-        config.set('inviteCodesActive', true);
-      });
-      after(() => { config.set('inviteCodesActive', invitesActiveBefore); });
 
       it('expect NOT to be able to create a user with an invalid invite code if invite codes are ACTIVE', () => {
         const rando = generatePushId();
@@ -135,13 +128,6 @@ describe('users module', () => {
     });
 
     describe('registration - when invite codes are in-active', () => {
-      //
-      let invitesActiveBefore = null;
-      before(() => {
-        invitesActiveBefore = config.get('inviteCodesActive');
-        config.set('inviteCodesActive', false);
-      });
-      after(() => { config.set('inviteCodesActive', invitesActiveBefore); });
 
       it('expect to be able to create a user with an invalid invite code if invite codes are INACTIVE', () => {
         const rando = generatePushId();

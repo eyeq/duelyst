@@ -20,11 +20,7 @@
 	},
 	"postgres_connection_string": "",
 	"recordClientLogs":true,
-	"inviteCodesActive":false,
 	"watchSectionCacheTTL":3600,
-	"recaptcha": {
-		"enabled":false
-	},
 	"fastly": {
 		"token": "",
 		"serviceId": ""

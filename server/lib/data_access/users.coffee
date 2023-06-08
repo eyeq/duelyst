@@ -93,23 +93,6 @@ class UsersModule
         throw new Errors.InvalidReferralCodeError("referral code not found")
 
   ###*
-  # Check if an invite code is valid.
-  # @public
-  # @param  {String}  inviteCode  Invite Code
-  # @return  {Promise}        Promise that will return true or throw InvalidInviteCodeError exception .
-  ###
-  @isValidInviteCode: (inviteCode,cb) ->
-
-    inviteCode ?= null
-
-    return knex("invite_codes").where('code',inviteCode).first()
-    .then (codeRow)->
-      if !config.get("inviteCodesActive") || codeRow? || inviteCode is "kumite14" || inviteCode is "keysign789"
-        return true
-      else
-        throw new Errors.InvalidInviteCodeError("Invalid Invite Code")
-
-  ###*
   # Create a user record for the specified parameters.
   # @public
   # @param  {String}  username    User's username
@@ -133,9 +116,6 @@ class UsersModule
     return knex("invite_codes").where('code',inviteCode).first()
     .bind this_obj
     .then (inviteCodeRow)->
-
-      if config.get("inviteCodesActive") and !inviteCodeRow and inviteCode != "kumite14" and inviteCode != "keysign789"
-        throw new Errors.InvalidInviteCodeError("Invite code not found")
 
       referralCodePromise = Promise.resolve(null)
       # we check if the referral code is a UUID so that anyone accidentally using invite codes doesn't error out
@@ -166,9 +146,6 @@ class UsersModule
 
         if registrationSource
           userRecord.registration_source = registrationSource
-
-        if config.get("inviteCodesActive")
-          userRecord.invite_code = inviteCode
 
         # Add campaign data to userRecord
         if campaignData?
@@ -236,10 +213,6 @@ class UsersModule
         return
 
       .bind this_obj
-      .then ()->
-        if config.get("inviteCodesActive")
-          return knex("invite_codes").where('code',inviteCode).delete()
-
       .then ()->
         # User has been created. Grant a full collection and return.
         grantFullCollection(userId)

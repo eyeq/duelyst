@@ -15,22 +15,10 @@
                     <input type="password" class="form-control password" required placeholder="{{localize 'registration.registration_password_label'}}">
                     <input type="password" class="form-control password-confirm" required placeholder="{{localize 'registration.registration_password_confirmation_label'}}">
                 </div>
-                <div class="form-group {{#unless areInviteCodesActive}}hide{{/unless}}">
-                    <label>{{localize 'registration.registration_invite_code_label'}}</label>
-                    <input type="text" class="form-control invite-code" required placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx">
-                </div>
-                <div id="formGroupFriendReferralButton" class="form-group">
-									<button id="show_friend_referral_code_button" tabindex="-1">{{localize 'registration.registration_show_referral_button_label'}}</button>
-                </div>
-                <div id="formGroupFriendReferralInput" class="form-group hide">
+                <div id="formGroupFriendReferralInput" class="form-group">
                     <label>{{localize 'registration.registration_referral_field_label'}}</label>
-                    <input type="text" class="form-control friend-referral-code" required placeholder="{{localize 'registration.registration_referral_field_placeholder'}}">
+                    <input type="text" class="form-control friend-referral-code" placeholder="{{localize 'registration.registration_referral_field_placeholder'}}">
                 </div>
-                {{#if isRecaptchaActive}}
-                <div class="form-group">
-                    <div id="recaptcha"></div>
-                </div>
-                {{/if}}
                 <div class="form-control-buttons">
                     <button class="btn btn-clean btn-clean-confirm prompt-submit">{{localize 'registration.registration_submit_button_label'}}</button>
                 </div>

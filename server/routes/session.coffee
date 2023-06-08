@@ -204,38 +204,7 @@ router.post "/session/register", (req, res, next) ->
   captcha = result.value.captcha
   registrationSource = if result.value.is_desktop then 'desktop' else 'web'
 
-  UsersModule.isValidInviteCode(inviteCode)
-  .bind {}
-  .then (inviteCodeData) -> # captcha verification
-    if captcha? and config.get('recaptcha.secret')
-      return Promise.resolve(
-        fetch "https://www.google.com/recaptcha/api/siteverify",
-          method: 'POST'
-          headers:
-            'Accept': 'application/json'
-            'Content-Type': 'application/x-www-form-urlencoded'
-          body: formurlencoded({
-            secret: config.get('recaptcha.secret')
-            response: captcha
-          })
-      )
-      .bind(@)
-      .timeout(10000)
-      .then (res) ->
-        if res.ok
-          return res.json()
-        else
-          throw new Errors.UnverifiedCaptchaError("We could not verify the captcha (bot detection).")
-      .then (body) ->
-        return Promise.resolve(body.success)
-    else if config.get('recaptcha.enabled') == false
-      return true
-    else
-      return false
-  .then (isCaptchaVerified) ->
-    if not isCaptchaVerified
-      throw new Errors.UnverifiedCaptchaError("We could not verify the captcha (bot detection).")
-    return UsersModule.createNewUser(username,password,inviteCode,referralCode,campaignData,registrationSource)
+  UsersModule.createNewUser(username,password,inviteCode,referralCode,campaignData,registrationSource)
   .then (userId) ->
     # if we have a friend referral code just fire off async the job to link these two together
     if friendReferralCode?
