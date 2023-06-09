@@ -8,12 +8,12 @@ const audio_engine = require('app/audio/audio_engine');
 const Animations = require('app/ui/views/animations');
 const EVENTS = require('app/common/event_types');
 const NavigationManager = require('app/ui/managers/navigation_manager');
-const openUrl = require('app/common/openUrl');
+const MyItemView = require('./my_item_view');
 
 /**
  * Abstract form prompt modal. Do not use this class directly.
  */
-const FormPromptModalItemView = Backbone.Marionette.ItemView.extend({
+const FormPromptModalItemView = MyItemView.extend({
 
   className: 'modal prompt-modal',
 
@@ -61,30 +61,17 @@ const FormPromptModalItemView = Backbone.Marionette.ItemView.extend({
     this.updateValidStateDebounced = _.debounce(this.updateValidState.bind(this), this.updateValidStateDelay * 1000.0);
   },
 
-  onBeforeRender: function () {
-    this.$el.find('[data-toggle=\'tooltip\']').tooltip('destroy');
-  },
-
   onRender: function () {
-    this.$el.find('[data-toggle=\'tooltip\']').tooltip();
+    MyItemView.prototype.onRender.apply(this, arguments);
+
     this.ui.$form.addClass('active');
     this.updateValidState();
-
-    // auto wire target blank links to open in a new window
-    $('a', this.$el).each(function (i) {
-      if ($(this).attr('target') == '_blank') {
-        $(this).on('click', function (e) {
-          openUrl($(e.currentTarget).attr('href'));
-          e.stopPropagation();
-          e.preventDefault();
-        });
-      }
-    });
   },
 
   onShow: function () {
-    this.listenTo(NavigationManager.getInstance(), EVENTS.user_triggered_confirm, this.onClickSubmit);
     this.updateValidState();
+
+    this.listenTo(NavigationManager.getInstance(), EVENTS.user_triggered_confirm, this.onClickSubmit);
   },
 
   onDestroy: function () {
@@ -213,23 +200,6 @@ const FormPromptModalItemView = Backbone.Marionette.ItemView.extend({
 
     // trigger error to notify of issue
     this.trigger('error', errorMessage);
-  },
-
-  showInvalidFormControl: function ($formControl, helpMessage) {
-    $formControl.closest('.form-group').addClass('has-error');
-    $formControl.off('input');
-    $formControl.one('input', function () { this.hideInvalidFormControl($formControl); }.bind(this));
-
-    const tooltipData = $formControl.data('bs.tooltip');
-    if (tooltipData == null || tooltipData.options.title !== helpMessage) {
-      $formControl.tooltip('destroy').tooltip({ title: helpMessage || 'Invalid input', placement: 'right', trigger: 'manual' }).tooltip('show');
-    }
-  },
-
-  hideInvalidFormControl: function ($formControl) {
-    $formControl.closest('.form-group').removeClass('has-error');
-    $formControl.off('input');
-    $formControl.tooltip('destroy');
   },
 
   updateValidState: function () {
