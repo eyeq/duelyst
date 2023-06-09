@@ -1,29 +1,28 @@
 'use strict';
 
-var Promise = require('bluebird');
-var Session = require('app/common/session2');
-var Logger = require('app/common/logger');
-var EVENTS = require('app/common/event_types');
-var CONFIG = require('app/common/config');
-var RSX = require('app/data/resources');
-var audio_engine = require('app/audio/audio_engine');
-var validator = require('validator');
-var Animations = require('app/ui/views/animations');
-var NavigationManager = require('app/ui/managers/navigation_manager');
-var LoginMenuTmpl = require('app/ui/templates/item/login_menu.hbs');
-var openUrl = require('app/common/openUrl');
-var i18next = require('i18next');
-var RegistrationItemView = require('./registration');
-var ErrorDialogItemView = require('./error_dialog');
+const Promise = require('bluebird');
+const Session = require('app/common/session2');
+const Logger = require('app/common/logger');
+const EVENTS = require('app/common/event_types');
+const CONFIG = require('app/common/config');
+const RSX = require('app/data/resources');
+const audio_engine = require('app/audio/audio_engine');
+const validator = require('validator');
+const Animations = require('app/ui/views/animations');
+const NavigationManager = require('app/ui/managers/navigation_manager');
+const LoginMenuTmpl = require('app/ui/templates/item/login_menu.hbs');
+const openUrl = require('app/common/openUrl');
+const i18next = require('i18next');
+const RegistrationItemView = require('./registration');
+const ErrorDialogItemView = require('./error_dialog');
 
-var LoginMenuItemView = Backbone.Marionette.ItemView.extend({
+const LoginMenuItemView = Backbone.Marionette.ItemView.extend({
 
   template: LoginMenuTmpl,
 
   id: 'app-login',
   className: 'login-menu',
 
-  /* ui selector cache */
   ui: {
     $brandDynamic: '.brand-dynamic',
     $input: 'input',
@@ -36,29 +35,25 @@ var LoginMenuItemView = Backbone.Marionette.ItemView.extend({
     $password: '.login-password',
   },
 
-  /* Ui events hash */
   events: {
-    'click .login': 'onLogin',
+    'click .login': 'onLoginClick',
     'click .registration': 'onShowRegistration',
   },
+
+  // #region Property
 
   animateIn: Animations.fadeIn,
   animateOut: Animations.fadeOut,
 
-  // whether form is valid
-  isValid: true,
-
   _userNavLockId: 'LoginUserNavLockId',
 
-  /* region INITIALIZE */
+  // #endregion
+
+  // #region Backbone
 
   initialize: function () {
     this.resetInvalidStateBound = this.resetInvalidState.bind(this);
   },
-
-  /* endregion INITIALIZE */
-
-  /* region EVENTS */
 
   onBeforeRender: function () {
     this.$el.find('[data-toggle=\'tooltip\']').tooltip('destroy');
@@ -70,7 +65,7 @@ var LoginMenuItemView = Backbone.Marionette.ItemView.extend({
   },
 
   onShow: function () {
-    var brandAnimationDuration = 2.0;
+    const brandAnimationDuration = 2.0;
 
     // slight delay before showing brand to ensure dom is rendered
     this._brandTimeoutId = setTimeout(function () {
@@ -88,7 +83,7 @@ var LoginMenuItemView = Backbone.Marionette.ItemView.extend({
     // login when focused on input and triggering confirm
     this.listenTo(NavigationManager.getInstance(), EVENTS.user_triggered_confirm, function () {
       if (this.ui.$input.is(this.$el.find('input:focus'))) {
-        this.onLogin();
+        this.onLoginClick();
       }
     });
 
@@ -122,17 +117,36 @@ var LoginMenuItemView = Backbone.Marionette.ItemView.extend({
     }
   },
 
-  /* endregion EVENTS */
+  // #endregion
 
-  /* region ANIMATION */
+  // #region Event
+
+  onLoginClick: function () {
+    const isValid = this.updateValidState();
+    if (isValid) {
+      audio_engine.current().play_effect_for_interaction(RSX.sfx_ui_confirm.audio, CONFIG.CONFIRM_SFX_PRIORITY);
+
+      this.disableForm();
+      this.onLogin(this.ui.$username.val(), this.ui.$password.val());
+    } else {
+      audio_engine.current().play_effect_for_interaction(RSX.sfx_ui_error.audio, CONFIG.ERROR_SFX_PRIORITY);
+    }
+  },
+
+  onShowRegistration: function () {
+    // registration will auto log in on success
+    NavigationManager.getInstance().showModalView(new RegistrationItemView());
+  },
+
+  // #region
 
   showBrand: function (animationDuration) {
     return new Promise(function (resolve, reject) {
       // animate brand in
       this.ui.$brandDynamic.addClass('active');
       this.ui.$brandDynamic.find('.draw-line').each(function () {
-        var $element = $(this);
-        var length = this.getTotalLength() / 5;
+        const $element = $(this);
+        let length = this.getTotalLength() / 5;
         $element.data('length', length);
         $element.css('stroke-dasharray', length);
         $element.css('stroke-dashoffset', length);
@@ -143,7 +157,7 @@ var LoginMenuItemView = Backbone.Marionette.ItemView.extend({
       });
 
       this.ui.$brandDynamic.find('.fill').each(function () {
-        var $element = $(this);
+        const $element = $(this);
         $element.css('transition', 'opacity ' + animationDuration * 0.5 + 's ease-out');
         $element.css('transition-delay', animationDuration * 0.5 + 's');
         $element.css('opacity', '1');
@@ -158,62 +172,47 @@ var LoginMenuItemView = Backbone.Marionette.ItemView.extend({
     }.bind(this));
   },
 
-  /* endregion ANIMATION */
-
-  /* region LOGIN */
-
-  onLogin: function () {
-    var username = this.ui.$username.val();
-    var password = this.ui.$password.val();
-
-    this.updateValidState();
-    if (this.isValid) {
-      this.disableForm();
-
-      audio_engine.current().play_effect_for_interaction(RSX.sfx_ui_confirm.audio, CONFIG.CONFIRM_SFX_PRIORITY);
-
-      // lockdown user triggered navigation while we login
-      NavigationManager.getInstance().requestUserTriggeredNavigationLocked(this._userNavLockId);
-      Session.login(username, password)
-        .bind(this)
-        .catch(function (e) {
+  onLogin: function (username, password) {
+    // lockdown user triggered navigation while we login
+    NavigationManager.getInstance().requestUserTriggeredNavigationLocked(this._userNavLockId);
+    Session.login(username, password)
+      .bind(this)
+      .catch(function (e) {
         // onError expects a string not an actual error
-          this.onError(e.codeMessage || e.innerMessage || e.message);
-        })
-        .finally(function () {
+        this.onError(e.codeMessage || e.innerMessage || e.message);
+      })
+      .finally(function () {
         // unlock user triggered navigation
-          NavigationManager.getInstance().requestUserTriggeredNavigationUnlocked(this._userNavLockId);
-        });
-    } else {
-      audio_engine.current().play_effect_for_interaction(RSX.sfx_ui_error.audio, CONFIG.ERROR_SFX_PRIORITY);
-    }
+        NavigationManager.getInstance().requestUserTriggeredNavigationUnlocked(this._userNavLockId);
+      });
   },
 
   updateValidState: function () {
-    var username = this.ui.$username.val();
-    var password = this.ui.$password.val();
-    this.isValid = true;
+    const username = this.ui.$username.val();
+    const password = this.ui.$password.val();
+    let isValid = true;
 
     // check username
     if ((!validator.isLength(username, 3, 18) || !validator.isAlphanumeric(username))) {
       this.showInvalidFormControlWithTooltip(this.ui.$username, i18next.t('login.invalid_username_message'));
-      this.isValid = false;
+      isValid = false;
     } else {
-      this.showValidFormControl(this.ui.$username);
+      this.hideInvalidFormControl(this.ui.$username);
     }
 
     // check password
-    if (this.isValid && !validator.isLength(password, 6)) {
+    if (isValid && !validator.isLength(password, 6)) {
       this.showInvalidFormControlWithTooltip(this.ui.$password, i18next.t('login.invalid_password_message'));
-      this.isValid = false;
+      isValid = false;
     } else {
-      this.showValidFormControl(this.ui.$password);
+      this.hideInvalidFormControl(this.ui.$password);
     }
+    return isValid;
   },
 
   resetInvalidState: function () {
-    this.showValidFormControl(this.ui.$username);
-    this.showValidFormControl(this.ui.$password);
+    this.hideInvalidFormControl(this.ui.$username);
+    this.hideInvalidFormControl(this.ui.$password);
   },
 
   showInvalidFormControl: function ($formControl) {
@@ -221,26 +220,20 @@ var LoginMenuItemView = Backbone.Marionette.ItemView.extend({
     $formControl.one('input', this.resetInvalidStateBound);
   },
 
-  showValidFormControl: function ($formControl) {
+  hideInvalidFormControl: function ($formControl) {
     $formControl.closest('.form-group').removeClass('has-error');
     $formControl.off('input', this.resetInvalidStateBound);
-    this.hideInvalidTooltip($formControl);
+
+    $formControl.tooltip('destroy');
   },
 
   showInvalidFormControlWithTooltip: function ($formControl, helpMessage) {
     this.showInvalidFormControl($formControl);
-    this.showInvalidTooltip($formControl, helpMessage);
-  },
 
-  showInvalidTooltip: function ($formControl, helpMessage) {
     var tooltipData = $formControl.data('bs.tooltip');
     if (tooltipData == null || tooltipData.options.title !== helpMessage) {
       $formControl.tooltip('destroy').tooltip({ title: helpMessage || i18next.t('common.generic_invalid_input_message'), placement: 'left', trigger: 'manual' }).tooltip('show');
     }
-  },
-
-  hideInvalidTooltip: function ($formControl) {
-    $formControl.tooltip('destroy');
   },
 
   enableForm: function () {
@@ -262,22 +255,12 @@ var LoginMenuItemView = Backbone.Marionette.ItemView.extend({
     if (errorMessage.indexOf('suspended') > 0) {
       NavigationManager.getInstance().showDialogViewByClass(ErrorDialogItemView, { title: i18next.t('login.account_suspended_message'), message: errorMessage });
     } else {
-      this.showInvalidFormControlWithTooltip(this.ui.$username, errorMessage || i18next.t('login.invalid_username_or_password_message'));
+      this.showInvalidFormControlWithTooltip(this.ui.$username, i18next.t('login.invalid_username_or_password_message'));
       this.showInvalidFormControl(this.ui.$password);
     }
   },
 
-  /* endregion LOGIN */
-
-  /* region REGISTRATION */
-
-  onShowRegistration: function () {
-    // registration will auto log in on success
-    NavigationManager.getInstance().showModalView(new RegistrationItemView());
-  },
-
-  /* endregion REGISTRATION */
-
+  // #endregion
 });
 
 module.exports = LoginMenuItemView;
