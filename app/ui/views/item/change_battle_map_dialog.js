@@ -89,7 +89,8 @@ var ChangeBattleMapItemView = FormPromptDialogItemView.extend({
   },
 
   updateValidState: function () {
-    this.isValid = this._cosmeticId != null;
+    const isValid = this._cosmeticId != null;
+    return isValid;
   },
 
   onClickSubmit: function (event) {
@@ -127,7 +128,7 @@ var ChangeBattleMapItemView = FormPromptDialogItemView.extend({
         this.onSuccess(res);
       })
       .catch(function (e) {
-      // onError expects a string not an actual error
+        // onError expects a string not an actual error
         this.onError(e.innerMessage || e.message);
       });
   },

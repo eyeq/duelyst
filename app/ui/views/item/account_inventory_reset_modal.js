@@ -23,7 +23,6 @@ var AccountInventoryResetModalView = FormPromptModalItemView.extend({
     $success: '.prompt-success',
   },
 
-  isValid: false,
   _hasModifiedPassword: false,
   _userNavLockId: 'AccountWipeUserNavLockId',
 
@@ -55,14 +54,12 @@ var AccountInventoryResetModalView = FormPromptModalItemView.extend({
       this.showInvalidFormControl(this.ui.$password, 'Minimum 6 characters');
       isValid = false;
     } else {
-      this.showValidFormControl(this.ui.$password);
+      this.hideInvalidFormControl(this.ui.$password);
     }
 
     // ...
     isValid = isValid && this._hasModifiedPassword;
-
-    // set final valid state
-    this.isValid = isValid;
+    return isValid;
   },
 
   onSubmit: function () {

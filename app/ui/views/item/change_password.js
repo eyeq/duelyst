@@ -55,7 +55,7 @@ var ChangePasswordItemView = FormPromptDialogItemView.extend({
         this.onSuccess(res);
       })
       .catch(function (e) {
-      // onError expects a string not an actual error
+        // onError expects a string not an actual error
         this.onError(e.innerMessage || e.message);
       });
   },
@@ -65,8 +65,6 @@ var ChangePasswordItemView = FormPromptDialogItemView.extend({
   /* region STATE */
 
   updateValidState: function () {
-    FormPromptDialogItemView.prototype.updateValidState.apply(this, arguments);
-
     var password = this.ui.$password.val();
     var passwordConfirm = this.ui.$passwordConfirm.val();
     var passwordCurrent = this.ui.$passwordCurrent.val();
@@ -93,13 +91,14 @@ var ChangePasswordItemView = FormPromptDialogItemView.extend({
     }
 
     if (isValid) {
-      this.showValidFormControl(this.ui.$password);
-      this.showValidFormControl(this.ui.$passwordConfirm);
-      this.showValidFormControl(this.ui.$passwordCurrent);
+      this.hideInvalidFormControl(this.ui.$password);
+      this.hideInvalidFormControl(this.ui.$passwordConfirm);
+      this.hideInvalidFormControl(this.ui.$passwordCurrent);
     }
 
     // set valid state
-    this.isValid = isValid && this._hasModifiedPassword && this._hasModifiedPasswordConfirm && this._hasModifiedPasswordCurrent;
+    isValid = isValid && this._hasModifiedPassword && this._hasModifiedPasswordConfirm && this._hasModifiedPasswordCurrent;
+    return isValid;
   },
 
   /* endregion STATE */

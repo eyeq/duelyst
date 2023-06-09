@@ -1,19 +1,19 @@
 'use strict';
 
-var _ = require('underscore');
-var Promise = require('bluebird');
-var CONFIG = require('app/common/config');
-var RSX = require('app/data/resources');
-var audio_engine = require('app/audio/audio_engine');
-var Animations = require('app/ui/views/animations');
-var EVENTS = require('app/common/event_types');
-var NavigationManager = require('app/ui/managers/navigation_manager');
-var openUrl = require('app/common/openUrl');
+const _ = require('underscore');
+const Promise = require('bluebird');
+const CONFIG = require('app/common/config');
+const RSX = require('app/data/resources');
+const audio_engine = require('app/audio/audio_engine');
+const Animations = require('app/ui/views/animations');
+const EVENTS = require('app/common/event_types');
+const NavigationManager = require('app/ui/managers/navigation_manager');
+const openUrl = require('app/common/openUrl');
 
 /**
  * Abstract form prompt modal. Do not use this class directly.
  */
-var FormPromptModalItemView = Backbone.Marionette.ItemView.extend({
+const FormPromptModalItemView = Backbone.Marionette.ItemView.extend({
 
   className: 'modal prompt-modal',
 
@@ -29,10 +29,12 @@ var FormPromptModalItemView = Backbone.Marionette.ItemView.extend({
 
   events: {
     'click .prompt-submit': 'onClickSubmit',
-    'click .prompt-cancel': 'onCancel',
+    'click .prompt-cancel': 'onClickCancel',
     'input .form-control': 'onFormControlChangeContent',
     'blur .form-control': 'onFormControlBlur',
   },
+
+  // #region Property
 
   animateIn: Animations.fadeIn,
   animateOut: Animations.fadeOut,
@@ -40,28 +42,24 @@ var FormPromptModalItemView = Backbone.Marionette.ItemView.extend({
   // whether form is in process of submitting
   submitting: false,
 
-  // whether form is valid
-  isValid: true,
-
   // duration in seconds to wait after a user finishes typing to update the valid state
   updateValidStateDelay: 0.5,
+  updateValidStateDebounced: null,
 
   // duration in seconds to show status messages
   successMessageDuration: 3.0,
   errorMessageDuration: 3.0,
+  errorMessageDurationLong: 10.0,
 
   _userNavLockId: 'FormPromptModalUserNavLockId',
 
-  /* region INITIALIZE */
+  // #endregion
+
+  // #region Backbone
 
   initialize: function () {
-    this.updateValidStateBound = this.updateValidState.bind(this);
-    this.updateValidStateDebounced = _.debounce(this.updateValidStateBound, this.updateValidStateDelay * 1000.0);
+    this.updateValidStateDebounced = _.debounce(this.updateValidState.bind(this), this.updateValidStateDelay * 1000.0);
   },
-
-  /* endregion INITIALIZE */
-
-  /* region EVENTS */
 
   onBeforeRender: function () {
     this.$el.find('[data-toggle=\'tooltip\']').tooltip('destroy');
@@ -103,6 +101,10 @@ var FormPromptModalItemView = Backbone.Marionette.ItemView.extend({
     }
   },
 
+  // #endregion
+
+  // #region Event
+
   onFormControlChangeContent: function () {
     this.updateValidStateDebounced();
   },
@@ -111,39 +113,47 @@ var FormPromptModalItemView = Backbone.Marionette.ItemView.extend({
     this.updateValidState();
   },
 
-  onClickSubmit: function (event) {
-    this.updateValidState();
-    if (this.isValid && !this.submitting) {
-      this.onSubmit();
-      audio_engine.current().play_effect_for_interaction(RSX.sfx_ui_confirm.audio, CONFIG.CONFIRM_SFX_PRIORITY);
-    } else {
+  onClickSubmit: function () {
+    if (this.submitting) {
       audio_engine.current().play_effect_for_interaction(RSX.sfx_ui_error.audio, CONFIG.ERROR_SFX_PRIORITY);
+      return;
     }
-  },
 
-  onSubmit: function () {
-    // start submitting
+    const isValid = this.updateValidState();
+    if (!isValid) {
+      audio_engine.current().play_effect_for_interaction(RSX.sfx_ui_error.audio, CONFIG.ERROR_SFX_PRIORITY);
+      return;
+    }
+
     this.submitting = true;
+    audio_engine.current().play_effect_for_interaction(RSX.sfx_ui_confirm.audio, CONFIG.CONFIRM_SFX_PRIORITY);
 
     // show activity
     this.ui.$form.removeClass('active');
     this.ui.$submitted.addClass('active');
 
-    // lockdown user triggered navigation
-    NavigationManager.getInstance().requestUserTriggeredNavigationLocked(this._userNavLockId);
+    this.onSubmit();
   },
 
-  onCancel: function () {
+  onClickCancel: function () {
+    if (this.submitting) {
+      return;
+    }
+
     audio_engine.current().play_effect_for_interaction(RSX.sfx_ui_cancel.audio, CONFIG.CANCEL_SFX_PRIORITY);
-    NavigationManager.getInstance().destroyModalView();
+    this.onCancel();
   },
+
+  // #endregion
+
+  // #region
 
   /**
    * Method called automatically on successful submission.
    */
   onSuccess: function () {
     // we don't know what will be passed to the success method, so we'll pass everything along
-    var successArgs = arguments;
+    const successArgs = arguments;
 
     // show success
     this.ui.$submitted.removeClass('active');
@@ -170,15 +180,16 @@ var FormPromptModalItemView = Backbone.Marionette.ItemView.extend({
    */
   onError: function (errorMessage) {
     // we don't know what will be passed to the error method, so we'll pass everything along
-    var errorArgs = arguments;
+    const errorArgs = arguments;
 
     // show error
     this.ui.$submitted.removeClass('active');
     this.ui.$error.addClass('active');
     this.ui.$errorMessage.text(errorMessage);
-    var errorDuration = this.errorMessageDuration;
+
+    let errorDuration = this.errorMessageDuration;
     if (errorMessage.length > 30) {
-      errorDuration = 10.0;
+      errorDuration = this.errorMessageDurationLong;
     }
 
     this._errorTimeoutId = setTimeout(function () {
@@ -204,50 +215,36 @@ var FormPromptModalItemView = Backbone.Marionette.ItemView.extend({
     this.trigger('error', errorMessage);
   },
 
-  /* endregion EVENTS */
-
-  /* region STATE */
-
-  getSubmitting: function () {
-    return this.submitting;
-  },
-
-  clearFormValidation: function () {
-    this.$el.find('.has-error').removeClass('has-error');
-  },
-
   showInvalidFormControl: function ($formControl, helpMessage) {
     $formControl.closest('.form-group').addClass('has-error');
     $formControl.off('input');
-    $formControl.one('input', function () { this.showValidFormControl($formControl); }.bind(this));
-    this.showInvalidTooltip($formControl, helpMessage);
-  },
+    $formControl.one('input', function () { this.hideInvalidFormControl($formControl); }.bind(this));
 
-  showValidFormControl: function ($formControl) {
-    $formControl.closest('.form-group').removeClass('has-error');
-    $formControl.off('input');
-    this.hideInvalidTooltip($formControl);
-  },
-
-  showInvalidTooltip: function ($formControl, helpMessage) {
-    var tooltipData = $formControl.data('bs.tooltip');
+    const tooltipData = $formControl.data('bs.tooltip');
     if (tooltipData == null || tooltipData.options.title !== helpMessage) {
       $formControl.tooltip('destroy').tooltip({ title: helpMessage || 'Invalid input', placement: 'right', trigger: 'manual' }).tooltip('show');
     }
   },
 
-  hideInvalidTooltip: function ($formControl) {
+  hideInvalidFormControl: function ($formControl) {
+    $formControl.closest('.form-group').removeClass('has-error');
+    $formControl.off('input');
     $formControl.tooltip('destroy');
   },
 
-  updateValidStateDebounced: null,
   updateValidState: function () {
-    // override in sub class to set valid state
-    this.isValid = true;
+    return true;
   },
 
-  /* endregion STATE */
+  onSubmit: function () {
+    NavigationManager.getInstance().requestUserTriggeredNavigationLocked(this._userNavLockId);
+  },
 
+  onCancel: function () {
+    NavigationManager.getInstance().destroyModalView();
+  },
+
+  // #endregion
 });
 
 // Expose the class either via CommonJS or the global object

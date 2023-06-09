@@ -62,7 +62,7 @@ var ChangeUsernameItemView = FormPromptDialogItemView.extend({
         this.onSuccess(res);
       })
       .catch(function (e) {
-      // onError expects a string not an actual error
+        // onError expects a string not an actual error
         this.onError(e.innerMessage || e.message);
       });
   },
@@ -72,8 +72,6 @@ var ChangeUsernameItemView = FormPromptDialogItemView.extend({
   /* region STATE */
 
   updateValidState: function () {
-    FormPromptDialogItemView.prototype.updateValidState.apply(this, arguments);
-
     var username = this.ui.$username.val();
     var isValid = true;
 
@@ -86,12 +84,13 @@ var ChangeUsernameItemView = FormPromptDialogItemView.extend({
         this.showInvalidFormControl(this.ui.$username, 'Username must be different');
         isValid = false;
       } else {
-        this.showValidFormControl(this.ui.$username);
+        this.hideInvalidFormControl(this.ui.$username);
       }
     }
 
     // set valid state
-    this.isValid = isValid && this._hasModifiedUsername;
+    isValid = isValid && this._hasModifiedUsername;
+    return isValid;
   },
 
   /* endregion STATE */

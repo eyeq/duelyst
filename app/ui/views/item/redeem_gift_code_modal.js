@@ -24,7 +24,6 @@ var RedeemGiftCodeModalView = FormPromptModalItemView.extend({
     $success: '.prompt-success',
   },
 
-  isValid: false,
   _hasModifiedGiftCode: false,
   _userNavLockId: 'AccountWipeUserNavLockId',
 
@@ -56,14 +55,12 @@ var RedeemGiftCodeModalView = FormPromptModalItemView.extend({
       this.showInvalidFormControl(this.ui.$giftCode, i18next.t('redeem_gift_code_modal.min_char_requirement_error'));
       isValid = false;
     } else {
-      this.showValidFormControl(this.ui.$giftCode);
+      this.hideInvalidFormControl(this.ui.$giftCode);
     }
 
     // ...
     isValid = isValid && this._hasModifiedGiftCode;
-
-    // set final valid state
-    this.isValid = isValid;
+    return isValid;
   },
 
   onSubmit: function () {
