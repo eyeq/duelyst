@@ -8,7 +8,7 @@ var Session = require('app/common/session2');
 var RegistrationItemViewTempl = require('app/ui/templates/item/registration.hbs');
 var NavigationManager = require('app/ui/managers/navigation_manager');
 var i18next = require('i18next');
-var FormPromptModalItemView = require('./form_prompt_modal');
+var FormPromptModalItemView = require('./util/form_prompt_modal');
 
 var RegistrationItemView = FormPromptModalItemView.extend({
 

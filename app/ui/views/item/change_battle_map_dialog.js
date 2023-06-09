@@ -8,7 +8,7 @@ var NavigationManager = require('app/ui/managers/navigation_manager');
 var ProfileManager = require('app/ui/managers/profile_manager');
 var ChangeBattleMapItemViewTempl = require('app/ui/templates/item/change_battle_map_dialog.hbs');
 var i18next = require('i18next');
-var FormPromptDialogItemView = require('./form_prompt_dialog');
+var FormPromptDialogItemView = require('./util/form_prompt_dialog');
 
 var ChangeBattleMapItemView = FormPromptDialogItemView.extend({
 

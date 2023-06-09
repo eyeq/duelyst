@@ -7,7 +7,7 @@ var Animations = require('app/ui/views/animations');
 var ChangeUsernameTmpl = require('app/ui/templates/item/change_username.hbs');
 var moment = require('moment');
 var ProfileManager = require('app/ui/managers/profile_manager');
-var FormPromptDialogItemView = require('./form_prompt_dialog');
+var FormPromptDialogItemView = require('./util/form_prompt_dialog');
 
 var ChangeUsernameItemView = FormPromptDialogItemView.extend({
 

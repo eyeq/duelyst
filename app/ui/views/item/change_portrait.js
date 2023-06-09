@@ -6,7 +6,7 @@ var SDK = require('app/sdk');
 var InventoryManager = require('app/ui/managers/inventory_manager');
 var NavigationManager = require('app/ui/managers/navigation_manager');
 var ChangePortraitItemViewTempl = require('app/ui/templates/item/change_portrait.hbs');
-var FormPromptDialogItemView = require('./form_prompt_dialog');
+var FormPromptDialogItemView = require('./util/form_prompt_dialog');
 
 var ChangePortraitItemView = FormPromptDialogItemView.extend({
 

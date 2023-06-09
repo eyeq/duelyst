@@ -7,7 +7,7 @@ var validator = require('validator');
 var Template = require('app/ui/templates/item/redeem_gift_code_modal.hbs');
 var NavigationManager = require('app/ui/managers/navigation_manager');
 var i18next = require('i18next');
-var FormPromptModalItemView = require('./form_prompt_modal');
+var FormPromptModalItemView = require('./util/form_prompt_modal');
 
 var RedeemGiftCodeModalView = FormPromptModalItemView.extend({
 
