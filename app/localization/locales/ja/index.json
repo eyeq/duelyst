@@ -3391,7 +3391,8 @@
     "create_account_button_label": "アカウント作成",
     "invalid_password_message": "パスワードが要件を満たしていません。",
     "invalid_username_message": "ユーザー名が要件を満たしていません。",
-    "account_suspended_message": "アカウントは停止されています。",
+    "network_error": "ネットワークエラー",
+    "account_suspended": "停止済みのアカウント",
     "invalid_username_or_password_message": "ユーザー名またはパスワードが間違っています。"
   },
   "main_menu": {

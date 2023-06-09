@@ -3391,7 +3391,8 @@
     "create_account_button_label": "Create Account",
     "invalid_password_message": "Invalid password",
     "invalid_username_message": "Invalid username",
-    "account_suspended_message": "Account Suspended",
+    "network_error": "Network Error",
+    "account_suspended": "Account Suspended",
     "invalid_username_or_password_message": "Invalid username or password"
   },
   "main_menu": {
