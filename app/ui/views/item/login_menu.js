@@ -12,7 +12,7 @@ const Animations = require('app/ui/views/animations');
 const NavigationManager = require('app/ui/managers/navigation_manager');
 const LoginMenuTmpl = require('app/ui/templates/item/login_menu.hbs');
 const i18next = require('i18next');
-const RegistrationItemView = require('./registration');
+const RegistrationItemView = require('./registration_modal');
 const ErrorDialogItemView = require('./error_dialog');
 const MyItemView = require('./util/my_item_view');
 
