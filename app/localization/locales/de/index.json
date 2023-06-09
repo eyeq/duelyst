@@ -3989,15 +3989,12 @@
     "registration_username_label": "Benutzername",
     "registration_password_label": "Passwort",
     "registration_password_confirmation_label": "Passwort bestätigen",
-    "registration_referral_field_label": "Freundescode",
-    "registration_referral_field_placeholder": "Benutzername des Freundes",
     "registration_submit_button_label": "Senden",
     "registration_success_message": "Bitte warte kurz, während wir dich mit deinem neuen Konto anmelden ...",
     "registration_validation_username_instructions": "3 bis 18 alphanumerische Zeichen.",
     "registration_validation_username_exists": "Diesen Benutzernamen gibt es bereits.",
     "registration_validation_password_instructions": "Mindestens 8 Zeichen.",
-    "registration_validation_passwords_dont_match": "Die Passwörter müssen identisch sein.",
-    "registration_validation_invite_code_invalid": "Ungültiger Einladungscode."
+    "registration_validation_passwords_dont_match": "Die Passwörter müssen identisch sein."
   },
   "rewards": {
     "level_up_reward_title": "Belohnung für Stufe {{level}}",

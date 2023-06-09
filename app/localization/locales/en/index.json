@@ -4031,15 +4031,12 @@
     "registration_username_label": "Username",
     "registration_password_label": "Password",
     "registration_password_confirmation_label": "Confirm Password",
-    "registration_referral_field_label": "Friend Code",
-    "registration_referral_field_placeholder": "friend username",
     "registration_submit_button_label": "Submit",
     "registration_success_message": "One moment while we log you into your new account...",
     "registration_validation_username_instructions": "3 to 18 alphanumeric characters",
     "registration_validation_username_exists": "Username already exists",
     "registration_validation_password_instructions": "Minimum 8 characters",
-    "registration_validation_passwords_dont_match": "Passwords must match",
-    "registration_validation_invite_code_invalid": "Invalid invite code"
+    "registration_validation_passwords_dont_match": "Passwords must match"
   },
   "rewards": {
     "level_up_reward_title": "Level {{level}} Reward",

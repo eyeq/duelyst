@@ -4031,15 +4031,12 @@
     "registration_username_label": "ユーザー名",
     "registration_password_label": "パスワード",
     "registration_password_confirmation_label": "パスワード確認",
-    "registration_referral_field_label": "招待コード",
-    "registration_referral_field_placeholder": "友達のユーザー名",
     "registration_submit_button_label": "承認",
     "registration_success_message": "作成したアカウントにログイン中...",
     "registration_validation_username_instructions": "3～18文字の英数字で設定してください。",
     "registration_validation_username_exists": "既に存在するユーザー名です。",
     "registration_validation_password_instructions": "8文字以上で設定してください。",
-    "registration_validation_passwords_dont_match": "パスワードが一致しません。",
-    "registration_validation_invite_code_invalid": "招待コードが間違っています。"
+    "registration_validation_passwords_dont_match": "パスワードが一致しません。"
   },
   "rewards": {
     "level_up_reward_title": "Level {{level}} Reward",

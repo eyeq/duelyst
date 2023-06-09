@@ -1,50 +1,45 @@
 'use strict';
 
-var _ = require('underscore');
-var Promise = require('bluebird');
-var Analytics = require('app/common/analytics');
-var validator = require('validator');
-var Session = require('app/common/session2');
-var RegistrationItemViewTempl = require('app/ui/templates/item/registration_modal.hbs');
-var NavigationManager = require('app/ui/managers/navigation_manager');
-var i18next = require('i18next');
-var FormPromptModalItemView = require('./util/form_prompt_modal');
+const Promise = require('bluebird');
+const Analytics = require('app/common/analytics');
+const validator = require('validator');
+const Session = require('app/common/session2');
+const RegistrationItemViewTempl = require('app/ui/templates/item/registration_modal.hbs');
+const NavigationManager = require('app/ui/managers/navigation_manager');
+const i18next = require('i18next');
+const FormPromptModalItemView = require('./util/form_prompt_modal');
 
-var RegistrationItemView = FormPromptModalItemView.extend({
+const RegistrationItemView = FormPromptModalItemView.extend({
 
   id: 'app-registration',
   template: RegistrationItemViewTempl,
 
   ui: {
     $form: '.prompt-form',
-    $username: '.username',
-    $password: '.password',
-    $passwordConfirm: '.password-confirm',
-    $friendReferralCode: '.friend-referral-code',
     $submit: '.prompt-submit',
     $submitted: '.prompt-submitted',
     $error: '.prompt-error',
     $errorMessage: '.error-message',
     $success: '.prompt-success',
-    $formGroupFriendReferralButton: '#formGroupFriendReferralButton',
-    $formGroupFriendReferralInput: '#formGroupFriendReferralInput',
+
+    $username: '.username',
+    $password: '.password',
+    $passwordConfirm: '.password-confirm',
   },
 
   events: {
     'click .prompt-submit': 'onClickSubmit',
-    'click .prompt-cancel': 'onCancel',
+    'click .prompt-cancel': 'onClickCancel',
     'input .form-control': 'onFormControlChangeContent',
     'blur .form-control': 'onFormControlBlur',
+
+    'input .username': 'onUsernameInput',
   },
 
-  isValid: false,
-  _hasModifiedUsername: false,
-  _hasModifiedPassword: false,
-  _hasModifiedPasswordConfirm: false,
-  _usernameUnavailable: false,
+  _usernameAvailable: false,
   _userNavLockId: 'RegistrationUserNavLockId',
 
-  /* region EVENTS */
+  // #region Backbone
 
   onRender: function () {
     FormPromptModalItemView.prototype.onRender.apply(this, arguments);
@@ -55,82 +50,86 @@ var RegistrationItemView = FormPromptModalItemView.extend({
     Analytics.page('Registration', { path: '/#registration' });
   },
 
-  onFormControlChangeContent: function (event) {
-    // update modified state
-    var $target = $(event.target);
-    if (this.ui.$username.is($target)) {
-      this._hasModifiedUsername = true;
-      this._usernameUnavailable = false;
-    } else if (this.ui.$password.is($target)) {
-      this._hasModifiedPassword = true;
-    } else if (this.ui.$passwordConfirm.is($target)) {
-      this._hasModifiedPasswordConfirm = true;
-    }
+  // #endregion
 
-    FormPromptModalItemView.prototype.onFormControlChangeContent.apply(this, arguments);
+  // #region Event
+
+  onUsernameInput: function () {
+    this._usernameAvailable = false;
   },
 
-  updateValidState: function () {
-    FormPromptModalItemView.prototype.updateValidState.apply(this, arguments);
+  // #endregion
 
-    var username = this.ui.$username.val();
-    var password = this.ui.$password.val();
-    var passwordConfirm = this.ui.$passwordConfirm.val();
-    var isValid = true;
+  // #region
+
+  updateValidState: function () {
+    const username = this.ui.$username.val();
+    const password = this.ui.$password.val();
+    const passwordConfirm = this.ui.$passwordConfirm.val();
+    let isValid = true;
 
     // check username
-    if (isValid && this._hasModifiedUsername && !this._usernameUnavailable) {
+    if (username.length === 0) {
+      isValid = false;
+    } else {
       if (!validator.isLength(username, 3, 18) || !validator.isAlphanumeric(username)) {
-        this.showInvalidFormControl(this.ui.$username, i18next.t('registration.registration_validation_username_instructions'));
         isValid = false;
+        this.showInvalidFormControl(this.ui.$username, i18next.t('registration.registration_validation_username_instructions'));
       } else {
-        this.showValidFormControl(this.ui.$username);
+        this.hideInvalidFormControl(this.ui.$username);
 
-        // attempt to check whether username is available, but don't block registration for it
-        Session.isUsernameAvailable(username)
-          .then(function (available) {
-            if (!available) {
-              this._usernameUnavailable = true;
-              this.showInvalidFormControl(this.ui.$username, i18next.t('registration.registration_validation_username_exists'));
-            }
-          }.bind(this));
+        if (!this._usernameAvailable) {
+          Session.isUsernameAvailable(username)
+            .then(function (available) {
+              if (available) {
+                this._usernameAvailable = true;
+              } else {
+                this.showInvalidFormControl(this.ui.$username, i18next.t('registration.registration_validation_username_exists'));
+              }
+            }.bind(this));
+        }
       }
     }
 
     // check password
-    if (isValid && this._hasModifiedPassword && !validator.isLength(password, 8)) {
-      // password is not long enough
-      this.showInvalidFormControl(this.ui.$password, i18next.t('registration.registration_validation_password_instructions'));
-      isValid = false;
-    } else if (isValid && this._hasModifiedPasswordConfirm && !validator.equals(password, passwordConfirm)) {
-      // passwords don't match
-      this.showInvalidFormControl(this.ui.$passwordConfirm, i18next.t('registration.registration_validation_passwords_dont_match'));
+    if (password.length === 0) {
       isValid = false;
     } else {
-      this.showValidFormControl(this.ui.$password);
-      this.showValidFormControl(this.ui.$passwordConfirm);
+      if (!validator.isLength(password, 8)) {
+        isValid = false;
+        this.showInvalidFormControl(this.ui.$password, i18next.t('registration.registration_validation_password_instructions'));
+      } else {
+        this.hideInvalidFormControl(this.ui.$password);
+
+        // check password confirm
+        if (passwordConfirm.length === 0) {
+          isValid = false;
+        } else {
+          if (!validator.equals(password, passwordConfirm)) {
+            isValid = false;
+            this.showInvalidFormControl(this.ui.$passwordConfirm, i18next.t('registration.registration_validation_passwords_dont_match'));
+          } else {
+            this.hideInvalidFormControl(this.ui.$passwordConfirm);
+          }
+        }
+      }
     }
 
-    // ...
-    isValid = isValid && this._hasModifiedUsername && this._hasModifiedPassword && this._hasModifiedPasswordConfirm;
-
-    // set final valid state
-    this.isValid = isValid;
+    return isValid && this._usernameAvailable;
   },
 
   onSubmit: function () {
     FormPromptModalItemView.prototype.onSubmit.apply(this, arguments);
 
     // register
-    var username = this.ui.$username.val().trim();
-    var password = this.ui.$password.val().trim();
-    var friendReferralCode = this.ui.$friendReferralCode.val().trim();
+    const username = this.ui.$username.val().trim();
+    const password = this.ui.$password.val().trim();
 
     Session.register({
       username: username,
       password: password,
       keycode: undefined,
-      friend_referral_code: friendReferralCode.length > 0 ? friendReferralCode : undefined,
+      friend_referral_code: undefined,
       captcha: undefined,
     })
       .bind(this)
@@ -138,7 +137,7 @@ var RegistrationItemView = FormPromptModalItemView.extend({
         this.onSuccess(res);
       })
       .catch(function (e) {
-      // onError expects a string not an actual error
+        // onError expects a string not an actual error
         this.onError(e.innerMessage || e.message);
       });
   },
@@ -152,7 +151,7 @@ var RegistrationItemView = FormPromptModalItemView.extend({
     // log user in
     Session.login(registration.username, registration.password)
       .finally(function () {
-      // unlock user triggered navigation
+        // unlock user triggered navigation
         NavigationManager.getInstance().requestUserTriggeredNavigationUnlocked(this._userNavLockId);
       }.bind(this));
   },
@@ -168,9 +167,7 @@ var RegistrationItemView = FormPromptModalItemView.extend({
     }
   },
 
-  /* endregion EVENTS */
-
+  // #endregion
 });
 
-// Expose the class either via CommonJS or the global object
 module.exports = RegistrationItemView;
