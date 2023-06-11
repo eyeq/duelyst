@@ -65,7 +65,6 @@
     "continue_battle_button_label": "Continue",
     "choose_starting_hand_title": "Choose Starting Hand",
     "choose_starting_hand_instructions": "Click to replace up to 2 cards.",
-    "choose_starting_hand_confirm_button_label": "Confirm",
     "opponent_connection_status_connecting": "Opponent connecting",
     "opponent_connection_status_connected": "Opponent connected",
     "replace_button_label": "Replace",
@@ -2294,14 +2293,14 @@
     "copies_label": "Copies: "
   },
   "common": {
-    "loading_dialog_one_moment_label": "One moment...",
-    "success_title": "SUCCESS!",
-    "error_occurred_title": "Uh-oh!",
+    "loading_dialog_one_moment_label": "ちょっと待ってね...",
+    "success_title": "成功！",
+    "error_occurred_title": "失敗！",
     "generic_invalid_input_message": "Invalid input",
     "default_error_dialog_title": "We hit a snag!",
     "default_error_dialog_button_label": "OK",
     "default_confirm_dialog_button_continue_label": "OK",
-    "default_confirm_dialog_button_cancel_label": "Cancel",
+    "default_confirm_dialog_button_cancel_label": "キャンセル",
     "start_error_message_generic_please_retry": "Oops... there was a problem processing your request. Please try again.",
     "generic_not_available_message": "Not Available",
     "generic_complete_message": "Complete",
@@ -2312,7 +2311,8 @@
     "mute_button_label": "Mute",
     "claim_label": "Claim",
     "play_button_label": "PLAY",
-    "confirm_button_label": "Confirm",
+    "confirm_button_label": "確定",
+    "submit_button_label": "送信",
     "esc_menu_more_settings_label": "Settings",
     "esc_menu_logout_label": "Logout",
     "esc_menu_quit_label": "Quit",
@@ -3378,11 +3378,11 @@
     "no_available_gauntlet_decks": "You have no recent gauntlet decks."
   },
   "gift_code_modal": {
-    "min_char_requirement_error": "Minimum 3 characters",
-    "failed_to_redeem_error": "Failed to redeem gift code. Please retry.",
-    "redeem_gift_code_title": "Enter Gift / Referral Code:",
-    "redeem_success_message": "Gift / Referral Code Redeemed...",
-    "gift_code_default": "Gift code"
+    "min_char_requirement_error": "3文字以上入力してください。",
+    "failed_to_redeem_error": "招待コード・ギフトコードの引き換えに失敗しました。リトライしてください。",
+    "redeem_gift_code_title": "招待コード・ギフトコード引き換え",
+    "redeem_success_message": "招待コード・ギフトコードが引き換えられました...",
+    "redeem_code": "招待コード・ギフトコード"
   },
   "login": {
     "username_input_label": "ユーザー名",
@@ -4031,7 +4031,6 @@
     "registration_username_label": "ユーザー名",
     "registration_password_label": "パスワード",
     "registration_password_confirmation_label": "パスワード確認",
-    "registration_submit_button_label": "承認",
     "registration_success_message": "作成したアカウントにログイン中...",
     "registration_validation_username_instructions": "3～18文字の英数字で設定してください。",
     "registration_validation_username_exists": "既に存在するユーザー名です。",
@@ -4136,7 +4135,6 @@
     "block_spectators_tooltip": "友達があなたのゲームを観戦することを拒否します。",
     "block_spectators": "観戦拒否",
     "change_username": "ユーザー名変更",
-    "redeem_code": "招待コード / ギフトコード",
     "logout": "ログアウト",
     "quit": "終了"
   },

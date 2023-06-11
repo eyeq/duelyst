@@ -63,7 +63,6 @@
     "continue_battle_button_label": "Fortsetzen",
     "choose_starting_hand_title": "Starthand auswählen",
     "choose_starting_hand_instructions": "Klicke, um bis zu 2 Karten auszutauschen.",
-    "choose_starting_hand_confirm_button_label": "Bestätigen",
     "opponent_connection_status_connecting": "Gegenspieler stellt Verbindung her ...",
     "opponent_connection_status_connected": "Gegenspieler ist verbunden",
     "replace_button_label": "Austauschen",
@@ -2306,6 +2305,7 @@
     "claim_label": "Erhalten",
     "play_button_label": "SPIELEN",
     "confirm_button_label": "Bestätigen",
+    "submit_button_label": "Senden",
     "esc_menu_more_settings_label": "Einstellungen",
     "esc_menu_logout_label": "Abmelden",
     "esc_menu_quit_label": "Beenden",
@@ -3360,9 +3360,9 @@
   "gift_code_modal": {
     "min_char_requirement_error": "Mindestens 3 Zeichen",
     "failed_to_redeem_error": "Der Geschenkcode konnte nicht eingelöst werden. Bitte versuche es erneut.",
-    "redeem_gift_code_title": "Geschenk-/Empfehlungscode eingeben:",
+    "redeem_gift_code_title": "Geschenk-/Empfehlungscode eingeben",
     "redeem_success_message": "Geschenk-/Empfehlungscode eingelöst ...",
-    "gift_code_default": "Geschenkcode"
+    "redeem_code": "Empfehlungs-/Geschenkcode einlösen"
   },
   "login": {
     "username_input_label": "Benutzername",
@@ -3989,7 +3989,6 @@
     "registration_username_label": "Benutzername",
     "registration_password_label": "Passwort",
     "registration_password_confirmation_label": "Passwort bestätigen",
-    "registration_submit_button_label": "Senden",
     "registration_success_message": "Bitte warte kurz, während wir dich mit deinem neuen Konto anmelden ...",
     "registration_validation_username_instructions": "3 bis 18 alphanumerische Zeichen.",
     "registration_validation_username_exists": "Diesen Benutzernamen gibt es bereits.",
@@ -4095,7 +4094,6 @@
     "block_spectators": "Zuschauer blockieren",
     "relink_accounts": "BANDAI-Konto und Duelyst-Konto erneut verknüpfen",
     "change_username": "Benutzername ändern",
-    "redeem_code": "Empfehlungs-/Geschenkcode einlösen",
     "logout": "ABMELDEN",
     "quit": "BEENDEN"
   },
