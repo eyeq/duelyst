@@ -56,7 +56,7 @@ const RewardsLayer = BaseLayer.extend({
 
     const doneButtonSprite = new ccui.Scale9Sprite(RSX.button_confirm.img);
     const doneButtonGlowSprite = new ccui.Scale9Sprite(RSX.button_confirm_glow.img);
-    this.doneButton = new cc.ControlButton(i18next.t('common.default_confirm_dialog_button_continue_label'), doneButtonSprite, 24);
+    this.doneButton = new cc.ControlButton(i18next.t('common.ok_button_label'), doneButtonSprite, 24);
     this.doneButton.setPreferredSize(confirmButtonSprite.getContentSize());
     this.doneButton.setAdjustBackgroundImage(false);
     this.doneButton.setZoomOnTouchDown(false);
