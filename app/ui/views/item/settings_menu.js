@@ -6,7 +6,6 @@ var EVENTS = require('app/common/event_types');
 var Session = require('app/common/session2');
 var generatePushID = require('app/common/generate_push_id');
 var Scene = require('app/view/Scene');
-var SDK = require('app/sdk');
 var Logger = require('app/common/logger');
 var Storage = require('app/common/storage');
 var UtilsJavascript = require('app/common/utils/utils_javascript');
@@ -14,16 +13,10 @@ var RSX = require('app/data/resources');
 var audio_engine = require('app/audio/audio_engine');
 var Animations = require('app/ui/views/animations');
 var NavigationManager = require('app/ui/managers/navigation_manager');
-var GamesManager = require('app/ui/managers/games_manager');
 var SettingsMenuTemplate = require('app/ui/templates/item/settings_menu.hbs');
 var ProfileManager = require('app/ui/managers/profile_manager');
-var moment = require('moment');
-var DuelystBackbone = require('app/ui/extensions/duelyst_backbone');
-var openUrl = require('app/common/openUrl');
 var ConfirmDialogItemView = require('./confirm_dialog');
-var ActivityDialogItemView = require('./activity_dialog');
 var ChangeUsernameItemView = require('./change_username');
-var AccountInventoryResetModalView = require('./account_inventory_reset_modal');
 var RedeemGiftCodeModalView = require('./redeem_gift_code_modal');
 
 var SettingsMenuView = Backbone.Marionette.ItemView.extend({
@@ -63,7 +56,6 @@ var SettingsMenuView = Backbone.Marionette.ItemView.extend({
     $musicVolume: '#music-volume',
     $voiceVolume: '#voice-volume',
     $effectsVolume: '#effects-volume',
-    $resetInventorySection: '#reset_inventory_section',
   },
 
   /* Ui events hash */
@@ -96,7 +88,6 @@ var SettingsMenuView = Backbone.Marionette.ItemView.extend({
     'change #voice-volume': 'changeVoiceVolume',
     'change #effects-volume': 'changeEffectsVolume',
     'click .change-username': 'onChangeUsernameClicked',
-    'click .reset-inventory': 'onResetAccountInventoryPressed',
     'click .redeem-gift-code': 'onRedeemGiftCodePressed',
   },
 
@@ -192,10 +183,6 @@ var SettingsMenuView = Backbone.Marionette.ItemView.extend({
       this.$el.find('.desktop-only').remove();
     }
 
-    if (moment().utc().isAfter(moment.utc('2016-04-20'))) {
-      this.ui.$resetInventorySection.hide();
-    }
-
     this.ui.$versionTag.text('v' + process.env.VERSION);
 
     this.$el.find('[data-toggle=\'tooltip\']').tooltip();
@@ -242,10 +229,6 @@ var SettingsMenuView = Backbone.Marionette.ItemView.extend({
 
   onChangeUsernameClicked: function (e) {
     NavigationManager.getInstance().showDialogView(new ChangeUsernameItemView({ model: ProfileManager.getInstance().profile }));
-  },
-
-  onResetAccountInventoryPressed: function () {
-    NavigationManager.getInstance().showModalView(new AccountInventoryResetModalView());
   },
 
   onRedeemGiftCodePressed: function () {
