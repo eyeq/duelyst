@@ -16,7 +16,7 @@ var NavigationManager = require('app/ui/managers/navigation_manager');
 var SettingsMenuTemplate = require('app/ui/templates/item/settings_menu.hbs');
 var ProfileManager = require('app/ui/managers/profile_manager');
 var ConfirmDialogItemView = require('./confirm_dialog');
-var ChangeUsernameItemView = require('./change_username');
+var ChangeUsernameItemView = require('./change_username_dialog');
 var RedeemGiftCodeModalView = require('./redeem_gift_code_modal');
 
 var SettingsMenuView = Backbone.Marionette.ItemView.extend({

@@ -22,7 +22,7 @@ var UtilsUI = require('app/common/utils/utils_ui');
 var DuelystBackbone = require('app/ui/extensions/duelyst_backbone');
 var DuelystFirebase = require('app/ui/extensions/duelyst_firebase');
 var ChangePortraitItemView = require('app/ui/views/item/change_portrait');
-var ChangeUsernameItemView = require('app/ui/views/item/change_username');
+var ChangeUsernameItemView = require('app/ui/views/item/change_username_dialog');
 var ChangePasswordItemView = require('app/ui/views/item/change_password');
 var ConfirmDialogItemView = require('app/ui/views/item/confirm_dialog');
 // region views
