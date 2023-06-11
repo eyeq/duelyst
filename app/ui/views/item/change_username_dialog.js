@@ -1,15 +1,16 @@
 'use strict';
 
-var Session = require('app/common/session2');
-var validator = require('validator');
-var Logger = require('app/common/logger');
-var Animations = require('app/ui/views/animations');
-var ChangeUsernameTmpl = require('app/ui/templates/item/change_username_dialog.hbs');
-var moment = require('moment');
-var ProfileManager = require('app/ui/managers/profile_manager');
-var FormPromptDialogItemView = require('./util/form_prompt_dialog');
+const Session = require('app/common/session2');
+const validator = require('validator');
+const Logger = require('app/common/logger');
+const Animations = require('app/ui/views/animations');
+const ChangeUsernameTmpl = require('app/ui/templates/item/change_username_dialog.hbs');
+const i18next = require('i18next');
+const moment = require('moment');
+const ProfileManager = require('app/ui/managers/profile_manager');
+const FormPromptDialogItemView = require('./util/form_prompt_dialog');
 
-var ChangeUsernameItemView = FormPromptDialogItemView.extend({
+const ChangeUsernameItemView = FormPromptDialogItemView.extend({
 
   template: ChangeUsernameTmpl,
 
@@ -17,22 +18,30 @@ var ChangeUsernameItemView = FormPromptDialogItemView.extend({
 
   ui: {
     $form: '.prompt-form',
-    $username: '.username',
     $submit: '.prompt-submit',
     $submitted: '.prompt-submitted',
     $error: '.prompt-error',
     $errorMessage: '.error-message',
     $success: '.prompt-success',
+
+    $username: '.username',
   },
 
-  _hasModifiedUsername: false,
+  events: {
+    'click .prompt-submit': 'onClickSubmit',
+    'click .prompt-cancel': 'onClickCancel',
+    'input .form-control': 'onFormControlChangeContent',
+    'blur .form-control': 'onFormControlBlur',
+
+    'input .username': 'onUsernameInput',
+  },
 
   templateHelpers: {
 
     canChangeUsernameThisMonth: function () {
-      var updatedAt = this.model.get('username_updated_at') || 0;
-      var then = moment(updatedAt);
-      var duration = moment.duration(moment().utc().diff(then));
+      const updatedAt = this.model.get('username_updated_at') || 0;
+      const then = moment(updatedAt);
+      const duration = moment.duration(moment().utc().diff(then));
       return duration.asMonths() >= 1.0;
     },
 
@@ -41,22 +50,22 @@ var ChangeUsernameItemView = FormPromptDialogItemView.extend({
     },
   },
 
-  /* region EVENTS */
+  _usernameAvailable: false,
 
-  onFormControlChangeContent: function (event) {
-    // update modified state
-    var $target = $(event.target);
-    if (this.ui.$username.is($target)) {
-      this._hasModifiedUsername = true;
-    }
+  // #region Event
 
-    FormPromptDialogItemView.prototype.onFormControlChangeContent.apply(this, arguments);
+  onUsernameInput: function () {
+    this._usernameAvailable = false;
   },
+
+  // #endregion
+
+  // #region
 
   onSubmit: function (e) {
     FormPromptDialogItemView.prototype.onSubmit.apply(this, arguments);
 
-    var username = this.ui.$username.val();
+    const username = this.ui.$username.val();
     Session.changeUsername(username).bind(this)
       .then(function (res) {
         this.onSuccess(res);
@@ -67,35 +76,40 @@ var ChangeUsernameItemView = FormPromptDialogItemView.extend({
       });
   },
 
-  /* endregion EVENTS */
-
-  /* region STATE */
-
   updateValidState: function () {
-    var username = this.ui.$username.val();
-    var isValid = true;
+    const username = this.ui.$username.val();
+    let isValid = true;
 
     // check username
-    if (this._hasModifiedUsername) {
+    if (username == undefined || username.length === 0) {
+      isValid = false;
+    } else {
       if (!validator.isLength(username, 3, 18) || !validator.isAlphanumeric(username)) {
-        this.showInvalidFormControl(this.ui.$username, '3 to 18 alphanumeric characters');
         isValid = false;
-      } else if (username === ProfileManager.getInstance().profile.get('username')) {
-        this.showInvalidFormControl(this.ui.$username, 'Username must be different');
+        this.showInvalidFormControl(this.ui.$username, i18next.t('registration.registration_validation_username_instructions'));
+      } else if (username.toLowerCase() === ProfileManager.getInstance().profile.get('username').toLowerCase()) {
         isValid = false;
+        this.showInvalidFormControl(this.ui.$username, i18next.t('profile.invalid_change_username_message'));
       } else {
         this.hideInvalidFormControl(this.ui.$username);
+
+        if (!this._usernameAvailable) {
+          Session.isUsernameAvailable(username)
+            .then(function (available) {
+              if (available) {
+                this._usernameAvailable = true;
+              } else {
+                this.showInvalidFormControl(this.ui.$username, i18next.t('registration.registration_validation_username_exists'));
+              }
+            }.bind(this));
+        }
       }
     }
 
-    // set valid state
-    isValid = isValid && this._hasModifiedUsername;
-    return isValid;
+    return isValid && this._usernameAvailable;
   },
 
-  /* endregion STATE */
-
+  // #endregion
 });
 
-// Expose the class either via CommonJS or the global object
 module.exports = ChangeUsernameItemView;

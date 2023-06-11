@@ -3905,6 +3905,7 @@
     "change_username_free_message": "Du kannst deinen Benutzernamen nur <strong>einmal pro Monat</strong> ändern. Die ERSTE Änderung des Benutzernamens ist kostenlos, jede weitere Änderung kostet 100 Gold.",
     "change_username_message": "Du kannst deinen Benutzernamen nur <strong>einmal pro Monat</strong>. Jede Änderung kostet 100 Gold.",
     "username_placeholder": "Neuer Benutzername",
+    "invalid_change_username_message": "Der Benutzername muss unterschiedlich sein",
     "change_username_max_per_month_error": "Du hast deinen Benutzernamen diesen Monat bereits so oft wie möglich geändert.",
     "change_username_success": "Dein Benutzername wurde aktualisiert!",
     "change_avatar": "Avatar ändern",

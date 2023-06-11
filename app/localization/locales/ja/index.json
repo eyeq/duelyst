@@ -3944,6 +3944,7 @@
     "change_username_free_message": "ユーザー名は<strong>月に1回</strong>のみ変更可能です。また、初回のユーザー名変更は無料ですが、それ以降は100ゴールドが必要です。",
     "change_username_message": "ユーザー名は<strong>月に1回</strong>のみ変更可能です。また、100ゴールドが必要です。",
     "username_placeholder": "新しいユーザー名",
+    "invalid_change_username_message": "ユーザー名が変更前と同じです。",
     "change_username_max_per_month_error": "今月は既にユーザー名を変更済みです。",
     "change_username_success": "ユーザー名が変更されました！",
     "change_avatar": "Change Avatar",
