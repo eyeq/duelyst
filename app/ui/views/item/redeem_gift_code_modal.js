@@ -1,72 +1,55 @@
 'use strict';
 
-var _ = require('underscore');
-var Promise = require('bluebird');
-var Analytics = require('app/common/analytics');
-var validator = require('validator');
-var Template = require('app/ui/templates/item/redeem_gift_code_modal.hbs');
-var NavigationManager = require('app/ui/managers/navigation_manager');
-var i18next = require('i18next');
-var FormPromptModalItemView = require('./util/form_prompt_modal');
+const Promise = require('bluebird');
+const Analytics = require('app/common/analytics');
+const validator = require('validator');
+const Template = require('app/ui/templates/item/redeem_gift_code_modal.hbs');
+const NavigationManager = require('app/ui/managers/navigation_manager');
+const i18next = require('i18next');
+const FormPromptModalItemView = require('./util/form_prompt_modal');
 
-var RedeemGiftCodeModalView = FormPromptModalItemView.extend({
+const RedeemGiftCodeModalView = FormPromptModalItemView.extend({
 
   id: 'app-redeem-gift-code',
   template: Template,
 
   ui: {
     $form: '.prompt-form',
-    $giftCode: '.gift-code',
     $submit: '.prompt-submit',
     $submitted: '.prompt-submitted',
     $error: '.prompt-error',
     $errorMessage: '.error-message',
     $success: '.prompt-success',
+
+    $giftCode: '.gift-code',
   },
 
-  _hasModifiedGiftCode: false,
   _userNavLockId: 'AccountWipeUserNavLockId',
 
-  /* region EVENTS */
-
-  onShow: function () {
-    FormPromptModalItemView.prototype.onShow.apply(this, arguments);
-  },
-
-  onFormControlChangeContent: function (event) {
-    // update modified state
-    var $target = $(event.target);
-    if (this.ui.$giftCode.is($target)) {
-      this._hasModifiedGiftCode = true;
-    }
-
-    FormPromptModalItemView.prototype.onFormControlChangeContent.apply(this, arguments);
-  },
+  // #region
 
   updateValidState: function () {
-    FormPromptModalItemView.prototype.updateValidState.apply(this, arguments);
-
     var giftCode = this.ui.$giftCode.val();
     var isValid = true;
 
     // check giftCode
-    if (isValid && this._hasModifiedGiftCode && !validator.isLength(giftCode, 3)) {
-      // giftCode is not long enough
-      this.showInvalidFormControl(this.ui.$giftCode, i18next.t('gift_code_modal.min_char_requirement_error'));
+    if (giftCode.length === 0) {
       isValid = false;
     } else {
-      this.hideInvalidFormControl(this.ui.$giftCode);
+      if (!validator.isLength(giftCode, 3)) {
+        isValid = false;
+        this.showInvalidFormControl(this.ui.$giftCode, i18next.t('gift_code_modal.min_char_requirement_error'));
+      } else {
+        this.hideInvalidFormControl(this.ui.$giftCode);
+      }
     }
 
-    // ...
-    isValid = isValid && this._hasModifiedGiftCode;
     return isValid;
   },
 
   onSubmit: function () {
     FormPromptModalItemView.prototype.onSubmit.apply(this, arguments);
 
-    // execute
     var giftCode = this.ui.$giftCode.val();
 
     Promise.resolve($.ajax({
@@ -84,18 +67,18 @@ var RedeemGiftCodeModalView = FormPromptModalItemView.extend({
       }.bind(this));
   },
 
-  onSuccessComplete: function (registration) {
+  onSuccessComplete: function () {
     FormPromptModalItemView.prototype.onSuccessComplete.apply(this, arguments);
   },
 
   onErrorComplete: function (errorMessage) {
     FormPromptModalItemView.prototype.onErrorComplete.apply(this, arguments);
+
     this.showInvalidFormControl(this.ui.$giftCode, errorMessage);
   },
 
-  /* endregion EVENTS */
+  // #endregion
 
 });
 
-// Expose the class either via CommonJS or the global object
 module.exports = RedeemGiftCodeModalView;
