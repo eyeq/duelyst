@@ -52,7 +52,7 @@ var RedeemGiftCodeModalView = FormPromptModalItemView.extend({
     // check giftCode
     if (isValid && this._hasModifiedGiftCode && !validator.isLength(giftCode, 3)) {
       // giftCode is not long enough
-      this.showInvalidFormControl(this.ui.$giftCode, i18next.t('redeem_gift_code_modal.min_char_requirement_error'));
+      this.showInvalidFormControl(this.ui.$giftCode, i18next.t('gift_code_modal.min_char_requirement_error'));
       isValid = false;
     } else {
       this.hideInvalidFormControl(this.ui.$giftCode);
@@ -80,7 +80,7 @@ var RedeemGiftCodeModalView = FormPromptModalItemView.extend({
     }))
       .then(this.onSuccess.bind(this))
       .catch(function (response) {
-        this.onError(response && response.responseJSON && (response.responseJSON.message || response.responseJSON.error) || i18next.t('redeem_gift_code_modal.failed_to_redeem_error'));
+        this.onError(response && response.responseJSON && (response.responseJSON.message || response.responseJSON.error) || i18next.t('gift_code_modal.failed_to_redeem_error'));
       }.bind(this));
   },
 
