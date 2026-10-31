@@ -13,8 +13,8 @@ var NavigationManager = require('app/ui/managers/navigation_manager');
 var LoginMenuTmpl = require('app/yao/ui/login/templates/login_menu.hbs');
 var openUrl = require('app/common/openUrl');
 var i18next = require('i18next');
-var RegistrationItemView = require('./registration');
-var ErrorDialogItemView = require('./error_dialog');
+var RegistrationItemView = require('../../../ui/views/item/registration');
+var ErrorDialogItemView = require('../../../ui/views/item/error_dialog');
 
 var LoginMenuItemView = Backbone.Marionette.ItemView.extend({
 

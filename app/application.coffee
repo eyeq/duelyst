@@ -78,7 +78,7 @@ UtilityGameMenuItemView = require 'app/ui/views/item/utility_game_menu'
 EscGameMenuItemView = require 'app/ui/views/item/esc_game_menu'
 EscMainMenuItemView = require 'app/ui/views/item/esc_main_menu'
 
-LoginMenuItemView = require 'app/ui/views/item/login_menu'
+LoginMenuItemView = require 'app/yao/ui/login/login_menu'
 
 
 Discord = if window.isDesktop then require('app/common/discord') else null
