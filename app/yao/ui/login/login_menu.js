@@ -1,27 +1,22 @@
-'use strict';
+const Promise = require('bluebird');
+const Session = require('app/common/session2');
+const Logger = require('app/common/logger');
+const EVENTS = require('app/common/event_types');
+const CONFIG = require('app/common/config');
+const RSX = require('app/data/resources');
+const audio_engine = require('app/audio/audio_engine');
+const validator = require('validator');
+const Animations = require('app/ui/views/animations');
+const NavigationManager = require('app/ui/managers/navigation_manager');
+const openUrl = require('app/common/openUrl');
+const i18next = require('i18next');
+const RegistrationItemView = require('../../../ui/views/item/registration');
+const ErrorDialogItemView = require('../../../ui/views/item/error_dialog');
 
-var Promise = require('bluebird');
-var Session = require('app/common/session2');
-var Logger = require('app/common/logger');
-var EVENTS = require('app/common/event_types');
-var CONFIG = require('app/common/config');
-var RSX = require('app/data/resources');
-var audio_engine = require('app/audio/audio_engine');
-var validator = require('validator');
-var Animations = require('app/ui/views/animations');
-var NavigationManager = require('app/ui/managers/navigation_manager');
-var LoginMenuTmpl = require('app/yao/ui/login/templates/login_menu.hbs');
-var openUrl = require('app/common/openUrl');
-var i18next = require('i18next');
-var RegistrationItemView = require('../../../ui/views/item/registration');
-var ErrorDialogItemView = require('../../../ui/views/item/error_dialog');
-
-var LoginMenuItemView = Backbone.Marionette.ItemView.extend({
-
-  template: LoginMenuTmpl,
+const LoginMenuItemView = Backbone.Marionette.ItemView.extend({
 
   id: 'app-login',
-  className: 'login-menu',
+  template: require('app/yao/ui/login/templates/login_menu.hbs'),
 
   /* ui selector cache */
   ui: {
@@ -52,7 +47,7 @@ var LoginMenuItemView = Backbone.Marionette.ItemView.extend({
 
   /* region INITIALIZE */
 
-  initialize: function () {
+  initialize() {
     this.resetInvalidStateBound = this.resetInvalidState.bind(this);
   },
 
@@ -60,27 +55,27 @@ var LoginMenuItemView = Backbone.Marionette.ItemView.extend({
 
   /* region EVENTS */
 
-  onBeforeRender: function () {
+  onBeforeRender() {
     this.$el.find('[data-toggle=\'tooltip\']').tooltip('destroy');
   },
 
-  onRender: function () {
+  onRender() {
     this.$el.find('[data-toggle=\'tooltip\']').tooltip();
     this.enableForm();
   },
 
-  onShow: function () {
-    var brandAnimationDuration = 2.0;
+  onShow() {
+    const brandAnimationDuration = 2.0;
 
     // slight delay before showing brand to ensure dom is rendered
-    this._brandTimeoutId = setTimeout(function () {
+    this._brandTimeoutId = setTimeout(() => {
       this.showBrand(brandAnimationDuration);
-    }.bind(this), 120.0);
+    }, 120.0);
 
     // slight delay before showing registration block to focus attention on it
-    this._registrationTimeoutId = setTimeout(function () {
+    this._registrationTimeoutId = setTimeout(() => {
       this.ui.$registrationBlock.addClass('active');
-    }.bind(this), brandAnimationDuration * 0.5 * 1000.0);
+    }, brandAnimationDuration * 0.5 * 1000.0);
 
     // show login immediately
     this.ui.$loginForm.addClass('active');
@@ -93,13 +88,13 @@ var LoginMenuItemView = Backbone.Marionette.ItemView.extend({
     });
 
     $('#tos').fadeIn(125);
-    $('#tos').find('a').click(function (e) {
+    $('#tos').find('a').click((e) => {
       openUrl($(e.currentTarget).attr('href'));
       e.stopPropagation();
       e.preventDefault();
     });
-    $('.utility-links').find('a').click(function (e) {
-      var href = $(e.currentTarget).attr('href');
+    $('.utility-links').find('a').click((e) => {
+      const href = $(e.currentTarget).attr('href');
       if (href.indexOf('http') == 0) {
         openUrl($(e.currentTarget).attr('href'));
         e.stopPropagation();
@@ -108,7 +103,7 @@ var LoginMenuItemView = Backbone.Marionette.ItemView.extend({
     });
   },
 
-  onDestroy: function () {
+  onDestroy() {
     // unlock user triggered navigation
     NavigationManager.getInstance().requestUserTriggeredNavigationUnlocked(this._userNavLockId);
 
@@ -126,45 +121,45 @@ var LoginMenuItemView = Backbone.Marionette.ItemView.extend({
 
   /* region ANIMATION */
 
-  showBrand: function (animationDuration) {
-    return new Promise(function (resolve, reject) {
+  showBrand(animationDuration) {
+    return new Promise((resolve, reject) => {
       // animate brand in
       this.ui.$brandDynamic.addClass('active');
       this.ui.$brandDynamic.find('.draw-line').each(function () {
-        var $element = $(this);
-        var length = this.getTotalLength() / 5;
+        const $element = $(this);
+        let length = this.getTotalLength() / 5;
         $element.data('length', length);
         $element.css('stroke-dasharray', length);
         $element.css('stroke-dashoffset', length);
 
         length = $element.data('length');
-        $element.css('transition', 'stroke-dashoffset ' + animationDuration + 's ease-in');
+        $element.css('transition', `stroke-dashoffset ${animationDuration}s ease-in`);
         $element.css('stroke-dashoffset', -length);
       });
 
       this.ui.$brandDynamic.find('.fill').each(function () {
-        var $element = $(this);
-        $element.css('transition', 'opacity ' + animationDuration * 0.5 + 's ease-out');
-        $element.css('transition-delay', animationDuration * 0.5 + 's');
+        const $element = $(this);
+        $element.css('transition', `opacity ${animationDuration * 0.5}s ease-out`);
+        $element.css('transition-delay', `${animationDuration * 0.5}s`);
         $element.css('opacity', '1');
       });
 
       this.ui.$brandDynamic.find('.ring-blue').removeClass('active');
       this.ui.$brandDynamic.find('.ring-white').addClass('active');
 
-      this._brandTimeoutId = setTimeout(function () {
+      this._brandTimeoutId = setTimeout(() => {
         resolve();
-      }.bind(this), animationDuration * 1000.0);
-    }.bind(this));
+      }, animationDuration * 1000.0);
+    });
   },
 
   /* endregion ANIMATION */
 
   /* region LOGIN */
 
-  onLogin: function () {
-    var username = this.ui.$username.val();
-    var password = this.ui.$password.val();
+  onLogin() {
+    const username = this.ui.$username.val();
+    const password = this.ui.$password.val();
 
     this.updateValidState();
     if (this.isValid) {
@@ -189,9 +184,9 @@ var LoginMenuItemView = Backbone.Marionette.ItemView.extend({
     }
   },
 
-  updateValidState: function () {
-    var username = this.ui.$username.val();
-    var password = this.ui.$password.val();
+  updateValidState() {
+    const username = this.ui.$username.val();
+    const password = this.ui.$password.val();
     this.isValid = true;
 
     // check username
@@ -211,53 +206,53 @@ var LoginMenuItemView = Backbone.Marionette.ItemView.extend({
     }
   },
 
-  resetInvalidState: function () {
+  resetInvalidState() {
     this.showValidFormControl(this.ui.$username);
     this.showValidFormControl(this.ui.$password);
   },
 
-  showInvalidFormControl: function ($formControl) {
+  showInvalidFormControl($formControl) {
     $formControl.closest('.form-group').addClass('has-error');
     $formControl.one('input', this.resetInvalidStateBound);
   },
 
-  showValidFormControl: function ($formControl) {
+  showValidFormControl($formControl) {
     $formControl.closest('.form-group').removeClass('has-error');
     $formControl.off('input', this.resetInvalidStateBound);
     this.hideInvalidTooltip($formControl);
   },
 
-  showInvalidFormControlWithTooltip: function ($formControl, helpMessage) {
+  showInvalidFormControlWithTooltip($formControl, helpMessage) {
     this.showInvalidFormControl($formControl);
     this.showInvalidTooltip($formControl, helpMessage);
   },
 
-  showInvalidTooltip: function ($formControl, helpMessage) {
-    var tooltipData = $formControl.data('bs.tooltip');
+  showInvalidTooltip($formControl, helpMessage) {
+    const tooltipData = $formControl.data('bs.tooltip');
     if (tooltipData == null || tooltipData.options.title !== helpMessage) {
       $formControl.tooltip('destroy').tooltip({ title: helpMessage || i18next.t('common.generic_invalid_input_message'), placement: 'left', trigger: 'manual' }).tooltip('show');
     }
   },
 
-  hideInvalidTooltip: function ($formControl) {
+  hideInvalidTooltip($formControl) {
     $formControl.tooltip('destroy');
   },
 
-  enableForm: function () {
+  enableForm() {
     this.ui.$loginForm.removeClass('disabled');
     this.ui.$login.removeClass('disabled');
     this.ui.$registration.removeClass('disabled');
     this.ui.$forgotPassword.removeClass('disabled');
   },
 
-  disableForm: function () {
+  disableForm() {
     this.ui.$loginForm.addClass('disabled');
     this.ui.$login.addClass('disabled');
     this.ui.$registration.addClass('disabled');
     this.ui.$forgotPassword.addClass('disabled');
   },
 
-  onError: function (errorMessage) {
+  onError(errorMessage) {
     this.enableForm();
     if (errorMessage.indexOf('suspended') > 0) {
       NavigationManager.getInstance().showDialogViewByClass(ErrorDialogItemView, { title: i18next.t('login.account_suspended_message'), message: errorMessage });
@@ -271,7 +266,7 @@ var LoginMenuItemView = Backbone.Marionette.ItemView.extend({
 
   /* region REGISTRATION */
 
-  onShowRegistration: function () {
+  onShowRegistration() {
     // registration will auto log in on success
     NavigationManager.getInstance().showModalView(new RegistrationItemView());
   },
