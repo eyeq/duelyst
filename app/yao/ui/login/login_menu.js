@@ -23,9 +23,7 @@ const LoginMenuItemView = ItemViewYao.extend({
     $input: 'input',
     $login: '.login',
     $loginForm: '.login-form',
-    $registrationBlock: '.registration-block',
     $registration: '.registration',
-    $forgotPassword: '.forgot-password',
     $username: '.login-username',
     $password: '.login-password',
   },
@@ -70,8 +68,6 @@ const LoginMenuItemView = ItemViewYao.extend({
         this.onLogin();
       }
     });
-
-    $('#tos').fadeIn(125);
   },
 
   onDestroy() {
@@ -183,14 +179,12 @@ const LoginMenuItemView = ItemViewYao.extend({
     this.ui.$loginForm.removeClass('disabled');
     this.ui.$login.removeClass('disabled');
     this.ui.$registration.removeClass('disabled');
-    this.ui.$forgotPassword.removeClass('disabled');
   },
 
   disableForm() {
     this.ui.$loginForm.addClass('disabled');
     this.ui.$login.addClass('disabled');
     this.ui.$registration.addClass('disabled');
-    this.ui.$forgotPassword.addClass('disabled');
   },
 
   onError(errorMessage) {
