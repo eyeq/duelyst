@@ -4,9 +4,9 @@ var Logger = require('app/common/logger');
 var CONFIG = require('app/common/config');
 var UtilityGameMenuTmpl = require('app/yao/ui/game/templates/utility_game_menu.hbs');
 var NavigationManager = require('app/ui/managers/navigation_manager');
-var UtilsEngine = require('../../../common/utils/utils_engine');
-var UtilityMenuItemView = require('./utility_menu');
-var GameMenuItemView = require('./esc_game_menu');
+var UtilsEngine = require('app/common/utils/utils_engine');
+var UtilityMenuItemView = require('app/ui/views/item/utility_menu');
+var GameMenuItemView = require('app/ui/views/item/esc_game_menu');
 
 /**
  * In game utility menu that shows basic utilities plus buttons to exit/concede.
