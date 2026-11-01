@@ -1,0 +1,28 @@
+#app-utility-game-menu {
+  bottom: 0;
+  left: 0;
+  right: auto;
+
+  .btn-group {
+    transform: scale(0.8);
+    transform-origin: 25%;
+  }
+
+  button {
+    font-size: 1.6rem;
+    background-color: transparent;
+    border-radius: 0;
+    border: 0;
+    padding: 0;
+  }
+
+  .buddy-list {
+    .unread-conversation-block {
+      top: 0.5rem;
+      right: 0.1rem;
+      .fa-comment {
+        font-size: 3.0rem;
+      }
+    }
+  }
+}

@@ -2,7 +2,7 @@
 
 var Logger = require('app/common/logger');
 var CONFIG = require('app/common/config');
-var UtilityGameMenuTmpl = require('app/ui/templates/item/utility_game_menu.hbs');
+var UtilityGameMenuTmpl = require('app/yao/ui/game/templates/utility_game_menu.hbs');
 var NavigationManager = require('app/ui/managers/navigation_manager');
 var UtilsEngine = require('../../../common/utils/utils_engine');
 var UtilityMenuItemView = require('./utility_menu');
