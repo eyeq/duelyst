@@ -28,23 +28,3 @@ export function main() {
     .pipe(gif(opts.minify, htmlmin()))
     .pipe(gulp.dest('dist/src'));
 }
-
-export function register() {
-  return gulp.src('./app/index.register.hbs')
-    .pipe(hbs({
-      data: {
-        version,
-        development,
-        zendeskEnabled: config.get('zendeskEnabled'),
-        analyticsEnabled: config.get('analyticsEnabled'),
-        gaId: config.get('gaId'),
-        cdn: config.get('cdn'),
-      },
-    }))
-    .pipe(rename((p) => {
-      p.extname = '.html';
-      p.basename = 'register';
-    }))
-    .pipe(gif(opts.minify, htmlmin()))
-    .pipe(gulp.dest('dist/src'));
-}

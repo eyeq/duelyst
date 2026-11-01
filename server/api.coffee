@@ -57,26 +57,6 @@ downloadIndexHtml = (url, cb) ->
     Logger.module("API").warn "Downloaded #{origin} to #{destination}"
     cb null
 
-downloadRegisterHtml = (url, cb) ->
-  origin = "#{url}/register.html"
-  destination = "#{__dirname}/../public/#{env}/register.html"
-  Logger.module("API").warn "Downloading #{origin} to #{destination}."
-
-  request(url: origin, gzip: true)
-  .on 'error', (err) ->
-    Logger.module("API").error "Failed to download #{origin}: #{err}"
-    cb err
-  .on 'response', (res) ->
-    if res.statusCode != 200
-      cb new Error("request returned status #{res.statusCode}")
-  .pipe fs.createWriteStream(destination)
-  .on 'error', (err) ->
-    Logger.module("API").error "Failed to write #{origin} to #{destination}: #{err}"
-    cb err
-  .on 'finish', () ->
-    Logger.module("API").warn "Downloaded #{origin} to #{destination}"
-    cb null
-
 setupDevelopment = () ->
   server.listen apiPort, () ->
     server.connected = true
@@ -88,10 +68,6 @@ setupProduction = () ->
       Logger.module("SERVER").error "setupDirectory() failed; exiting: #{err}"
       process.exit(1)
     else
-      # FIXME: register.html is not currently in the build.
-      downloadRegisterHtml cdnUrl, (err) ->
-        if err?
-          Logger.module("SERVER").warn "downloadRegisterHtml() failed: #{err}"
       downloadIndexHtml cdnUrl, (err) ->
         if err?
           Logger.module("SERVER").error "downloadIndexHtml() failed; exiting: #{err}"

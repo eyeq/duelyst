@@ -36,16 +36,6 @@ serveIndex = (req, res) ->
   else
     res.sendFile path.resolve(__dirname + "/../../public/" + env + "/index.html")
 
-serveRegister = (req, res) ->
-  # set no cache header
-  res.setHeader('Cache-Control', 'no-cache')
-  # serve index.html file
-  if config.isDevelopment()
-    res.sendFile path.resolve(__dirname + "/../../dist/src/register.html")
-  # Staging/Production mode uses register.html from S3
-  else
-    res.sendFile path.resolve(__dirname + "/../../public/" + env + "/register.html")
-
 # Setup routes for production / development mode
 # Development mode uses index.html from /dist folder
 if config.isDevelopment()
@@ -57,8 +47,6 @@ if config.isDevelopment()
   # Serve main index page /dist/src/index.html
   router.get "/", serveIndex
   router.get "/game", serveIndex
-  router.get "/register", serveRegister
-  router.get "/login", serveRegister
   router.post "/", serveIndex
 else
   Logger.module("EXPRESS").log "Configuring for PRODUCTION environment #{env}".cyan
@@ -67,8 +55,6 @@ else
   # router.get "/", helmet.frameguard('deny'), serveIndex
   router.get "/", serveIndex
   router.get "/game", serveIndex
-  router.get "/register", serveRegister
-  router.get "/login", serveRegister
   router.post "/", serveIndex
 
 # /version

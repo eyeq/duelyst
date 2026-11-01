@@ -18,7 +18,7 @@ export function replace() {
     prefix = `${config.get('cdn')}/`;
   }
   const manifest = gulp.src('dist/src/rev-manifest.json');
-  return gulp.src(['dist/src/**/*.css', 'dist/src/**/*.js', 'dist/src/index.html', 'dist/src/register.html'])
+  return gulp.src(['dist/src/**/*.css', 'dist/src/**/*.js', 'dist/src/index.html'])
     .pipe(revReplace({
       prefix,
       manifest,

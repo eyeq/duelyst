@@ -6,7 +6,6 @@ import gulp from 'gulp';
 import gutil from 'gulp-util';
 // import autowatch from 'gulp-autowatch';
 import bundle from './gulp/bundler';
-import bundleRegister from './gulp/bundler.register';
 import css from './gulp/css';
 import * as html from './gulp/html';
 import vendor from './gulp/vendor';
@@ -42,9 +41,7 @@ gulp.task('clean:locales', clean.locales);
 gulp.task('clean:git', clean.git);
 gulp.task('css', css);
 gulp.task('html', html.main);
-gulp.task('html:register', html.register);
 gulp.task('js', bundle);
-gulp.task('js:register', bundleRegister);
 gulp.task('vendor', vendor);
 gulp.task('rsx:imagemin', rsx.imageMin);
 gulp.task('rsx:imagemin:lossy', rsx.imageMinLossy);
@@ -168,15 +165,6 @@ gulp.task('build:web', gulp.series(
   'localization:copy',
 ));
 
-// register standalone page
-gulp.task('source:register', gulp.series(gulp.parallel('vendor', 'css', 'html:register'), 'localization:copy', 'rsx:packages', 'js:register'));
-gulp.task('build:register', gulp.series(
-  'clean:all',
-  'source:register',
-  'rsx:copy',
-  'rsx:copy:cdn',
-  // 'autowatch',
-));
 gulp.task('default', gulp.series('build'));
 
 // Release Builds (CI ready tasks)
@@ -206,7 +194,6 @@ gulp.task('build:release', gulp.series(
   validateConfig,
   'clean:all',
   'source',
-  'source:register',
   'rsx:build_urls',
   'revision:generate',
   'revision:replace',
@@ -222,7 +209,6 @@ gulp.task('build:release:versioned', gulp.series(
   validateConfig,
   'clean:all',
   'source',
-  'source:register',
   'rsx:build_urls',
   'revision:generate',
   'revision:replace',
