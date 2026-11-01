@@ -6,7 +6,7 @@ var SDK = require('app/sdk');
 var RSX = require('app/data/resources');
 var audio_engine = require('app/audio/audio_engine');
 var NavigationManager = require('app/ui/managers/navigation_manager');
-var EscMainMenuTmpl = require('app/ui/templates/item/esc_main_menu.hbs');
+var EscMainMenuTmpl = require('app/yao/ui/utility/templates/esc_main_menu.hbs');
 var UtilityMenuItemView = require('./utility_menu');
 var ConfirmDialogItemView = require('./confirm_dialog');
 
