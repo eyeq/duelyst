@@ -3,7 +3,7 @@ const CONFIG = require('app/common/config');
 const NavigationManager = require('app/ui/managers/navigation_manager');
 const UtilsEngine = require('app/common/utils/utils_engine');
 const UtilityMenuItemView = require('app/ui/views/item/utility_menu');
-const GameMenuItemView = require('app/ui/views/item/esc_game_menu');
+const GameMenuItemView = require('app/yao/ui/utility/esc_game_menu');
 
 /**
  * In game utility menu that shows basic utilities plus buttons to exit/concede.

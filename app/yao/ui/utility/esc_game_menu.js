@@ -8,7 +8,7 @@ var audio_engine = require('app/audio/audio_engine');
 var Scene = require('app/view/Scene');
 var EscGameMenuTmpl = require('app/yao/ui/utility/templates/esc_game_menu.hbs');
 var NavigationManager = require('app/ui/managers/navigation_manager');
-var UtilityMenuItemView = require('./utility_menu');
+var UtilityMenuItemView = require('app/ui/views/item/utility_menu');
 
 var EscGameMenuItemView = UtilityMenuItemView.extend({
 
