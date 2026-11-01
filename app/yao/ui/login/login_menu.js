@@ -127,9 +127,21 @@ const LoginMenuItemView = ItemViewYao.extend({
 
   onError(errorMessage) {
     this.enableForm();
-    if (errorMessage.indexOf('suspended') > 0) {
-      NavigationManager.getInstance().showDialogViewByClass(ErrorDialogItemView, { title: i18next.t('login.account_suspended_message'), message: errorMessage });
+
+    if (errorMessage.indexOf('Please try again') >= 0) {
+      // _networkError
+      NavigationManager.getInstance().showDialogViewByClass(ErrorDialogItemView, {
+        title: i18next.t('login.network_error_message'),
+        message: errorMessage,
+      });
+    } else if (errorMessage.indexOf('This account has been suspended') >= 0) {
+      // AccountDisabled
+      NavigationManager.getInstance().showDialogViewByClass(ErrorDialogItemView, {
+        title: i18next.t('login.account_suspended_message'),
+        message: errorMessage,
+      });
     } else {
+      // NotFoundError / BadPasswordError
       this.showInvalidFormControl([this.ui.$username, this.ui.$password], i18next.t('login.invalid_username_or_password_message'));
     }
   },

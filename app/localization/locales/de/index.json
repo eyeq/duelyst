@@ -3371,6 +3371,7 @@
     "create_account_button_label": "Konto erstellen",
     "invalid_password_message": "Ungültiges Passwort",
     "invalid_username_message": "Ungültiger Benutzername",
+    "network_error_message": "Network Error",
     "account_suspended_message": "Konto suspendiert",
     "invalid_username_or_password_message": "Passwort oder Benutzername ungültig"
   },
