@@ -2,7 +2,7 @@
 
 var Logger = require('app/common/logger');
 var NavigationManager = require('app/ui/managers/navigation_manager');
-var UtilityMenuItemView = require('./utility_menu');
+var UtilityMenuItemView = require('app/ui/views/item/utility_menu');
 
 /**
  * Matchmaking utility menu that shows basic utilities.
