@@ -7,7 +7,6 @@ var CONFIG = require('app/common/config');
 var EventBus = require('app/common/eventbus');
 var EVENTS = require('app/common/event_types');
 var RSX = require('app/data/resources');
-var UtilityMenuTmpl = require('app/yao/ui/game/templates/utility_matchmaking_menu.hbs');
 var ChatManager = require('app/ui/managers/chat_manager');
 var QuestsManager = require('app/ui/managers/quests_manager');
 var InventoryManager = require('app/ui/managers/inventory_manager');
@@ -26,8 +25,6 @@ var UtilityMenuItemView = Backbone.Marionette.CompositeView.extend({
 
   id: 'app-utility-menu',
   className: 'utility-menu',
-
-  template: UtilityMenuTmpl,
 
   animateIn: Animations.fadeIn,
   animateOut: Animations.fadeOut,
