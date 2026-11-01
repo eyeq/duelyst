@@ -20,11 +20,11 @@ var ProfileManager = require('app/ui/managers/profile_manager');
 var moment = require('moment');
 var DuelystBackbone = require('app/ui/extensions/duelyst_backbone');
 var openUrl = require('app/common/openUrl');
-var ConfirmDialogItemView = require('./confirm_dialog');
-var ActivityDialogItemView = require('./activity_dialog');
-var ChangeUsernameItemView = require('./change_username');
-var AccountInventoryResetModalView = require('./account_inventory_reset_modal');
-var RedeemGiftCodeModalView = require('./redeem_gift_code_modal');
+var ConfirmDialogItemView = require('app/ui/views/item/confirm_dialog');
+var ActivityDialogItemView = require('app/ui/views/item/activity_dialog');
+var ChangeUsernameItemView = require('app/ui/views/item/change_username');
+var AccountInventoryResetModalView = require('app/ui/views/item/account_inventory_reset_modal');
+var RedeemGiftCodeModalView = require('app/ui/views/item/redeem_gift_code_modal');
 
 var SettingsMenuView = Backbone.Marionette.ItemView.extend({
 

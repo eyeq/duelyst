@@ -16,7 +16,7 @@ var Animations = require('app/ui/views/animations');
 var ProgressionManager = require('app/ui/managers/progression_manager');
 var ProfileManager = require('app/ui/managers/profile_manager');
 var BuddiesLayout = require('../layouts/buddies');
-var SettingsMenuView = require('./settings_menu');
+var SettingsMenuView = require('app/yao/ui/utility/settings_menu');
 
 /**
  * Basic utility menu that shows buttons for settings and buddies/chat.
