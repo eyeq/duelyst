@@ -1,21 +1,17 @@
-'use strict';
-
-var Logger = require('app/common/logger');
-var CONFIG = require('app/common/config');
-var UtilityGameMenuTmpl = require('app/yao/ui/game/templates/utility_game_menu.hbs');
-var NavigationManager = require('app/ui/managers/navigation_manager');
-var UtilsEngine = require('app/common/utils/utils_engine');
-var UtilityMenuItemView = require('app/ui/views/item/utility_menu');
-var GameMenuItemView = require('app/ui/views/item/esc_game_menu');
+const Logger = require('app/common/logger');
+const CONFIG = require('app/common/config');
+const NavigationManager = require('app/ui/managers/navigation_manager');
+const UtilsEngine = require('app/common/utils/utils_engine');
+const UtilityMenuItemView = require('app/ui/views/item/utility_menu');
+const GameMenuItemView = require('app/ui/views/item/esc_game_menu');
 
 /**
  * In game utility menu that shows basic utilities plus buttons to exit/concede.
  */
-var UtilityGameMenuItemView = UtilityMenuItemView.extend({
+const UtilityGameMenuItemView = UtilityMenuItemView.extend({
 
   id: 'app-utility-game-menu',
-
-  template: UtilityGameMenuTmpl,
+  template: require('app/yao/ui/game/templates/utility_game_menu.hbs'),
 
   events: {
     'click button.menu': 'toggleGameMenu',
@@ -23,23 +19,19 @@ var UtilityGameMenuItemView = UtilityMenuItemView.extend({
 
   /* region LAYOUT */
 
-  onResize: function () {
-    var endPosition = UtilsEngine.getCardsInHandEndPositionForCSS();
+  onResize() {
+    const endPosition = UtilsEngine.getCardsInHandEndPositionForCSS();
     this.$el.css(
       'transform',
-      'translate(' + (endPosition.x - 40.0) / 10.0 + 'rem, ' + (-endPosition.y + CONFIG.HAND_CARD_SIZE * 0.54) / 10.0 + 'rem)',
+      `translate(${(endPosition.x - 40.0) / 10.0}rem, ${(-endPosition.y + CONFIG.HAND_CARD_SIZE * 0.54) / 10.0}rem)`,
     );
   },
 
   /* endregion LAYOUT */
 
-  toggleGameMenu: function () {
+  toggleGameMenu() {
     NavigationManager.getInstance().toggleModalViewByClass(GameMenuItemView);
   },
-
-  /* region MARIONETTE EVENTS */
-
-  /* endregion MARIONETTE EVENTS */
 
 });
 
