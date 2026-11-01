@@ -562,24 +562,3 @@ $bossPromoScale: $standardPromoScale;
   from { transform:translateX(500px); }
   to { transform:translateX(0px); }
 }
-
-/* ---------- ESC MENU ---------- */
-.esc-menu {
-	display: flex;
-	flex-flow: column nowrap;
-	align-items: center;
-	align-content: center;
-	justify-content: center;
-	.btn {
-		@include headerFullStyle();
-		color: #ddd;
-		width: auto;
-	}
-	.horizontal-separator {
-		display: block;
-		width: 20.0rem;
-		height: 0.1rem;
-		margin: 2.0rem 0;
-		background-image: linear-gradient(left, transparent, rgba(255,255,255, 0.25) 20%, rgba(255,255,255, 0.25) 80%, transparent);
-	}
-}
