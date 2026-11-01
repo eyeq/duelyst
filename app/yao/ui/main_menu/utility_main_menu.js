@@ -1,36 +1,32 @@
-'use strict';
-
-var Logger = require('app/common/logger');
-var CONFIG = require('app/common/config');
-var EventBus = require('app/common/eventbus');
-var EVENTS = require('app/common/event_types');
-var UtilityMainMenuTmpl = require('app/yao/ui/main_menu/templates/utility_main_menu.hbs');
-var ChatManager = require('app/ui/managers/chat_manager');
-var QuestsManager = require('app/ui/managers/quests_manager');
-var InventoryManager = require('app/ui/managers/inventory_manager');
-var ServerStatusManager = require('app/ui/managers/server_status_manager');
-var NavigationManager = require('app/ui/managers/navigation_manager');
-var QuestLogLayout = require('app/ui/views2/quests/quest_log_layout');
-var ProfileLayout = require('app/ui/views2/profile/profile_layout');
-var ProgressionManager = require('app/ui/managers/progression_manager');
-var NewPlayerManager = require('app/ui/managers/new_player_manager');
-var ProfileManager = require('app/ui/managers/profile_manager');
-var ShopManager = require('app/ui/managers/shop_manager');
-var Session = require('app/common/session2');
-var PremiumPurchaseDialog = require('app/ui/views2/shop/premium_purchase_dialog');
-var openUrl = require('app/common/openUrl');
-var i18next = require('i18next');
-var BosterPackUnlockView = require('app/ui/views/layouts/booster_pack_collection');
-var UtilityMenuItemView = require('app/ui/views/item/utility_menu');
+const Logger = require('app/common/logger');
+const CONFIG = require('app/common/config');
+const EventBus = require('app/common/eventbus');
+const EVENTS = require('app/common/event_types');
+const ChatManager = require('app/ui/managers/chat_manager');
+const QuestsManager = require('app/ui/managers/quests_manager');
+const InventoryManager = require('app/ui/managers/inventory_manager');
+const ServerStatusManager = require('app/ui/managers/server_status_manager');
+const NavigationManager = require('app/ui/managers/navigation_manager');
+const QuestLogLayout = require('app/ui/views2/quests/quest_log_layout');
+const ProfileLayout = require('app/ui/views2/profile/profile_layout');
+const ProgressionManager = require('app/ui/managers/progression_manager');
+const NewPlayerManager = require('app/ui/managers/new_player_manager');
+const ProfileManager = require('app/ui/managers/profile_manager');
+const ShopManager = require('app/ui/managers/shop_manager');
+const Session = require('app/common/session2');
+const PremiumPurchaseDialog = require('app/ui/views2/shop/premium_purchase_dialog');
+const openUrl = require('app/common/openUrl');
+const i18next = require('i18next');
+const BosterPackUnlockView = require('app/ui/views/layouts/booster_pack_collection');
+const UtilityMenuItemView = require('app/ui/views/item/utility_menu');
 
 /**
  * Out of game utility menu that shows basic utilities plus buttons for quests, profile, shop, and gold/boosters.
  */
-var UtilityMainMenuItemView = UtilityMenuItemView.extend({
+const UtilityMainMenuItemView = UtilityMenuItemView.extend({
 
   id: 'app-utility-main-menu',
-
-  template: UtilityMainMenuTmpl,
+  template: require('app/yao/ui/main_menu/templates/utility_main_menu.hbs'),
 
   ui: {
     $goldCount: '.gold-count',
@@ -65,12 +61,12 @@ var UtilityMainMenuItemView = UtilityMenuItemView.extend({
   },
 
   templateHelpers: {
-    isShopEnabled: function () {
+    isShopEnabled() {
       return ServerStatusManager.getInstance().isShopEnabled();
     },
   },
 
-  onBeforeRender: function () {
+  onBeforeRender() {
     // stop any activated symbols
     this.deactivateSymbolBoosterPack();
 
@@ -78,7 +74,7 @@ var UtilityMainMenuItemView = UtilityMenuItemView.extend({
     this.$el.find('[data-toggle=\'popover\']').popover('destroy');
   },
 
-  onDestroy: function () {
+  onDestroy() {
     UtilityMenuItemView.prototype.onDestroy.apply(this, arguments);
 
     this.deactivateSymbolBoosterPack();
@@ -89,7 +85,7 @@ var UtilityMainMenuItemView = UtilityMenuItemView.extend({
     }
   },
 
-  onLoggedInShow: function () {
+  onLoggedInShow() {
     UtilityMenuItemView.prototype.onLoggedInShow.apply(this, arguments);
 
     this.listenTo(InventoryManager.getInstance().walletModel, 'change:gold_amount', this.onUpdateGoldCount);
@@ -97,17 +93,17 @@ var UtilityMainMenuItemView = UtilityMenuItemView.extend({
     this.listenTo(InventoryManager.getInstance().walletModel, 'change:premium_amount', this.onPremiumCurrencyChange);
 
     // show new player UI after short delay
-    this._showNewPlayerUITimeoutId = setTimeout(function () {
+    this._showNewPlayerUITimeoutId = setTimeout(() => {
       this._showNewPlayerUITimeoutId = null;
       this._showNewPlayerUI();
-    }.bind(this), 1500);
+    }, 1500);
 
     this.onUpdateGoldCount();
     this.onUpdateBoosters();
     this.onPremiumCurrencyChange();
   },
 
-  onLoggedOutShow: function () {
+  onLoggedOutShow() {
     UtilityMenuItemView.prototype.onLoggedOutShow.apply(this, arguments);
 
     this.stopListening(InventoryManager.getInstance().walletModel, 'change:gold_amount', this.onUpdateGoldCount);
@@ -115,10 +111,10 @@ var UtilityMainMenuItemView = UtilityMenuItemView.extend({
     this.stopListening(InventoryManager.getInstance().walletModel, 'change:premium_amount', this.onPremiumCurrencyChange);
   },
 
-  onLoggedInRender: function () {
+  onLoggedInRender() {
     UtilityMenuItemView.prototype.onLoggedInRender.apply(this, arguments);
 
-    var newPlayerManager = NewPlayerManager.getInstance();
+    const newPlayerManager = NewPlayerManager.getInstance();
     if (!newPlayerManager.canSeeArmory()) {
       this.ui.$armoryButton.addClass('hide');
       this.ui.$goldButton.addClass('hide');
@@ -156,7 +152,7 @@ var UtilityMainMenuItemView = UtilityMenuItemView.extend({
     }
   },
 
-  onLoggedOutRender: function () {
+  onLoggedOutRender() {
     UtilityMenuItemView.prototype.onLoggedOutRender.apply(this, arguments);
     this.ui.$armoryButton.addClass('hide');
     this.ui.$goldButton.addClass('hide');
@@ -169,9 +165,9 @@ var UtilityMainMenuItemView = UtilityMenuItemView.extend({
     this.ui.$profileButton.addClass('hide');
   },
 
-  _showNewPlayerUI: function () {
+  _showNewPlayerUI() {
     if (ProfileManager.getInstance().get('id')) {
-      var newPlayerManager = NewPlayerManager.getInstance();
+      const newPlayerManager = NewPlayerManager.getInstance();
 
       if (newPlayerManager.canSeeSpiritOrbs() && !newPlayerManager.getHasOpenedSpiritOrb()) {
         this.ui.$boosterPackCollection.popover({
@@ -199,13 +195,13 @@ var UtilityMainMenuItemView = UtilityMenuItemView.extend({
     }
   },
 
-  onClickRemoveEmphasis: function (e) {
+  onClickRemoveEmphasis(e) {
     $(e.currentTarget).removeClass('glow');
     $(e.currentTarget).popover('destroy');
   },
 
-  onUpdateGoldCount: function () {
-    var goldCount = InventoryManager.getInstance().walletModel.get('gold_amount') || 0;
+  onUpdateGoldCount() {
+    const goldCount = InventoryManager.getInstance().walletModel.get('gold_amount') || 0;
     if (this.ui.$goldCount instanceof $) {
       this.ui.$goldCount.text(goldCount);
     }
@@ -216,7 +212,7 @@ var UtilityMainMenuItemView = UtilityMenuItemView.extend({
     }
 
     // emphasize armory
-    var newPlayerManager = NewPlayerManager.getInstance();
+    const newPlayerManager = NewPlayerManager.getInstance();
     if (newPlayerManager.canSeeArmory()) {
       if (newPlayerManager.getEmphasizeBoosterUnlock()) {
         this.ui.$shopButton.popover({
@@ -243,16 +239,16 @@ var UtilityMainMenuItemView = UtilityMenuItemView.extend({
     }
   },
 
-  onPremiumCurrencyChange: function () {
+  onPremiumCurrencyChange() {
     this.ui.$diamondCount.text(InventoryManager.getInstance().getWalletModelPremiumAmount());
   },
 
-  onUpdateBoosters: function () {
-    var goldCount = InventoryManager.getInstance().walletModel.get('gold_amount');
+  onUpdateBoosters() {
+    const goldCount = InventoryManager.getInstance().walletModel.get('gold_amount');
 
     this.model.set('_booster_pack_count', InventoryManager.getInstance().boosterPacksCollection.length);
     this.ui.$boosterPackCountNumberLabel.text(InventoryManager.getInstance().boosterPacksCollection.length);
-    var label = i18next.t('common.spirit_orb', { count: InventoryManager.getInstance().boosterPacksCollection.length });
+    const label = i18next.t('common.spirit_orb', { count: InventoryManager.getInstance().boosterPacksCollection.length });
     this.ui.$boosterPackStaticLabel.text(label);
 
     // if we have enough gold to buy a booster or have any boosters, activate the symbol animation
@@ -261,7 +257,7 @@ var UtilityMainMenuItemView = UtilityMenuItemView.extend({
     }
   },
 
-  activateSymbolBoosterPack: function () {
+  activateSymbolBoosterPack() {
     if (this.ui.$symbolBoosterPackCenter instanceof $) {
       if (this.ui.$symbolBoosterPackCenter._animation == null) {
         this.ui.$symbolBoosterPackCenter._animation = this.ui.$symbolBoosterPackCenter[0].animate([
@@ -291,7 +287,7 @@ var UtilityMainMenuItemView = UtilityMenuItemView.extend({
     }
   },
 
-  deactivateSymbolBoosterPack: function () {
+  deactivateSymbolBoosterPack() {
     if (this.ui.$symbolBoosterPackCenter instanceof $ && this.ui.$symbolBoosterPackCenter._animation != null) {
       this.ui.$symbolBoosterPackCenter._animation.pause();
     }
@@ -300,11 +296,11 @@ var UtilityMainMenuItemView = UtilityMenuItemView.extend({
     }
   },
 
-  toggleProfile: function () {
+  toggleProfile() {
     NavigationManager.getInstance().toggleModalViewByClass(ProfileLayout, { model: ProfileManager.getInstance().profile });
   },
 
-  toggleQuestLog: function () {
+  toggleQuestLog() {
     NewPlayerManager.getInstance().removeQuestEmphasis();
     NavigationManager.getInstance().toggleModalViewByClass(QuestLogLayout, {
       collection: QuestsManager.getInstance().getQuestCollection(),
@@ -313,11 +309,11 @@ var UtilityMainMenuItemView = UtilityMenuItemView.extend({
     this._showNewPlayerUI();
   },
 
-  toggleShop: function () {
+  toggleShop() {
     EventBus.getInstance().trigger(EVENTS.show_shop);
   },
 
-  onGoldClicked: function () {
+  onGoldClicked() {
     if (ServerStatusManager.getInstance().isShopEnabled()) {
       this.toggleShop();
     } else {
@@ -325,11 +321,11 @@ var UtilityMainMenuItemView = UtilityMenuItemView.extend({
     }
   },
 
-  onDiamondClicked: _.throttle(function (e) {
+  onDiamondClicked: _.throttle((e) => {
     // NavigationManager.getInstance().showModalView(new PremiumPurchaseDialog());
   }, 1500, { trailing: false }),
 
-  onClickBoosterPackCollection: function () {
+  onClickBoosterPackCollection() {
     EventBus.getInstance().trigger(EVENTS.show_booster_pack_unlock);
   },
 
