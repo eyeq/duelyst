@@ -12,6 +12,7 @@ export function main() {
   return gulp.src('./app/index.hbs')
     .pipe(hbs({
       data: {
+        title: 'DUELYST 800',
         version,
         development,
         zendeskEnabled: config.get('zendeskEnabled'),
