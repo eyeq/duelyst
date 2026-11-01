@@ -1,39 +1,32 @@
-'use strict';
+const CONFIG = require('app/common/config');
+const EventBus = require('app/common/eventbus');
+const EVENTS = require('app/common/event_types');
+const Session = require('app/common/session2');
+const generatePushID = require('app/common/generate_push_id');
+const Scene = require('app/view/Scene');
+const SDK = require('app/sdk');
+const Logger = require('app/common/logger');
+const Storage = require('app/common/storage');
+const UtilsJavascript = require('app/common/utils/utils_javascript');
+const RSX = require('app/data/resources');
+const audio_engine = require('app/audio/audio_engine');
+const Animations = require('app/ui/views/animations');
+const NavigationManager = require('app/ui/managers/navigation_manager');
+const GamesManager = require('app/ui/managers/games_manager');
+const ProfileManager = require('app/ui/managers/profile_manager');
+const moment = require('moment');
+const DuelystBackbone = require('app/ui/extensions/duelyst_backbone');
+const openUrl = require('app/common/openUrl');
+const ConfirmDialogItemView = require('app/ui/views/item/confirm_dialog');
+const ActivityDialogItemView = require('app/ui/views/item/activity_dialog');
+const ChangeUsernameItemView = require('app/ui/views/item/change_username');
+const AccountInventoryResetModalView = require('app/ui/views/item/account_inventory_reset_modal');
+const RedeemGiftCodeModalView = require('app/ui/views/item/redeem_gift_code_modal');
 
-var CONFIG = require('app/common/config');
-var EventBus = require('app/common/eventbus');
-var EVENTS = require('app/common/event_types');
-var Session = require('app/common/session2');
-var generatePushID = require('app/common/generate_push_id');
-var Scene = require('app/view/Scene');
-var SDK = require('app/sdk');
-var Logger = require('app/common/logger');
-var Storage = require('app/common/storage');
-var UtilsJavascript = require('app/common/utils/utils_javascript');
-var RSX = require('app/data/resources');
-var audio_engine = require('app/audio/audio_engine');
-var Animations = require('app/ui/views/animations');
-var NavigationManager = require('app/ui/managers/navigation_manager');
-var GamesManager = require('app/ui/managers/games_manager');
-var SettingsMenuTemplate = require('app/yao/ui/utility/templates/settings_menu.hbs');
-var ProfileManager = require('app/ui/managers/profile_manager');
-var moment = require('moment');
-var DuelystBackbone = require('app/ui/extensions/duelyst_backbone');
-var openUrl = require('app/common/openUrl');
-var ConfirmDialogItemView = require('app/ui/views/item/confirm_dialog');
-var ActivityDialogItemView = require('app/ui/views/item/activity_dialog');
-var ChangeUsernameItemView = require('app/ui/views/item/change_username');
-var AccountInventoryResetModalView = require('app/ui/views/item/account_inventory_reset_modal');
-var RedeemGiftCodeModalView = require('app/ui/views/item/redeem_gift_code_modal');
-
-var SettingsMenuView = Backbone.Marionette.ItemView.extend({
+const SettingsMenuView = Backbone.Marionette.ItemView.extend({
 
   className: 'modal duelyst-modal settings-menu',
-
-  /* where are we appending the items views */
-  childViewContainer: '.settings-menu-container',
-
-  template: SettingsMenuTemplate,
+  template: require('app/yao/ui/utility/templates/settings_menu.hbs'),
 
   /* ui selector cache */
   ui: {
@@ -103,29 +96,29 @@ var SettingsMenuView = Backbone.Marionette.ItemView.extend({
   animateOut: Animations.fadeOut,
   _requestId: null,
 
-  initialize: function () {
+  initialize() {
     // generate unique id for requests
     this._requestId = generatePushID();
 
     // check whether changing viewport settings will do anything
     // generate global scale for resolution auto setting
-    var $html = $('html');
-    var screenWidth = $html.width();
-    var screenHeight = $html.height();
-    var globalScaleExact = CONFIG.getGlobalScaleForResolution(CONFIG.RESOLUTION_EXACT, screenWidth, screenHeight);
+    const $html = $('html');
+    const screenWidth = $html.width();
+    const screenHeight = $html.height();
+    const globalScaleExact = CONFIG.getGlobalScaleForResolution(CONFIG.RESOLUTION_EXACT, screenWidth, screenHeight);
     if (globalScaleExact !== 1.0) {
       // check all resolutions and sort by whether they fit into user's current screen size
-      var resolutions = UtilsJavascript.deepCopy(CONFIG.RESOLUTIONS);
-      var resolutionsThatFit = [];
-      var resolutionsThatDontFit = [];
-      for (var i = 0, il = resolutions.length; i < il; i++) {
-        var resolutionData = resolutions[i];
+      const resolutions = UtilsJavascript.deepCopy(CONFIG.RESOLUTIONS);
+      const resolutionsThatFit = [];
+      const resolutionsThatDontFit = [];
+      for (let i = 0, il = resolutions.length; i < il; i++) {
+        const resolutionData = resolutions[i];
         if (resolutionData.value === CONFIG.RESOLUTION_AUTO || resolutionData.value === CONFIG.RESOLUTION_PIXEL_PERFECT) {
           resolutionsThatFit.push(resolutionData);
         } else {
-          var resolution = $.trim(resolutionData.description);
-          var resWidth = parseInt(resolution.replace(/x[\s\t]*?\d+/, ''));
-          var resHeight = parseInt(resolution.replace(/\d+[\s\t]*?x/, ''));
+          const resolution = $.trim(resolutionData.description);
+          const resWidth = parseInt(resolution.replace(/x[\s\t]*?\d+/, ''));
+          const resHeight = parseInt(resolution.replace(/\d+[\s\t]*?x/, ''));
           if (resWidth > screenWidth || resHeight > screenHeight) {
             resolutionsThatDontFit.push(resolutionData);
           } else {
@@ -140,17 +133,17 @@ var SettingsMenuView = Backbone.Marionette.ItemView.extend({
     }
   },
 
-  onBeforeRender: function () {
+  onBeforeRender() {
     this.$el.find('[data-toggle=\'tooltip\']').tooltip('destroy');
   },
 
-  onRender: function () {
+  onRender() {
     this.ui.$bloom.attr('min', CONFIG.BLOOM_MIN);
     this.ui.$bloom.attr('max', CONFIG.BLOOM_MAX);
     this.ui.$bloom.attr('step', 0.05);
 
     this.ui.$resolution.val(parseFloat(CONFIG.resolution));
-    var currentLanguageKey = Storage.get('preferredLanguageKey') || 'en';
+    const currentLanguageKey = Storage.get('preferredLanguageKey') || 'en';
     this.ui.$language.val(currentLanguageKey);
     this.ui.$checkboxHiDPIEnabled.prop('checked', CONFIG.hiDPIEnabled);
     this.ui.$bloom.val(parseFloat(this.model.get('bloom')));
@@ -180,12 +173,12 @@ var SettingsMenuView = Backbone.Marionette.ItemView.extend({
       this.ui.$resetInventorySection.hide();
     }
 
-    this.ui.$versionTag.text('v' + process.env.VERSION);
+    this.ui.$versionTag.text(`v${process.env.VERSION}`);
 
     this.$el.find('[data-toggle=\'tooltip\']').tooltip();
   },
 
-  onShow: function () {
+  onShow() {
     // show ZENDSEK widget
     window.zE && window.zE.show && window.zE.show();
 
@@ -207,7 +200,7 @@ var SettingsMenuView = Backbone.Marionette.ItemView.extend({
     audio_engine.current().play_effect_for_interaction(RSX.sfx_ui_tab_in.audio, CONFIG.SHOW_SFX_PRIORITY);
   },
 
-  onPrepareForDestroy: function () {
+  onPrepareForDestroy() {
     // hide ZENDESK widget
     window.zE && window.zE.hide && window.zE.hide();
 
@@ -215,51 +208,51 @@ var SettingsMenuView = Backbone.Marionette.ItemView.extend({
     Scene.getInstance().getFX().clearGradientColorMap(this._requestId, CONFIG.ANIMATE_MEDIUM_DURATION);
   },
 
-  onResize: function () {
+  onResize() {
     this.ui.$resolution.val(parseFloat(CONFIG.resolution));
     this.ui.$checkboxHiDPIEnabled.prop('checked', CONFIG.hiDPIEnabled);
   },
 
   /* event handlers */
 
-  onChangeUsernameClicked: function (e) {
+  onChangeUsernameClicked(e) {
     NavigationManager.getInstance().showDialogView(new ChangeUsernameItemView({ model: ProfileManager.getInstance().profile }));
   },
 
-  onResetAccountInventoryPressed: function () {
+  onResetAccountInventoryPressed() {
     NavigationManager.getInstance().showModalView(new AccountInventoryResetModalView());
   },
 
-  onRedeemGiftCodePressed: function () {
+  onRedeemGiftCodePressed() {
     NavigationManager.getInstance().showModalView(new RedeemGiftCodeModalView());
   },
 
-  onLogoutClicked: function () {
-    var confirmDialogItemView = new ConfirmDialogItemView({ title: 'Are you sure you want to logout?' });
-    this.listenToOnce(confirmDialogItemView, 'confirm', function () {
+  onLogoutClicked() {
+    const confirmDialogItemView = new ConfirmDialogItemView({ title: 'Are you sure you want to logout?' });
+    this.listenToOnce(confirmDialogItemView, 'confirm', () => {
       Session.logout();
-    }.bind(this));
-    this.listenToOnce(confirmDialogItemView, 'cancel', function () {
+    });
+    this.listenToOnce(confirmDialogItemView, 'cancel', () => {
       this.stopListening(confirmDialogItemView);
-    }.bind(this));
+    });
     NavigationManager.getInstance().showDialogView(confirmDialogItemView);
   },
 
-  onDesktopQuitClicked: function () {
+  onDesktopQuitClicked() {
     if (window.isDesktop) {
-      var confirmDialogItemView = new ConfirmDialogItemView({ title: 'Are you sure you want to quit?' });
-      this.listenToOnce(confirmDialogItemView, 'confirm', function () {
+      const confirmDialogItemView = new ConfirmDialogItemView({ title: 'Are you sure you want to quit?' });
+      this.listenToOnce(confirmDialogItemView, 'confirm', () => {
         window.quitDesktop();
-      }.bind(this));
-      this.listenToOnce(confirmDialogItemView, 'cancel', function () {
+      });
+      this.listenToOnce(confirmDialogItemView, 'cancel', () => {
         this.stopListening(confirmDialogItemView);
-      }.bind(this));
+      });
       NavigationManager.getInstance().showDialogView(confirmDialogItemView);
     }
   },
 
-  changeResolution: function () {
-    var res = parseInt(this.ui.$resolution.val());
+  changeResolution() {
+    const res = parseInt(this.ui.$resolution.val());
     if (CONFIG.resolution !== res) {
       CONFIG.resolution = res;
       Storage.set('resolution', res);
@@ -267,17 +260,17 @@ var SettingsMenuView = Backbone.Marionette.ItemView.extend({
     }
   },
 
-  changeLanguage: function () {
-    var languageKey = this.ui.$language.val();
-    var currentLanguageKey = Storage.get('preferredLanguageKey') || 'en';
+  changeLanguage() {
+    const languageKey = this.ui.$language.val();
+    const currentLanguageKey = Storage.get('preferredLanguageKey') || 'en';
     if (currentLanguageKey != languageKey) {
       Storage.set('preferredLanguageKey', languageKey);
       EventBus.getInstance().trigger(EVENTS.request_reload, { id: 'language_changed', message: 'Language Changed.  Please restart.' });
     }
   },
 
-  changeHiDPIEnabled: function () {
-    var enabled = this.ui.$checkboxHiDPIEnabled.prop('checked');
+  changeHiDPIEnabled() {
+    const enabled = this.ui.$checkboxHiDPIEnabled.prop('checked');
     if (CONFIG.hiDPIEnabled != enabled) {
       CONFIG.hiDPIEnabled = enabled;
       Storage.set('hiDPIEnabled', enabled);
@@ -285,92 +278,92 @@ var SettingsMenuView = Backbone.Marionette.ItemView.extend({
     }
   },
 
-  changeLightingQualityLow: function () {
+  changeLightingQualityLow() {
     this.model.set('lightingQuality', CONFIG.LIGHTING_QUALITY_LOW);
   },
 
-  changeLightingQualityMedium: function () {
+  changeLightingQualityMedium() {
     this.model.set('lightingQuality', CONFIG.LIGHTING_QUALITY_MEDIUM);
   },
 
-  changeLightingQualityHigh: function () {
+  changeLightingQualityHigh() {
     this.model.set('lightingQuality', CONFIG.LIGHTING_QUALITY_HIGH);
   },
 
-  changeShadowQualityLow: function () {
+  changeShadowQualityLow() {
     this.model.set('shadowQuality', CONFIG.SHADOW_QUALITY_LOW);
   },
 
-  changeShadowQualityMedium: function () {
+  changeShadowQualityMedium() {
     this.model.set('shadowQuality', CONFIG.SHADOW_QUALITY_MEDIUM);
   },
 
-  changeShadowQualityHigh: function () {
+  changeShadowQualityHigh() {
     this.model.set('shadowQuality', CONFIG.SHADOW_QUALITY_HIGH);
   },
 
-  changeBoardQualityLow: function () {
+  changeBoardQualityLow() {
     this.model.set('boardQuality', CONFIG.SHADOW_QUALITY_LOW);
   },
 
-  changeBoardQualityHigh: function () {
+  changeBoardQualityHigh() {
     this.model.set('boardQuality', CONFIG.SHADOW_QUALITY_HIGH);
   },
 
-  changeBloom: function () {
+  changeBloom() {
     this.model.set('bloom', this.ui.$bloom.val());
   },
 
-  changeDoNotDisturb: function () {
+  changeDoNotDisturb() {
     this.model.set('doNotDisturb', this.ui.$checkboxDoNotDisturb.prop('checked'));
   },
 
-  changeBlockSpectators: function () {
+  changeBlockSpectators() {
     this.model.set('blockSpectators', this.ui.$checkboxBlockSpectators.prop('checked'));
   },
 
-  changeAlwaysShowStats: function () {
+  changeAlwaysShowStats() {
     this.model.set('alwaysShowStats', this.ui.$checkboxAlwaysShowStats.prop('checked'));
   },
 
-  changeShowBattleLog: function () {
+  changeShowBattleLog() {
     this.model.set('showBattleLog', this.ui.$checkboxShowBattleLog.prop('checked'));
   },
 
-  changeShowPlayerDetails: function () {
+  changeShowPlayerDetails() {
     this.model.set('showPlayerDetails', this.ui.$checkboxPlayerDetails.prop('checked'));
   },
 
-  changeStickyTargeting: function () {
+  changeStickyTargeting() {
     this.model.set('stickyTargeting', this.ui.$checkboxStickyTargeting.prop('checked'));
   },
 
-  changeRazerChromaEnabled: function () {
+  changeRazerChromaEnabled() {
     this.model.set('razerChromaEnabled', this.ui.$checkboxRazerChromaEnabled.prop('checked'));
   },
 
-  changeShowInGameTips: function () {
+  changeShowInGameTips() {
     this.model.set('showInGameTips', this.ui.$checkboxShowInGameTips.prop('checked'));
   },
 
-  changeMasterVolume: function () {
+  changeMasterVolume() {
     this.model.set('masterVolume', this.ui.$masterVolume.val());
   },
 
-  changeMusicVolume: function () {
+  changeMusicVolume() {
     this.model.set('musicVolume', this.ui.$musicVolume.val());
   },
 
-  changeVoiceVolume: function () {
+  changeVoiceVolume() {
     this.model.set('voiceVolume', this.ui.$voiceVolume.val());
   },
 
-  changeEffectsVolume: function () {
+  changeEffectsVolume() {
     this.model.set('effectsVolume', this.ui.$effectsVolume.val());
   },
 
-  _updateLightingQualityUI: function () {
-    var lightingQuality = this.model.get('lightingQuality');
+  _updateLightingQualityUI() {
+    const lightingQuality = this.model.get('lightingQuality');
     if (lightingQuality === CONFIG.LIGHTING_QUALITY_HIGH) {
       // high quality lighting
       this.ui.$buttonLightingQualityHigh.addClass('active');
@@ -389,8 +382,8 @@ var SettingsMenuView = Backbone.Marionette.ItemView.extend({
     }
   },
 
-  _updateShadowQualityUI: function () {
-    var shadowQuality = this.model.get('shadowQuality');
+  _updateShadowQualityUI() {
+    const shadowQuality = this.model.get('shadowQuality');
     if (shadowQuality === CONFIG.SHADOW_QUALITY_HIGH) {
       // high quality shadows
       this.ui.$buttonShadowQualityHigh.addClass('active');
@@ -409,8 +402,8 @@ var SettingsMenuView = Backbone.Marionette.ItemView.extend({
     }
   },
 
-  _updateBoardQualityUI: function () {
-    var boardQuality = this.model.get('boardQuality');
+  _updateBoardQualityUI() {
+    const boardQuality = this.model.get('boardQuality');
     if (boardQuality === CONFIG.SHADOW_QUALITY_HIGH) {
       // high quality board
       this.ui.$buttonBoardQualityHigh.addClass('active');
