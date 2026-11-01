@@ -1,27 +1,23 @@
-'use strict';
-
-var Logger = require('app/common/logger');
-var CONFIG = require('app/common/config');
-var UtilityLoadingLoginMenuTmpl = require('app/yao/ui/login/templates/utility_loading_login_menu.hbs');
-var NavigationManager = require('app/ui/managers/navigation_manager');
-var UtilsEngine = require('app/common/utils/utils_engine');
-var UtilityMenuItemView = require('app/ui/views/item/utility_menu');
-var EscMainMenuItemView = require('app/ui/views/item/esc_main_menu');
+const Logger = require('app/common/logger');
+const CONFIG = require('app/common/config');
+const NavigationManager = require('app/ui/managers/navigation_manager');
+const UtilsEngine = require('app/common/utils/utils_engine');
+const UtilityMenuItemView = require('app/ui/views/item/utility_menu');
+const EscMainMenuItemView = require('app/ui/views/item/esc_main_menu');
 
 /**
  * Loading/login utility menu that gives ability to open main esc menu.
  */
-var UtilityLoadingLoginMenuItemView = UtilityMenuItemView.extend({
+const UtilityLoadingLoginMenuItemView = UtilityMenuItemView.extend({
 
   id: 'app-utility-desktop-menu',
-
-  template: UtilityLoadingLoginMenuTmpl,
+  template: require('app/yao/ui/login/templates/utility_loading_login_menu.hbs'),
 
   events: {
     'click button.menu': 'toggleEscMainMenu',
   },
 
-  toggleEscMainMenu: function () {
+  toggleEscMainMenu() {
     NavigationManager.getInstance().toggleModalViewByClass(EscMainMenuItemView);
   },
 
