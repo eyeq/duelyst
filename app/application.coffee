@@ -72,7 +72,7 @@ Helpers = require 'app/ui/views/helpers'
 LoaderItemView = require 'app/ui/views/item/loader'
 
 UtilityLoadingLoginMenuItemView = require 'app/yao/ui/login/utility_loading_login_menu'
-UtilityMainMenuItemView = require 'app/ui/views/item/utility_main_menu'
+UtilityMainMenuItemView = require 'app/yao/ui/main_menu/utility_main_menu'
 UtilityMatchmakingMenuItemView = require 'app/ui/views/item/utility_matchmaking_menu'
 UtilityGameMenuItemView = require 'app/ui/views/item/utility_game_menu'
 EscGameMenuItemView = require 'app/ui/views/item/esc_game_menu'

@@ -20,8 +20,8 @@ var Session = require('app/common/session2');
 var PremiumPurchaseDialog = require('app/ui/views2/shop/premium_purchase_dialog');
 var openUrl = require('app/common/openUrl');
 var i18next = require('i18next');
-var BosterPackUnlockView = require('../layouts/booster_pack_collection');
-var UtilityMenuItemView = require('./utility_menu');
+var BosterPackUnlockView = require('app/ui/views/layouts/booster_pack_collection');
+var UtilityMenuItemView = require('app/ui/views/item/utility_menu');
 
 /**
  * Out of game utility menu that shows basic utilities plus buttons for quests, profile, shop, and gold/boosters.
