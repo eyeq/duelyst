@@ -1,27 +1,17 @@
-const Logger = require('app/common/logger');
-const CONFIG = require('app/common/config');
-const NavigationManager = require('app/ui/managers/navigation_manager');
-const UtilsEngine = require('app/common/utils/utils_engine');
-const UtilityMenuItemView = require('app/ui/views/item/utility_menu');
-const EscMainMenuItemView = require('app/yao/ui/utility/esc_main_menu');
+const CompositeViewYao = require('app/yao/ui/common/composite_view_yao');
 
 /**
  * Loading/login utility menu that gives ability to open main esc menu.
  */
-const UtilityLoadingLoginMenuItemView = UtilityMenuItemView.extend({
+const UtilityLoadingLoginMenuItemView = CompositeViewYao.extend({
 
   id: 'app-utility-desktop-menu',
   template: require('app/yao/ui/login/templates/utility_loading_login_menu.hbs'),
 
   events: {
-    'click button.menu': 'toggleEscMainMenu',
-  },
-
-  toggleEscMainMenu() {
-    NavigationManager.getInstance().toggleModalViewByClass(EscMainMenuItemView);
+    'click .menu': 'toggleEscMainMenu',
   },
 
 });
 
-// Expose the class either via CommonJS or the global object
 module.exports = UtilityLoadingLoginMenuItemView;
