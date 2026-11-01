@@ -76,7 +76,7 @@ UtilityMainMenuItemView = require 'app/ui/views/item/utility_main_menu'
 UtilityMatchmakingMenuItemView = require 'app/ui/views/item/utility_matchmaking_menu'
 UtilityGameMenuItemView = require 'app/ui/views/item/utility_game_menu'
 EscGameMenuItemView = require 'app/ui/views/item/esc_game_menu'
-EscMainMenuItemView = require 'app/ui/views/item/esc_main_menu'
+EscMainMenuItemView = require 'app/yao/ui/utility/esc_main_menu'
 
 LoginMenuItemView = require 'app/yao/ui/login/login_menu'
 

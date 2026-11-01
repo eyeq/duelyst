@@ -3,7 +3,7 @@ const CONFIG = require('app/common/config');
 const NavigationManager = require('app/ui/managers/navigation_manager');
 const UtilsEngine = require('app/common/utils/utils_engine');
 const UtilityMenuItemView = require('app/ui/views/item/utility_menu');
-const EscMainMenuItemView = require('app/ui/views/item/esc_main_menu');
+const EscMainMenuItemView = require('app/yao/ui/utility/esc_main_menu');
 
 /**
  * Loading/login utility menu that gives ability to open main esc menu.
