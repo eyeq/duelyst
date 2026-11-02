@@ -5,9 +5,6 @@ const path = require('path');
 const window = require('electron-window');
 const localShortcut = require('electron-localshortcut');
 const minimist = require('minimist');
-const osName = require('os-name')();
-const debounce = require('lodash.debounce');
-const pkgJson = require('./package.json');
 
 require('electron-debug')();
 
@@ -68,19 +65,6 @@ if (isSecondInstance) {
 // unless it's after 'ready', or else mysterious bad things will happen
 // to you.
 app.on('ready', () => {
-  // check for existance of token argv
-  // for now can be anything - just needs to be set
-  // if (pkgJson.name === 'duelyst' && argv.token === undefined) {
-  //   dialog.showMessageBox({
-  //     type: 'error',
-  //     title: 'ERROR',
-  //     message: 'Please use the launcher to start Duelyst',
-  //     detail: 'You cannot start the Duelyst executable directly.',
-  //     buttons: []
-  //   }, app.quit)
-  //   return
-  // }
-
   // create keyboard shortcuts for win32
   // we don't need to do it for darwin because the menu takes care of it for us
   if (process.platform === 'win32') setupWin32Shortcuts();
@@ -282,18 +266,6 @@ function setupDiscord() {
   });
 }
 */
-
-const showInfoDialog = debounce((data) => {
-  const options = {
-    type: 'info',
-    title: 'Information',
-    buttons: ['OK'],
-    message: data.message,
-    detail: data.detail,
-  };
-  const noop = () => { };
-  return dialog.showMessageBox(options, noop);
-}, 1000, { leading: true, trailing: false });
 
 ipcMain.on('create-window', (event, options) => {
   const windowOptions = {
