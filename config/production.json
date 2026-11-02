@@ -14,7 +14,6 @@
 	},
 	"analyticsEnabled": true,
 	"gaId":"",
-	"zendeskEnabled": true,
 	"bugsnag": {
 		"client_key": ""
 	},

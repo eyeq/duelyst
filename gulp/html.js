@@ -15,7 +15,6 @@ export function main() {
         title: 'DUELYST 800',
         version,
         development,
-        zendeskEnabled: config.get('zendeskEnabled'),
         analyticsEnabled: config.get('analyticsEnabled'),
         gaId: config.get('gaId'),
         cdn: config.get('cdn'),

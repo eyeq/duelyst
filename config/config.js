@@ -278,12 +278,6 @@ const config = convict({
       env: 'CONSUL_GAME_SERVICE',
     },
   },
-  zendeskEnabled: {
-    doc: 'Enable/disable Zendeks widget.',
-    format: Boolean,
-    default: false,
-    env: 'ZENDESK_ENABLED',
-  },
   postgres_connection_string: {
     doc: 'Postgres connection string.',
     default: 'pg://duelyst:duelyst@127.0.0.1/duelyst',
