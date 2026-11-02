@@ -2286,6 +2286,10 @@
   	"spell_desc": "Du kannst einen Zauber auf das Schlachtfeld wirken, um den Text des Zaubers zu aktivieren. Zauber bleiben nach ihrer Aktivierung nicht aktiv.",
   	"copies_label": "Kopien: "
   },
+  "utility": {
+    "confirm_logout_message": "Are you sure you want to logout?",
+    "confirm_quit_message": "Are you sure you want to quit?"
+  },
   "common": {
     "loading_dialog_one_moment_label": "Einen Augenblick ...",
     "success_title": "ERFOLG!",
@@ -2300,6 +2304,12 @@
     "generic_complete_message": "Vollständig",
     "search_input_label": "Suche",
     "menu_button_label": "Menu",
+    "settings_button_label": "Settings",
+    "friends_button_label": "Friends",
+    "end_game_button_label": "End Game",
+    "concede_button_label": "Concede",
+    "logout_button_label": "Logout",
+    "quit_button_label": "Quit",
     "help_button_label": "Hilfe",
     "next_button_label": "WEITER",
     "done_button_label": "FERTIG",

@@ -8,8 +8,8 @@
       <div class="container-fluid">
         <div class="row">
           <div class="col-md-6 col-md-offset-1">
-            <div class="settings-category">
-              <h1 class="modal-title"><i class="fa fa-image"></i> {{localize 'settings.category_visual_label'}}</h1>
+            <div class="settings-category window-panel">
+              <h1 class="modal-title"><i class="fa fa-image"></i> {{localize 'settings.category_window_label'}}</h1>
               <div class="setting setting-single-line">
                 <label for="resolution">Viewport</label>
                 {{#if resolutionsThatFit}}
@@ -77,7 +77,8 @@
                 <input type=range id=bloom class="range" min=0.0 max=1.0 step=0.1 />
               </div>
             </div>
-            <div class="settings-category">
+
+            <div class="settings-category audio-panel">
               <h1 class="modal-title"><i class="fa fa-volume-up"></i> {{localize 'settings.category_audio_label'}}</h1>
               <div class="setting setting-single-line">
                 <label for=master-volume class="setting-label range">{{localize 'settings.master_volume_label'}}</label>
@@ -97,8 +98,9 @@
               </div>
             </div>
           </div>
+
           <div class="col-md-6">
-            <div class="settings-category">
+            <div class="settings-category game-panel">
               <h1 class="modal-title"><i class="fa fa-gamepad"></i> {{localize 'settings.category_game_label'}}</h1>
               <div class="setting setting-single-line">
                 <label for="checkbox-always-show-stats">{{localize 'settings.always_show_stats'}}</label>
@@ -135,7 +137,7 @@
                   <label><i></i></label>
                 </div>
               </div>
-              <div class="setting setting-single-line" id="razer-chroma-setting">
+              <div class="setting setting-single-line desktop-only">
                 <label for="checkbox-razer-chroma">{{localize 'settings.razer_chroma'}}</label>
                 <div class="switch">
                   <input type="checkbox" id="checkbox-razer-chroma-enabled" value="">
@@ -143,7 +145,8 @@
                 </div>
               </div>
             </div>
-            <div class="settings-category">
+
+            <div class="settings-category account-panel">
               <h1 class="modal-title"><i class="fa fa-user"></i> {{localize 'settings.category_account_label'}}</h1>
               <div class="setting setting-single-line" data-toggle="tooltip" data-placement="right" title="{{localize 'settings.do_not_disturb_tooltip'}}">
                 <label for="checkbox-do-not-disturb">{{localize 'settings.do_not_disturb'}}</label>

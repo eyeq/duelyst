@@ -1,81 +1,65 @@
 const CONFIG = require('app/common/config');
 const Session = require('app/common/session2');
-const SDK = require('app/sdk');
 const RSX = require('app/data/resources');
 const audio_engine = require('app/audio/audio_engine');
 const NavigationManager = require('app/ui/managers/navigation_manager');
-const UtilityMenuItemView = require('app/ui/views/item/utility_menu');
-const ConfirmDialogItemView = require('app/ui/views/item/confirm_dialog');
+const ProfileManager = require('app/ui/managers/profile_manager');
+const i18next = require('i18next');
+const CompositeViewYao = require('app/yao/ui/common/composite_view_yao');
 
-const EscMainMenuItemView = UtilityMenuItemView.extend({
+const EscMainMenuItemView = CompositeViewYao.extend({
 
   id: 'app-esc-main-menu',
   className: 'modal duelyst-modal',
   template: require('app/yao/ui/utility/templates/esc_main_menu.hbs'),
 
-  onRender() {
-    UtilityMenuItemView.prototype.onRender.apply(this, arguments);
+  ui: {
+    $desktopQuit: '.desktop-quit',
+    $logout: '.logout',
+  },
 
-    if (window.isDesktop) {
-      this.$el.find('.desktop-quit').on('click', this.onDesktopQuitClicked.bind(this));
-    } else {
-      this.$el.find('.desktop-quit').remove();
+  events: {
+    'click .settings': 'toggleSettingsMenu',
+
+    'click .desktop-quit': 'onDesktopQuitClicked',
+    'click .logout': 'onLogoutClicked',
+  },
+
+  onRender() {
+    CompositeViewYao.prototype.onRender.apply(this, arguments);
+
+    if (!window.isDesktop) {
+      this.ui.$desktopQuit.remove();
+    }
+    if (!ProfileManager.getInstance().get('id')) {
+      this.ui.$logout.addClass('disabled');
     }
   },
 
   onShow() {
-    UtilityMenuItemView.prototype.onShow.apply(this, arguments);
-
-    // show ZENDSEK widget
-    window.zE && window.zE.show && window.zE.show();
+    CompositeViewYao.prototype.onShow.apply(this, arguments);
 
     audio_engine.current().play_effect_for_interaction(RSX.sfx_ui_tab_in.audio, CONFIG.SHOW_SFX_PRIORITY);
   },
 
-  onDestroy() {
-    // hide ZENDSEK widget
-    window.zE && window.zE.hide && window.zE.hide();
-  },
-
-  animateReveal() {
-    // don't animate reveal esc menu
-  },
-
-  onLoggedInRender() {
-    UtilityMenuItemView.prototype.onLoggedInRender.apply(this, arguments);
-    this.$el.find('.logout').on('click', this.onLogoutClicked.bind(this));
-  },
-
-  onLoggedOutRender() {
-    UtilityMenuItemView.prototype.onLoggedOutRender.apply(this, arguments);
-    this.$el.find('.logout').addClass('disabled');
-  },
-
   onLogoutClicked() {
-    const confirmDialogItemView = new ConfirmDialogItemView({ title: 'Are you sure you want to logout?' });
-    this.listenToOnce(confirmDialogItemView, 'confirm', () => {
-      Session.logout();
-    });
-    this.listenToOnce(confirmDialogItemView, 'cancel', () => {
-      this.stopListening(confirmDialogItemView);
-    });
-    NavigationManager.getInstance().showDialogView(confirmDialogItemView);
+    if (ProfileManager.getInstance().get('id')) {
+      NavigationManager.getInstance().showDialogForConfirmation(i18next.t('utility.confirm_logout_message'), '', i18next.t('common.logout_button_label'))
+        .then(() => {
+          Session.logout();
+        });
+    }
   },
 
   onDesktopQuitClicked() {
     if (window.isDesktop) {
-      const confirmDialogItemView = new ConfirmDialogItemView({ title: 'Are you sure you want to quit?' });
-      this.listenToOnce(confirmDialogItemView, 'confirm', () => {
-        window.quitDesktop();
-      });
-      this.listenToOnce(confirmDialogItemView, 'cancel', () => {
-        this.stopListening(confirmDialogItemView);
-      });
-      NavigationManager.getInstance().showDialogView(confirmDialogItemView);
+      NavigationManager.getInstance().showDialogForConfirmation(i18next.t('utility.confirm_quit_message'), '', i18next.t('common.quit_button_label'))
+        .then(() => {
+          window.quitDesktop();
+        });
     }
   },
 
 });
 
-// Expose the class either via CommonJS or the global object
 module.exports = EscMainMenuItemView;

@@ -4,7 +4,6 @@ const EVENTS = require('app/common/event_types');
 const Session = require('app/common/session2');
 const generatePushID = require('app/common/generate_push_id');
 const Scene = require('app/view/Scene');
-const SDK = require('app/sdk');
 const Logger = require('app/common/logger');
 const Storage = require('app/common/storage');
 const UtilsJavascript = require('app/common/utils/utils_javascript');
@@ -12,13 +11,8 @@ const RSX = require('app/data/resources');
 const audio_engine = require('app/audio/audio_engine');
 const Animations = require('app/ui/views/animations');
 const NavigationManager = require('app/ui/managers/navigation_manager');
-const GamesManager = require('app/ui/managers/games_manager');
 const ProfileManager = require('app/ui/managers/profile_manager');
-const moment = require('moment');
-const DuelystBackbone = require('app/ui/extensions/duelyst_backbone');
-const openUrl = require('app/common/openUrl');
 const ConfirmDialogItemView = require('app/ui/views/item/confirm_dialog');
-const ActivityDialogItemView = require('app/ui/views/item/activity_dialog');
 const ChangeUsernameItemView = require('app/ui/views/item/change_username');
 const AccountInventoryResetModalView = require('app/ui/views/item/account_inventory_reset_modal');
 const RedeemGiftCodeModalView = require('app/ui/views/item/redeem_gift_code_modal');
@@ -55,8 +49,6 @@ const SettingsMenuView = Backbone.Marionette.ItemView.extend({
     $musicVolume: '#music-volume',
     $voiceVolume: '#voice-volume',
     $effectsVolume: '#effects-volume',
-    $resetInventorySection: '#reset_inventory_section',
-    // "click .manage-data" : "onManageDataPressed"
   },
 
   /* Ui events hash */
@@ -152,31 +144,36 @@ const SettingsMenuView = Backbone.Marionette.ItemView.extend({
     const currentLanguageKey = Storage.get('preferredLanguageKey') || 'en';
     this.ui.$language.val(currentLanguageKey);
     this.ui.$checkboxHiDPIEnabled.prop('checked', CONFIG.hiDPIEnabled);
-    this.ui.$bloom.val(parseFloat(this.model.get('bloom')));
-    this.ui.$checkboxDoNotDisturb.prop('checked', this.model.get('doNotDisturb'));
-    this.ui.$checkboxBlockSpectators.prop('checked', this.model.get('blockSpectators'));
-    this.ui.$checkboxAlwaysShowStats.prop('checked', this.model.get('alwaysShowStats'));
-    this.ui.$checkboxShowBattleLog.prop('checked', this.model.get('showBattleLog'));
-    this.ui.$checkboxPlayerDetails.prop('checked', this.model.get('showPlayerDetails'));
-    this.ui.$checkboxStickyTargeting.prop('checked', this.model.get('stickyTargeting'));
-    this.ui.$checkboxShowInGameTips.prop('checked', this.model.get('showInGameTips'));
-    this.ui.$checkboxRazerChromaEnabled.prop('checked', this.model.get('razerChromaEnabled'));
-    this.ui.$masterVolume.val(parseFloat(this.model.get('masterVolume')));
-    this.ui.$musicVolume.val(parseFloat(this.model.get('musicVolume')));
-    this.ui.$voiceVolume.val(parseFloat(this.model.get('voiceVolume')));
-    this.ui.$effectsVolume.val(parseFloat(this.model.get('effectsVolume')));
 
-    this._updateLightingQualityUI();
-    this._updateShadowQualityUI();
-    this._updateBoardQualityUI();
+    if (this.model) {
+      this.ui.$bloom.val(parseFloat(this.model.get('bloom')));
+      this.ui.$checkboxDoNotDisturb.prop('checked', this.model.get('doNotDisturb'));
+      this.ui.$checkboxBlockSpectators.prop('checked', this.model.get('blockSpectators'));
+      this.ui.$checkboxAlwaysShowStats.prop('checked', this.model.get('alwaysShowStats'));
+      this.ui.$checkboxShowBattleLog.prop('checked', this.model.get('showBattleLog'));
+      this.ui.$checkboxPlayerDetails.prop('checked', this.model.get('showPlayerDetails'));
+      this.ui.$checkboxStickyTargeting.prop('checked', this.model.get('stickyTargeting'));
+      this.ui.$checkboxShowInGameTips.prop('checked', this.model.get('showInGameTips'));
+      this.ui.$checkboxRazerChromaEnabled.prop('checked', this.model.get('razerChromaEnabled'));
+      this.ui.$masterVolume.val(parseFloat(this.model.get('masterVolume')));
+      this.ui.$musicVolume.val(parseFloat(this.model.get('musicVolume')));
+      this.ui.$voiceVolume.val(parseFloat(this.model.get('voiceVolume')));
+      this.ui.$effectsVolume.val(parseFloat(this.model.get('effectsVolume')));
+
+      this._updateLightingQualityUI();
+      this._updateShadowQualityUI();
+      this._updateBoardQualityUI();
+    } else {
+      this.$el.find('.settings-category.visual-panel').remove();
+      this.$el.find('.settings-category.audio-panel').remove();
+      this.$el.find('.settings-category.game-panel').remove();
+      this.$el.find('.settings-category.account-panel').remove();
+      this.$el.find('.logout').remove();
+    }
 
     if (!window.isDesktop) {
       this.$el.find('.desktop-quit').remove();
-      this.$el.find('#razer-chroma-setting').remove();
-    }
-
-    if (moment().utc().isAfter(moment.utc('2016-04-20'))) {
-      this.ui.$resetInventorySection.hide();
+      this.$el.find('.desktop-only').remove();
     }
 
     this.ui.$versionTag.text(`v${process.env.VERSION}`);
@@ -185,16 +182,15 @@ const SettingsMenuView = Backbone.Marionette.ItemView.extend({
   },
 
   onShow() {
-    // show ZENDSEK widget
-    window.zE && window.zE.show && window.zE.show();
-
     // listen to global events
     this.listenTo(EventBus.getInstance(), EVENTS.resize, this.onResize);
 
     // listen to model events
-    this.listenTo(this.model, 'change:lightingQuality', this._updateLightingQualityUI.bind(this));
-    this.listenTo(this.model, 'change:shadowQuality', this._updateShadowQualityUI.bind(this));
-    this.listenTo(this.model, 'change:boardQuality', this._updateBoardQualityUI.bind(this));
+    if (this.model) {
+      this.listenTo(this.model, 'change:lightingQuality', this._updateLightingQualityUI.bind(this));
+      this.listenTo(this.model, 'change:shadowQuality', this._updateShadowQualityUI.bind(this));
+      this.listenTo(this.model, 'change:boardQuality', this._updateBoardQualityUI.bind(this));
+    }
 
     // change gradient color mapping
     Scene.getInstance().getFX().showGradientColorMap(this._requestId, CONFIG.ANIMATE_FAST_DURATION, {
@@ -207,9 +203,6 @@ const SettingsMenuView = Backbone.Marionette.ItemView.extend({
   },
 
   onPrepareForDestroy() {
-    // hide ZENDESK widget
-    window.zE && window.zE.hide && window.zE.hide();
-
     // reset gradient color mapping
     Scene.getInstance().getFX().clearGradientColorMap(this._requestId, CONFIG.ANIMATE_MEDIUM_DURATION);
   },
@@ -269,7 +262,7 @@ const SettingsMenuView = Backbone.Marionette.ItemView.extend({
   changeLanguage() {
     const languageKey = this.ui.$language.val();
     const currentLanguageKey = Storage.get('preferredLanguageKey') || 'en';
-    if (currentLanguageKey != languageKey) {
+    if (currentLanguageKey !== languageKey) {
       Storage.set('preferredLanguageKey', languageKey);
       EventBus.getInstance().trigger(EVENTS.request_reload, { id: 'language_changed', message: 'Language Changed.  Please restart.' });
     }
@@ -277,7 +270,7 @@ const SettingsMenuView = Backbone.Marionette.ItemView.extend({
 
   changeHiDPIEnabled() {
     const enabled = this.ui.$checkboxHiDPIEnabled.prop('checked');
-    if (CONFIG.hiDPIEnabled != enabled) {
+    if (CONFIG.hiDPIEnabled !== enabled) {
       CONFIG.hiDPIEnabled = enabled;
       Storage.set('hiDPIEnabled', enabled);
       EventBus.getInstance().trigger(EVENTS.request_resize);
