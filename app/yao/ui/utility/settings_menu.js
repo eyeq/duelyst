@@ -25,8 +25,8 @@ const SettingsMenuView = Backbone.Marionette.ItemView.extend({
   /* ui selector cache */
   ui: {
     $versionTag: '#version-tag',
-    $resolution: '#resolution',
     $language: '#language',
+    $resolution: '#resolution',
     $checkboxHiDPIEnabled: '#checkbox-hi-dpi-enabled',
     $buttonLightingQualityLow: '#lighting-quality-low',
     $buttonLightingQualityMedium: '#lighting-quality-medium',
@@ -55,8 +55,10 @@ const SettingsMenuView = Backbone.Marionette.ItemView.extend({
   events: {
     'click button.logout': 'onLogoutClicked',
     'click button.desktop-quit': 'onDesktopQuitClicked',
-    'change #resolution': 'changeResolution',
+
     'change #language': 'changeLanguage',
+    'change #resolution': 'changeResolution',
+
     'change #checkbox-hi-dpi-enabled': 'changeHiDPIEnabled',
     'click #lighting-quality-low': 'changeLightingQualityLow',
     'click #lighting-quality-medium': 'changeLightingQualityMedium',
