@@ -69,8 +69,6 @@ StreamManager = window.StreamManager = require 'app/ui/managers/stream_manager'
 # Views
 Helpers = require 'app/ui/views/helpers'
 
-LoaderItemView = require 'app/ui/views/item/loader'
-
 UtilityLoadingLoginMenuItemView = require 'app/yao/ui/login/utility_loading_login_menu'
 UtilityMainMenuItemView = require 'app/yao/ui/main_menu/utility_main_menu'
 UtilityMatchmakingMenuItemView = require 'app/yao/ui/game/utility_matchmaking_menu'
@@ -3278,7 +3276,7 @@ App.onUserTriggeredCancel = () ->
         callbackResult = callback()
         if callbackResult instanceof Promise
           cancelPromises.push(callbackResult)
-      else if (App.getIsLoggedIn() or window.isDesktop) and (NavigationManager.getInstance().getIsShowingContentViewClass(LoaderItemView) or NavigationManager.getInstance().getIsShowingContentViewClass(LoginMenuItemView) or NavigationManager.getInstance().getIsShowingContentViewClass(MainMenuItemView) or NavigationManager.getInstance().getIsShowingContentViewClass(TutorialLessonsLayout))
+      else if (App.getIsLoggedIn() or window.isDesktop) and (NavigationManager.getInstance().getIsShowingContentViewClass(LoginMenuItemView) or NavigationManager.getInstance().getIsShowingContentViewClass(MainMenuItemView) or NavigationManager.getInstance().getIsShowingContentViewClass(TutorialLessonsLayout))
         # show esc main menu when on loading or login or main
         cancelPromises.push(NavigationManager.getInstance().showModalView(new EscMainMenuItemView()))
       else if (!gameLayer? or gameLayer.getIsDisabled()) and !App.getIsShowingMain()
