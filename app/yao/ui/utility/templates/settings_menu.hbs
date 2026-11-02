@@ -12,23 +12,23 @@
               <h1 class="modal-title"><i class="fa fa-image"></i> {{localize 'settings.category_visual_label'}}</h1>
               <div class="setting setting-single-line">
                 <label for="resolution">Viewport</label>
-                {{#if _resolutionsThatFit}}
+                {{#if resolutionsThatFit}}
                   <select id="resolution">
-                    {{#if _resolutionsThatDontFit}}
+                    {{#if resolutionsThatDontFit}}
                       <optgroup label="Supported by your window size">
-                        {{#_resolutionsThatFit}}
+                        {{#resolutionsThatFit}}
                           <option value="{{value}}" {{#if selected}} selected {{/if}}>{{localize description}}</option>
-                        {{/_resolutionsThatFit}}
+                        {{/resolutionsThatFit}}
                       </optgroup>
                       <optgroup label="Bigger than your window size">
-                        {{#_resolutionsThatDontFit}}
+                        {{#resolutionsThatDontFit}}
                           <option value="{{value}}" {{#if selected}} selected {{/if}}>{{localize description}}</option>
-                        {{/_resolutionsThatDontFit}}
+                        {{/resolutionsThatDontFit}}
                       </optgroup>
                     {{else}}
-                      {{#_resolutionsThatFit}}
+                      {{#resolutionsThatFit}}
                         <option value="{{value}}" {{#if selected}} selected {{/if}}>{{localize description}}</option>
-                      {{/_resolutionsThatFit}}
+                      {{/resolutionsThatFit}}
                     {{/if}}
                   </select>
                 {{else}}

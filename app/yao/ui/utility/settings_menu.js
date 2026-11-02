@@ -92,43 +92,49 @@ const SettingsMenuView = Backbone.Marionette.ItemView.extend({
     'click .redeem-gift-code': 'onRedeemGiftCodePressed',
   },
 
+  templateHelpers: {
+    resolutionsThatFit() {
+      return this._resolutionsThatFit;
+    },
+    resolutionsThatDontFit() {
+      return this._resolutionsThatDontFit;
+    },
+  },
+
   animateIn: Animations.fadeIn,
   animateOut: Animations.fadeOut,
+
   _requestId: null,
+  _resolutionsThatFit: null,
+  _resolutionsThatDontFit: null,
 
   initialize() {
     // generate unique id for requests
     this._requestId = generatePushID();
+    this._resolutionsThatFit = [];
+    this._resolutionsThatDontFit = [];
 
     // check whether changing viewport settings will do anything
     // generate global scale for resolution auto setting
     const $html = $('html');
     const screenWidth = $html.width();
     const screenHeight = $html.height();
-    const globalScaleExact = CONFIG.getGlobalScaleForResolution(CONFIG.RESOLUTION_EXACT, screenWidth, screenHeight);
-    if (globalScaleExact !== 1.0) {
-      // check all resolutions and sort by whether they fit into user's current screen size
-      const resolutions = UtilsJavascript.deepCopy(CONFIG.RESOLUTIONS);
-      const resolutionsThatFit = [];
-      const resolutionsThatDontFit = [];
-      for (let i = 0, il = resolutions.length; i < il; i++) {
-        const resolutionData = resolutions[i];
-        if (resolutionData.value === CONFIG.RESOLUTION_AUTO || resolutionData.value === CONFIG.RESOLUTION_PIXEL_PERFECT) {
-          resolutionsThatFit.push(resolutionData);
+
+    // check all resolutions and sort by whether they fit into user's current screen size
+    const resolutions = UtilsJavascript.deepCopy(CONFIG.RESOLUTIONS);
+    for (let i = 0, il = resolutions.length; i < il; i++) {
+      const resolutionData = resolutions[i];
+      if (resolutionData.value === CONFIG.RESOLUTION_AUTO || resolutionData.value === CONFIG.RESOLUTION_PIXEL_PERFECT) {
+        this._resolutionsThatFit.push(resolutionData);
+      } else {
+        const resolution = $.trim(resolutionData.description);
+        const resWidth = parseInt(resolution.replace(/x[\s\t]*?\d+/, ''));
+        const resHeight = parseInt(resolution.replace(/\d+[\s\t]*?x/, ''));
+        if (resWidth > screenWidth || resHeight > screenHeight) {
+          this._resolutionsThatDontFit.push(resolutionData);
         } else {
-          const resolution = $.trim(resolutionData.description);
-          const resWidth = parseInt(resolution.replace(/x[\s\t]*?\d+/, ''));
-          const resHeight = parseInt(resolution.replace(/\d+[\s\t]*?x/, ''));
-          if (resWidth > screenWidth || resHeight > screenHeight) {
-            resolutionsThatDontFit.push(resolutionData);
-          } else {
-            resolutionsThatFit.push(resolutionData);
-          }
+          this._resolutionsThatFit.push(resolutionData);
         }
-      }
-      this.model.set('_resolutionsThatFit', resolutionsThatFit);
-      if (resolutionsThatDontFit.length > 0) {
-        this.model.set('_resolutionsThatDontFit', resolutionsThatDontFit);
       }
     }
   },
