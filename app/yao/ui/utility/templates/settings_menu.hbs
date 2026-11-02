@@ -11,6 +11,15 @@
             <div class="settings-category window-panel">
               <h1 class="modal-title"><i class="fa fa-image"></i> {{localize 'settings.category_window_label'}}</h1>
               <div class="setting setting-single-line">
+                <label for="language">{{localize 'settings.language'}}</label>
+                <select id="language">
+                  <option value="en" {{#if selected}} selected {{/if}}>English</option>
+                  <option value="de" {{#if selected}} selected {{/if}}>Deutsch</option>
+                  <option value="zh-TW" {{#if selected}} selected {{/if}}>中文</option>
+                  <option value="ja" {{#if selected}} selected {{/if}}>日本語</option>
+                </select>
+              </div>
+              <div class="setting setting-single-line">
                 <label for="resolution">Viewport</label>
                 {{#if resolutionsThatFit}}
                   <select id="resolution">
@@ -35,13 +44,10 @@
                   <small class="disabled">{{localize 'settings.viewport_not_supported'}}</small>
                 {{/if}}
               </div>
-              <div class="setting setting-single-line">
-                <label for="language">Language</label>
-                <select id="language">
-                  <option value="en" {{#if selected}} selected {{/if}}>English</option>
-                  {{!-- <option value="de" {{#if selected}} selected {{/if}}>Deutsch (Beta)</option> --}}
-                </select>
-              </div>
+            </div>
+
+            <div class="settings-category visual-panel">
+              <h1 class="modal-title"><i class="fa fa-image"></i> {{localize 'settings.category_visual_label'}}</h1>
               <div class="setting setting-single-line" data-toggle="tooltip" data-placement="left" title="{{localize 'settings.hiDPI_tooltip'}}">
                 <label for="checkbox-hi-dpi-enabled">{{localize 'settings.hiDPI_name'}}</label>
                 <div class="switch">
