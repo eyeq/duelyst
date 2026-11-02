@@ -7,6 +7,10 @@ window.isDesktop = true;
 // expose some electron functions to window
 const { app } = electron.remote;
 
+window.relaunch = () => {
+  app.relaunch();
+  app.quit();
+};
 window.quitDesktop = app.quit;
 window.uuid = uuid;
 window.openUrl = electron.shell.openPath;

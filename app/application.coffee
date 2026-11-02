@@ -3584,7 +3584,7 @@ App._reload = (message) ->
   Logger.module("APPLICATION").log "App._reload"
   promptDialogItemView = new PromptDialogItemView({title: "Please #{if window.isDesktop then "restart" else "reload"}!", message: message})
   promptDialogItemView.listenTo(promptDialogItemView, 'cancel', () ->
-    if window.isDesktop then window.quitDesktop() else location.reload()
+    if window.isDesktop then window.relaunch() else location.reload()
   )
   NavigationManager.getInstance().showDialogView(promptDialogItemView)
 
