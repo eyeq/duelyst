@@ -126,8 +126,6 @@ TutorialLayout = require 'app/ui/views/layouts/tutorial'
 
 VictoryItemView = require 'app/ui/views/item/victory'
 
-MessagesCompositeView = require 'app/ui/views/composite/messages'
-
 ConfirmDialogItemView = require 'app/ui/views/item/confirm_dialog'
 PromptDialogItemView = require 'app/ui/views/item/prompt_dialog'
 ActivityDialogItemView = require 'app/ui/views/item/activity_dialog'
