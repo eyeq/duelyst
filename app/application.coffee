@@ -639,11 +639,8 @@ App._showLoginMenu = (options) ->
       # show login menu
       contentPromise = NavigationManager.getInstance().showContentView(new LoginMenuItemView(options))
 
-      # show utility menu for desktop only
-      if window.isDesktop
-        utilityPromise = NavigationManager.getInstance().showUtilityView(new UtilityLoadingLoginMenuItemView())
-      else
-        utilityPromise = Promise.resolve()
+      # show utility menu
+      utilityPromise = NavigationManager.getInstance().showUtilityView(new UtilityLoadingLoginMenuItemView())
 
       return Promise.all([
         viewPromise,
@@ -3276,7 +3273,7 @@ App.onUserTriggeredCancel = () ->
         callbackResult = callback()
         if callbackResult instanceof Promise
           cancelPromises.push(callbackResult)
-      else if (App.getIsLoggedIn() or window.isDesktop) and (NavigationManager.getInstance().getIsShowingContentViewClass(LoginMenuItemView) or NavigationManager.getInstance().getIsShowingContentViewClass(MainMenuItemView) or NavigationManager.getInstance().getIsShowingContentViewClass(TutorialLessonsLayout))
+      else if (NavigationManager.getInstance().getIsShowingContentViewClass(LoginMenuItemView) or NavigationManager.getInstance().getIsShowingContentViewClass(MainMenuItemView) or NavigationManager.getInstance().getIsShowingContentViewClass(TutorialLessonsLayout))
         # show esc main menu when on loading or login or main
         cancelPromises.push(NavigationManager.getInstance().showModalView(new EscMainMenuItemView()))
       else if (!gameLayer? or gameLayer.getIsDisabled()) and !App.getIsShowingMain()
