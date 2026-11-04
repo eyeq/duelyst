@@ -19,7 +19,8 @@ const RedeemGiftCodeModalView = require('app/ui/views/item/redeem_gift_code_moda
 
 const SettingsMenuView = Backbone.Marionette.ItemView.extend({
 
-  className: 'modal duelyst-modal settings-menu',
+  id: 'settings-menu',
+  className: 'modal duelyst-modal',
   template: require('app/yao/ui/utility/templates/settings_menu.hbs'),
 
   /* ui selector cache */
@@ -40,13 +41,13 @@ const SettingsMenuView = Backbone.Marionette.ItemView.extend({
     $buttonBoardQualityLow: '#board-quality-low',
     $buttonBoardQualityHigh: '#board-quality-high',
     $bloom: '#bloom',
+    $checkboxRazerChromaEnabled: '#checkbox-razer-chroma-enabled',
 
     $checkboxAlwaysShowStats: '#checkbox-always-show-stats',
     $checkboxShowInGameTips: '#checkbox-show-in-game-tips',
     $checkboxShowBattleLog: '#checkbox-show-battlelog',
     $checkboxPlayerDetails: '#checkbox-player-details',
     $checkboxStickyTargeting: '#checkbox-sticky-targeting',
-    $checkboxRazerChromaEnabled: '#checkbox-razer-chroma-enabled',
 
     $masterVolume: '#master-volume',
     $musicVolume: '#music-volume',
@@ -76,13 +77,13 @@ const SettingsMenuView = Backbone.Marionette.ItemView.extend({
     'click #board-quality-low': 'changeBoardQualityLow',
     'click #board-quality-high': 'changeBoardQualityHigh',
     'change #bloom': 'changeBloom',
+    'change #checkbox-razer-chroma-enabled': 'changeRazerChromaEnabled',
 
     'change #checkbox-always-show-stats': 'changeAlwaysShowStats',
     'change #checkbox-show-in-game-tips': 'changeShowInGameTips',
     'change #checkbox-show-battlelog': 'changeShowBattleLog',
     'change #checkbox-player-details': 'changeShowPlayerDetails',
     'change #checkbox-sticky-targeting': 'changeStickyTargeting',
-    'change #checkbox-razer-chroma-enabled': 'changeRazerChromaEnabled',
 
     'change #master-volume': 'changeMasterVolume',
     'change #music-volume': 'changeMusicVolume',
@@ -165,13 +166,13 @@ const SettingsMenuView = Backbone.Marionette.ItemView.extend({
       this._updateShadowQualityUI();
       this._updateBoardQualityUI();
       this.ui.$bloom.val(parseFloat(this.model.get('bloom')));
+      this.ui.$checkboxRazerChromaEnabled.prop('checked', this.model.get('razerChromaEnabled'));
 
       this.ui.$checkboxAlwaysShowStats.prop('checked', this.model.get('alwaysShowStats'));
       this.ui.$checkboxShowInGameTips.prop('checked', this.model.get('showInGameTips'));
       this.ui.$checkboxShowBattleLog.prop('checked', this.model.get('showBattleLog'));
       this.ui.$checkboxPlayerDetails.prop('checked', this.model.get('showPlayerDetails'));
       this.ui.$checkboxStickyTargeting.prop('checked', this.model.get('stickyTargeting'));
-      this.ui.$checkboxRazerChromaEnabled.prop('checked', this.model.get('razerChromaEnabled'));
 
       this.ui.$masterVolume.val(parseFloat(this.model.get('masterVolume')));
       this.ui.$musicVolume.val(parseFloat(this.model.get('musicVolume')));
