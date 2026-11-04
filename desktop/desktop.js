@@ -93,11 +93,6 @@ app.on('ready', () => {
 
   mainWindow = window.createWindow(windowOptions);
 
-  // toggle to fullscreen after launch
-  if (!argv.windowed) {
-    mainWindow.setFullScreen(true);
-  }
-
   // can access at window.__args__ from scripts
   // ran from index.html
   const argsForRenderer = {
@@ -120,10 +115,6 @@ function setupWin32Shortcuts() {
   localShortcut.register('Ctrl+Shift+I', () => {
     const focusedWindow = BrowserWindow.getFocusedWindow();
     if (focusedWindow) focusedWindow.toggleDevTools();
-  });
-  localShortcut.register('Ctrl+Shift+F', () => {
-    const focusedWindow = BrowserWindow.getFocusedWindow();
-    if (focusedWindow) focusedWindow.setFullScreen(!focusedWindow.isFullScreen());
   });
 }
 
@@ -192,14 +183,6 @@ function setupDarwinMenu() {
           },
         },
         {
-          label: 'Toggle Full Screen',
-          accelerator: 'Ctrl+Command+F',
-          click() {
-            const focusedWindow = BrowserWindow.getFocusedWindow();
-            if (focusedWindow) focusedWindow.setFullScreen(!focusedWindow.isFullScreen());
-          },
-        },
-        {
           label: 'Toggle Developer Tools',
           accelerator: 'Alt+Command+I',
           click() {
@@ -222,6 +205,14 @@ function setupDarwinMenu() {
   const menu = Menu.buildFromTemplate(template);
   Menu.setApplicationMenu(menu);
 }
+
+ipcMain.on('setFullScreen', () => {
+  mainWindow.setFullScreen(true);
+});
+
+ipcMain.on('exitFullScreen', () => {
+  mainWindow.setFullScreen(false);
+});
 
 /*
 function setupDiscord() {
@@ -267,6 +258,7 @@ function setupDiscord() {
 }
 */
 
+/*
 ipcMain.on('create-window', (event, options) => {
   const windowOptions = {
     title: options.title || 'Paymentwall',
@@ -283,3 +275,4 @@ ipcMain.on('create-window', (event, options) => {
   const win = window.createWindow(windowOptions);
   win.showURL(options.url, {}, () => { });
 });
+*/

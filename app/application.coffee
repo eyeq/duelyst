@@ -3607,6 +3607,12 @@ App.on "start", (options) ->
   # set unload alert
   $(window).on('beforeunload', App.beforeunload.bind(App))
 
+  if window.isDesktop
+    if Storage.get('fullscreen', true)
+      window.ipcRenderer.send('setFullScreen');
+    else
+      window.ipcRenderer.send('exitFullScreen');
+
   # set initial selected scene
   selectedScene = parseInt(Storage.get("selectedScene"))
   if moment.utc().isAfter("2016-11-29") and moment.utc().isBefore("2017-01-01")

@@ -27,6 +27,7 @@ const SettingsMenuView = Backbone.Marionette.ItemView.extend({
     $versionTag: '#version-tag',
     $language: '#language',
     $resolution: '#resolution',
+    $checkboxFullscreen: '#checkbox-fullscreen-enabled',
     $checkboxHiDPIEnabled: '#checkbox-hi-dpi-enabled',
     $buttonLightingQualityLow: '#lighting-quality-low',
     $buttonLightingQualityMedium: '#lighting-quality-medium',
@@ -58,6 +59,7 @@ const SettingsMenuView = Backbone.Marionette.ItemView.extend({
 
     'change #language': 'changeLanguage',
     'change #resolution': 'changeResolution',
+    'change #checkbox-fullscreen-enabled': 'changeFullscreen',
 
     'change #checkbox-hi-dpi-enabled': 'changeHiDPIEnabled',
     'click #lighting-quality-low': 'changeLightingQualityLow',
@@ -143,6 +145,7 @@ const SettingsMenuView = Backbone.Marionette.ItemView.extend({
     this.ui.$bloom.attr('step', 0.05);
 
     this.ui.$resolution.val(parseFloat(CONFIG.resolution));
+    this.ui.$checkboxFullscreen.prop('checked', Storage.get('fullscreen', true));
     const currentLanguageKey = Storage.get('preferredLanguageKey') || 'en';
     this.ui.$language.val(currentLanguageKey);
     this.ui.$checkboxHiDPIEnabled.prop('checked', CONFIG.hiDPIEnabled);
@@ -257,6 +260,20 @@ const SettingsMenuView = Backbone.Marionette.ItemView.extend({
     if (CONFIG.resolution !== res) {
       CONFIG.resolution = res;
       Storage.set('resolution', res);
+      EventBus.getInstance().trigger(EVENTS.request_resize);
+    }
+  },
+
+  changeFullscreen () {
+    const enabled = this.ui.$checkboxFullscreen.prop('checked');
+    const current = Storage.get('fullscreen', true);
+    if (current !== enabled) {
+      Storage.set('fullscreen', enabled);
+      if(enabled) {
+        window.ipcRenderer.send('setFullScreen');
+      } else {
+        window.ipcRenderer.send('exitFullScreen');
+      }
       EventBus.getInstance().trigger(EVENTS.request_resize);
     }
   },
@@ -418,5 +435,4 @@ const SettingsMenuView = Backbone.Marionette.ItemView.extend({
 
 });
 
-// Expose the class either via CommonJS or the global object
 module.exports = SettingsMenuView;
