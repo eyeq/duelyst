@@ -55,7 +55,7 @@
 
             <div class="settings-category visual-panel">
               <h1 class="modal-title"><i class="fa fa-image"></i> {{localize 'settings.category_visual_label'}}</h1>
-              <div class="setting setting-single-line" data-toggle="tooltip" data-placement="left" title="{{localize 'settings.hiDPI_tooltip'}}">
+              <div class="setting setting-single-line" data-toggle="tooltip" data-placement="right" title="{{localize 'settings.hiDPI_tooltip'}}">
                 <label for="checkbox-hi-dpi-enabled">{{localize 'settings.hiDPI_name'}}</label>
                 <div class="switch">
                   <input type="checkbox" id="checkbox-hi-dpi-enabled" value="">
@@ -85,9 +85,9 @@
                   <button type="button" id="board-quality-high" class="btn btn-primary">{{localize 'settings.settings_button_high'}}</button>
                 </div>
               </div>
-              <div class="setting setting-single-line" data-toggle="tooltip" data-placement="left" title="{{localize 'settings.bloom_tooltip'}}">
+              <div class="setting setting-single-line" data-toggle="tooltip" data-placement="right" title="{{localize 'settings.bloom_tooltip'}}">
                 <label for=bloom class="setting-label range">{{localize 'settings.bloom_label'}}</label>
-                <input type=range id=bloom class="range" min=0.0 max=1.0 step=0.1 />
+                <input type=range id=bloom class="range" min="0.0" max="1.0" step="0.1" />
               </div>
             </div>
 
@@ -95,19 +95,19 @@
               <h1 class="modal-title"><i class="fa fa-volume-up"></i> {{localize 'settings.category_audio_label'}}</h1>
               <div class="setting setting-single-line">
                 <label for=master-volume class="setting-label range">{{localize 'settings.master_volume_label'}}</label>
-                <input type=range id=master-volume class="range" min=0 max=1 step=0.01 />
+                <input type=range id=master-volume class="range" min="0" max="1" step="0.01" />
               </div>
               <div class="setting setting-single-line">
                 <label for=music-volume class="setting-label range">{{localize 'settings.music_volume_label'}}</label>
-                <input type=range id=music-volume class="range" min=0 max=1 step=0.01 />
+                <input type=range id=music-volume class="range" min="0" max="1" step="0.01" />
               </div>
               <div class="setting setting-single-line">
                 <label for=voice-volume class="setting-label range">{{localize 'settings.voice_volume_label'}}</label>
-                <input type=range id=voice-volume class="range" min=0 max=1 step=0.01 />
+                <input type=range id=voice-volume class="range" min="0" max="1" step="0.01" />
               </div>
               <div class="setting setting-single-line">
                 <label for=effects-volume class="setting-labeli range">{{localize 'settings.effects_volume_label'}}</label>
-                <input type=range id=effects-volume class="range" min=0 max=1 step=0.01 />
+                <input type=range id=effects-volume class="range" min="0" max="1" step="0.01" />
               </div>
             </div>
           </div>
@@ -161,14 +161,14 @@
 
             <div class="settings-category account-panel">
               <h1 class="modal-title"><i class="fa fa-user"></i> {{localize 'settings.category_account_label'}}</h1>
-              <div class="setting setting-single-line" data-toggle="tooltip" data-placement="right" title="{{localize 'settings.do_not_disturb_tooltip'}}">
+              <div class="setting setting-single-line" data-toggle="tooltip" data-placement="left" title="{{localize 'settings.do_not_disturb_tooltip'}}">
                 <label for="checkbox-do-not-disturb">{{localize 'settings.do_not_disturb'}}</label>
                 <div class="switch">
                   <input type="checkbox" id="checkbox-do-not-disturb" value="">
                   <label><i></i></label>
                 </div>
               </div>
-              <div class="setting setting-single-line" data-toggle="tooltip" data-placement="right" title="{{localize 'settings.block_spectators_tooltip'}}">
+              <div class="setting setting-single-line" data-toggle="tooltip" data-placement="left" title="{{localize 'settings.block_spectators_tooltip'}}">
                 <label for="checkbox-do-not-disturb">{{localize 'settings.block_spectators'}}</label>
                 <div class="switch">
                   <input type="checkbox" id="checkbox-block-spectators" value="">
@@ -190,11 +190,9 @@
       </div>
     </div>
     <div class="modal-footer">
-      <button class="btn btn-clean btn-clean-primary logout">{{localize 'settings.logout'}}<i class="fa fa-sign-out"></i></button>
-      <button class="btn btn-clean btn-clean-primary desktop-quit">{{localize 'settings.quit'}}<i class="fa fa-times-circle"></i></button>
+      <button class="btn btn-clean btn-clean-primary logout">{{localize 'common.logout_button_label'}}<i class="fa fa-sign-out"></i></button>
+      <button class="btn btn-clean btn-clean-primary desktop-quit">{{localize 'common.quit_button_label'}}<i class="fa fa-times-circle"></i></button>
       <div id='version-tag'></div>
     </div>
   </div>
-  <!-- /.modal-content -->
 </div>
-<!-- /.modal-dialog -->

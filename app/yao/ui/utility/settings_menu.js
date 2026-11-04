@@ -25,9 +25,11 @@ const SettingsMenuView = Backbone.Marionette.ItemView.extend({
   /* ui selector cache */
   ui: {
     $versionTag: '#version-tag',
+
     $language: '#language',
     $resolution: '#resolution',
     $checkboxFullscreen: '#checkbox-fullscreen-enabled',
+
     $checkboxHiDPIEnabled: '#checkbox-hi-dpi-enabled',
     $buttonLightingQualityLow: '#lighting-quality-low',
     $buttonLightingQualityMedium: '#lighting-quality-medium',
@@ -38,18 +40,21 @@ const SettingsMenuView = Backbone.Marionette.ItemView.extend({
     $buttonBoardQualityLow: '#board-quality-low',
     $buttonBoardQualityHigh: '#board-quality-high',
     $bloom: '#bloom',
-    $checkboxDoNotDisturb: '#checkbox-do-not-disturb',
-    $checkboxBlockSpectators: '#checkbox-block-spectators',
+
     $checkboxAlwaysShowStats: '#checkbox-always-show-stats',
+    $checkboxShowInGameTips: '#checkbox-show-in-game-tips',
     $checkboxShowBattleLog: '#checkbox-show-battlelog',
     $checkboxPlayerDetails: '#checkbox-player-details',
     $checkboxStickyTargeting: '#checkbox-sticky-targeting',
-    $checkboxShowInGameTips: '#checkbox-show-in-game-tips',
     $checkboxRazerChromaEnabled: '#checkbox-razer-chroma-enabled',
+
     $masterVolume: '#master-volume',
     $musicVolume: '#music-volume',
     $voiceVolume: '#voice-volume',
     $effectsVolume: '#effects-volume',
+
+    $checkboxDoNotDisturb: '#checkbox-do-not-disturb',
+    $checkboxBlockSpectators: '#checkbox-block-spectators',
   },
 
   /* Ui events hash */
@@ -71,18 +76,22 @@ const SettingsMenuView = Backbone.Marionette.ItemView.extend({
     'click #board-quality-low': 'changeBoardQualityLow',
     'click #board-quality-high': 'changeBoardQualityHigh',
     'change #bloom': 'changeBloom',
-    'change #checkbox-do-not-disturb': 'changeDoNotDisturb',
-    'change #checkbox-block-spectators': 'changeBlockSpectators',
+
     'change #checkbox-always-show-stats': 'changeAlwaysShowStats',
+    'change #checkbox-show-in-game-tips': 'changeShowInGameTips',
     'change #checkbox-show-battlelog': 'changeShowBattleLog',
     'change #checkbox-player-details': 'changeShowPlayerDetails',
     'change #checkbox-sticky-targeting': 'changeStickyTargeting',
-    'change #checkbox-show-in-game-tips': 'changeShowInGameTips',
     'change #checkbox-razer-chroma-enabled': 'changeRazerChromaEnabled',
+
     'change #master-volume': 'changeMasterVolume',
     'change #music-volume': 'changeMusicVolume',
     'change #voice-volume': 'changeVoiceVolume',
     'change #effects-volume': 'changeEffectsVolume',
+
+    'change #checkbox-do-not-disturb': 'changeDoNotDisturb',
+    'change #checkbox-block-spectators': 'changeBlockSpectators',
+
     'click .change-username': 'onChangeUsernameClicked',
     'click .reset-inventory': 'onResetAccountInventoryPressed',
     'click .redeem-gift-code': 'onRedeemGiftCodePressed',
@@ -144,30 +153,33 @@ const SettingsMenuView = Backbone.Marionette.ItemView.extend({
     this.ui.$bloom.attr('max', CONFIG.BLOOM_MAX);
     this.ui.$bloom.attr('step', 0.05);
 
-    this.ui.$resolution.val(parseFloat(CONFIG.resolution));
-    this.ui.$checkboxFullscreen.prop('checked', Storage.get('fullscreen', true));
     const currentLanguageKey = Storage.get('preferredLanguageKey') || 'en';
     this.ui.$language.val(currentLanguageKey);
+    this.ui.$resolution.val(parseFloat(CONFIG.resolution));
+    this.ui.$checkboxFullscreen.prop('checked', Storage.get('fullscreen', true));
+
     this.ui.$checkboxHiDPIEnabled.prop('checked', CONFIG.hiDPIEnabled);
 
     if (this.model) {
+      this._updateLightingQualityUI();
+      this._updateShadowQualityUI();
+      this._updateBoardQualityUI();
       this.ui.$bloom.val(parseFloat(this.model.get('bloom')));
-      this.ui.$checkboxDoNotDisturb.prop('checked', this.model.get('doNotDisturb'));
-      this.ui.$checkboxBlockSpectators.prop('checked', this.model.get('blockSpectators'));
+
       this.ui.$checkboxAlwaysShowStats.prop('checked', this.model.get('alwaysShowStats'));
+      this.ui.$checkboxShowInGameTips.prop('checked', this.model.get('showInGameTips'));
       this.ui.$checkboxShowBattleLog.prop('checked', this.model.get('showBattleLog'));
       this.ui.$checkboxPlayerDetails.prop('checked', this.model.get('showPlayerDetails'));
       this.ui.$checkboxStickyTargeting.prop('checked', this.model.get('stickyTargeting'));
-      this.ui.$checkboxShowInGameTips.prop('checked', this.model.get('showInGameTips'));
       this.ui.$checkboxRazerChromaEnabled.prop('checked', this.model.get('razerChromaEnabled'));
+
       this.ui.$masterVolume.val(parseFloat(this.model.get('masterVolume')));
       this.ui.$musicVolume.val(parseFloat(this.model.get('musicVolume')));
       this.ui.$voiceVolume.val(parseFloat(this.model.get('voiceVolume')));
       this.ui.$effectsVolume.val(parseFloat(this.model.get('effectsVolume')));
 
-      this._updateLightingQualityUI();
-      this._updateShadowQualityUI();
-      this._updateBoardQualityUI();
+      this.ui.$checkboxDoNotDisturb.prop('checked', this.model.get('doNotDisturb'));
+      this.ui.$checkboxBlockSpectators.prop('checked', this.model.get('blockSpectators'));
     } else {
       this.$el.find('.settings-category.visual-panel').remove();
       this.$el.find('.settings-category.audio-panel').remove();
@@ -219,7 +231,7 @@ const SettingsMenuView = Backbone.Marionette.ItemView.extend({
 
   /* event handlers */
 
-  onChangeUsernameClicked(e) {
+  onChangeUsernameClicked() {
     NavigationManager.getInstance().showDialogView(new ChangeUsernameItemView({ model: ProfileManager.getInstance().profile }));
   },
 
@@ -264,12 +276,12 @@ const SettingsMenuView = Backbone.Marionette.ItemView.extend({
     }
   },
 
-  changeFullscreen () {
+  changeFullscreen() {
     const enabled = this.ui.$checkboxFullscreen.prop('checked');
     const current = Storage.get('fullscreen', true);
     if (current !== enabled) {
       Storage.set('fullscreen', enabled);
-      if(enabled) {
+      if (enabled) {
         window.ipcRenderer.send('setFullScreen');
       } else {
         window.ipcRenderer.send('exitFullScreen');
