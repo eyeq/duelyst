@@ -13,7 +13,7 @@ const Animations = require('app/ui/views/animations');
 const NavigationManager = require('app/ui/managers/navigation_manager');
 const ProfileManager = require('app/ui/managers/profile_manager');
 const ConfirmDialogItemView = require('app/ui/views/item/confirm_dialog');
-const ChangeUsernameItemView = require('app/ui/views/item/change_username');
+const ChangeUsernameItemView = require('app/yao/ui/profile/change_username');
 
 const SettingsMenuView = Backbone.Marionette.ItemView.extend({
 
