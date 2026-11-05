@@ -19,9 +19,7 @@
           </div>
           <div class="form-control-buttons">
             {{#if canChangeUsernameForFree}}
-              <button class="btn btn-clean btn-clean-confirm prompt-submit">
-                Change
-              </button>
+              <button class="btn btn-clean btn-clean-confirm prompt-submit">Change</button>
             {{else}}
               <button class="btn btn-clean btn-clean-secondary prompt-submit">
                 <span class="icon-gold">100</span> <span class="text-gold">{{localize 'common.currency_gold'}}</span>
@@ -53,6 +51,7 @@
         <div class="icon-container"><i class="fa fa-times"></i></div>
         <h2 class="prompt-title">{{localize 'common.error_occurred_title'}}</h2>
         <p class="prompt-message error-message"></p>
+        <button class="btn btn-clean btn-clean-cancel prompt-error-back">{{localize 'common.back_button_label'}}</button>
       </div>
     </div>
   </div>
