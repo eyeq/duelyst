@@ -14,7 +14,6 @@ const NavigationManager = require('app/ui/managers/navigation_manager');
 const ProfileManager = require('app/ui/managers/profile_manager');
 const ConfirmDialogItemView = require('app/ui/views/item/confirm_dialog');
 const ChangeUsernameItemView = require('app/ui/views/item/change_username');
-const RedeemGiftCodeModalView = require('app/ui/views/item/redeem_gift_code_modal');
 
 const SettingsMenuView = Backbone.Marionette.ItemView.extend({
 
@@ -93,7 +92,6 @@ const SettingsMenuView = Backbone.Marionette.ItemView.extend({
     'change #checkbox-block-spectators': 'changeBlockSpectators',
 
     'click .change-username': 'onChangeUsernameClicked',
-    'click .redeem-gift-code': 'onRedeemGiftCodePressed',
   },
 
   templateHelpers: {
@@ -232,10 +230,6 @@ const SettingsMenuView = Backbone.Marionette.ItemView.extend({
 
   onChangeUsernameClicked() {
     NavigationManager.getInstance().showDialogView(new ChangeUsernameItemView({ model: ProfileManager.getInstance().profile }));
-  },
-
-  onRedeemGiftCodePressed() {
-    NavigationManager.getInstance().showModalView(new RedeemGiftCodeModalView());
   },
 
   onLogoutClicked() {
