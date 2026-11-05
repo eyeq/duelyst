@@ -1,19 +1,15 @@
-'use strict';
+const Session = require('app/common/session2');
+const validator = require('validator');
+const Logger = require('app/common/logger');
+const Animations = require('app/ui/views/animations');
+const moment = require('moment');
+const ProfileManager = require('app/ui/managers/profile_manager');
+const FormPromptDialogItemView = require('app/ui/views/item/form_prompt_dialog');
 
-var Session = require('app/common/session2');
-var validator = require('validator');
-var Logger = require('app/common/logger');
-var Animations = require('app/ui/views/animations');
-var ChangeUsernameTmpl = require('app/yao/ui/profile/templates/change_username.hbs');
-var moment = require('moment');
-var ProfileManager = require('app/ui/managers/profile_manager');
-var FormPromptDialogItemView = require('app/ui/views/item/form_prompt_dialog');
-
-var ChangeUsernameItemView = FormPromptDialogItemView.extend({
-
-  template: ChangeUsernameTmpl,
+const ChangeUsernameItemView = FormPromptDialogItemView.extend({
 
   id: 'app-change-username',
+  template: require('app/yao/ui/profile/templates/change_username.hbs'),
 
   ui: {
     $form: '.prompt-form',
@@ -29,23 +25,23 @@ var ChangeUsernameItemView = FormPromptDialogItemView.extend({
 
   templateHelpers: {
 
-    canChangeUsernameThisMonth: function () {
-      var updatedAt = this.model.get('username_updated_at') || 0;
-      var then = moment(updatedAt);
-      var duration = moment.duration(moment().utc().diff(then));
+    canChangeUsernameThisMonth() {
+      const updatedAt = this.model.get('username_updated_at') || 0;
+      const then = moment(updatedAt);
+      const duration = moment.duration(moment().utc().diff(then));
       return duration.asMonths() >= 1.0;
     },
 
-    canChangeUsernameForFree: function () {
+    canChangeUsernameForFree() {
       return !this.model.get('username_updated_at');
     },
   },
 
   /* region EVENTS */
 
-  onFormControlChangeContent: function (event) {
+  onFormControlChangeContent(event) {
     // update modified state
-    var $target = $(event.target);
+    const $target = $(event.target);
     if (this.ui.$username.is($target)) {
       this._hasModifiedUsername = true;
     }
@@ -53,10 +49,10 @@ var ChangeUsernameItemView = FormPromptDialogItemView.extend({
     FormPromptDialogItemView.prototype.onFormControlChangeContent.apply(this, arguments);
   },
 
-  onSubmit: function (e) {
+  onSubmit(e) {
     FormPromptDialogItemView.prototype.onSubmit.apply(this, arguments);
 
-    var username = this.ui.$username.val();
+    const username = this.ui.$username.val();
     Session.changeUsername(username).bind(this)
       .then(function (res) {
         this.onSuccess(res);
@@ -71,11 +67,11 @@ var ChangeUsernameItemView = FormPromptDialogItemView.extend({
 
   /* region STATE */
 
-  updateValidState: function () {
+  updateValidState() {
     FormPromptDialogItemView.prototype.updateValidState.apply(this, arguments);
 
-    var username = this.ui.$username.val();
-    var isValid = true;
+    const username = this.ui.$username.val();
+    let isValid = true;
 
     // check username
     if (this._hasModifiedUsername) {
