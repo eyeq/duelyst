@@ -23,7 +23,7 @@ var DuelystBackbone = require('app/ui/extensions/duelyst_backbone');
 var DuelystFirebase = require('app/ui/extensions/duelyst_firebase');
 var ChangePortraitItemView = require('app/ui/views/item/change_portrait');
 var ChangeUsernameItemView = require('app/yao/ui/profile/change_username');
-var ChangePasswordItemView = require('app/ui/views/item/change_password');
+var ChangePasswordItemView = require('app/yao/ui/profile/change_password');
 var ConfirmDialogItemView = require('app/ui/views/item/confirm_dialog');
 // region views
 var ProfileManager = require('app/ui/managers/profile_manager');
