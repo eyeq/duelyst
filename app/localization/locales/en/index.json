@@ -4059,7 +4059,13 @@
     "registration_validation_password_instructions": "Minimum 8 characters",
     "registration_validation_passwords_dont_match": "Passwords must match",
     "registration_validation_invite_code_invalid": "Invalid invite code",
-    "already_have_an_account": "already have an account?"
+    "change_username_title": "Change Username",
+    "change_username_free_message": "You can change your username only <strong>once per month</strong>, and your FIRST username change is FREE. Changing your username afterwards will cost 100 Gold.",
+    "change_username_message": "You can change your username only <strong>once per month</strong>, and will cost 100 Gold.",
+    "change_username_max_per_month_error": "You have already changed your username the maximum allowed times this month.",
+    "change_username_username_label": "New Username",
+    "change_username_success": "Your username has been updated!",
+    "change_username_validation_username_dont_change": "Username must be different"
   },
   "rewards": {
     "level_up_reward_title": "Level {{level}} Reward",

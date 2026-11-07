@@ -4054,12 +4054,18 @@
     "registration_referral_field_placeholder": "friend username",
     "registration_submit_button_label": "Submit",
     "registration_success_message": "One moment while we log you into your new account...",
-    "registration_validation_username_instructions": "3 to 18 alphanumeric characters",
-    "registration_validation_username_exists": "Username already exists",
+    "registration_validation_username_instructions": "3～18文字の英数字で設定してください。",
+    "registration_validation_username_exists": "既に存在するユーザー名です。",
     "registration_validation_password_instructions": "Minimum 8 characters",
     "registration_validation_passwords_dont_match": "Passwords must match",
     "registration_validation_invite_code_invalid": "Invalid invite code",
-    "already_have_an_account": "already have an account?"
+    "change_username_title": "ユーザー名変更",
+    "change_username_free_message": "ユーザー名は<strong>月に1回</strong>のみ変更可能です。また、初回のユーザー名変更は無料ですが、それ以降は100 Goldが必要です。",
+    "change_username_message": "ユーザー名は<strong>月に1回</strong>のみ変更可能です。また、100 Goldが必要です。",
+    "change_username_max_per_month_error": "今月は既にユーザー名を変更済みです。",
+    "change_username_username_label": "新しいユーザー名",
+    "change_username_success": "ユーザー名が変更されました！",
+    "change_username_validation_username_dont_change": "ユーザー名を変更してください。"
   },
   "rewards": {
     "level_up_reward_title": "Level {{level}} Reward",

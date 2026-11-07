@@ -2,6 +2,7 @@ const Session = require('app/common/session2');
 const validator = require('validator');
 const Logger = require('app/common/logger');
 const moment = require('moment');
+const i18next = require('i18next');
 const ProfileManager = require('app/ui/managers/profile_manager');
 const ModalDialogViewYao = require('app/yao/ui/common/modal_dialog_view_yao');
 
@@ -80,16 +81,28 @@ const ChangeUsernameItemView = ModalDialogViewYao.extend({
     const username = this.ui.$username.val();
     if (isValid) {
       if (!validator.isLength(username, 3, 18) || !validator.isAlphanumeric(username)) {
-        this.showInvalidFormControl(this.ui.$username, '3 to 18 alphanumeric characters');
+        this.showInvalidFormControl(this.ui.$username, i18next.t('registration.registration_validation_username_instructions'));
         isValid = false;
       } else if (username === ProfileManager.getInstance().profile.get('username')) {
-        this.showInvalidFormControl(this.ui.$username, 'Username must be different');
+        this.showInvalidFormControl(this.ui.$username, i18next.t('registration.change_username_validation_username_dont_change'));
         isValid = false;
       } else {
         this.hideInvalidFormControl(this.ui.$username);
+        this.sendIsUsernameAvailable();
       }
     }
     return isValid;
+  },
+
+  sendIsUsernameAvailable() {
+    const username = this.ui.$username.val();
+
+    Session.isUsernameAvailable(username)
+      .then((available) => {
+        if (!available) {
+          this.showInvalidFormControl(this.ui.$username, i18next.t('registration.registration_validation_username_exists'));
+        }
+      });
   },
 });
 
