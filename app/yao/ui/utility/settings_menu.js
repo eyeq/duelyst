@@ -12,9 +12,9 @@ const audio_engine = require('app/audio/audio_engine');
 const Animations = require('app/ui/views/animations');
 const NavigationManager = require('app/ui/managers/navigation_manager');
 const ProfileManager = require('app/ui/managers/profile_manager');
-const ConfirmDialogItemView = require('app/ui/views/item/confirm_dialog');
 const ChangePasswordItemView = require('app/yao/ui/profile/change_password');
 const ChangeUsernameItemView = require('app/yao/ui/profile/change_username');
+const i18next = require('i18next');
 
 const SettingsMenuView = Backbone.Marionette.ItemView.extend({
 
@@ -132,8 +132,8 @@ const SettingsMenuView = Backbone.Marionette.ItemView.extend({
         this._resolutionsThatFit.push(resolutionData);
       } else {
         const resolution = $.trim(resolutionData.description);
-        const resWidth = parseInt(resolution.replace(/x[\s\t]*?\d+/, ''));
-        const resHeight = parseInt(resolution.replace(/\d+[\s\t]*?x/, ''));
+        const resWidth = parseInt(resolution.replace(/x[\s\t]*?\d+/, ''), 10);
+        const resHeight = parseInt(resolution.replace(/\d+[\s\t]*?x/, ''), 10);
         if (resWidth > screenWidth || resHeight > screenHeight) {
           this._resolutionsThatDontFit.push(resolutionData);
         } else {
@@ -231,39 +231,31 @@ const SettingsMenuView = Backbone.Marionette.ItemView.extend({
   /* event handlers */
 
   onChangeUsernameClicked() {
-    NavigationManager.getInstance().showDialogView(new ChangeUsernameItemView({ model: ProfileManager.getInstance().profile }));
+    new ChangeUsernameItemView({ model: ProfileManager.getInstance().profile }).showDialogView();
   },
 
   onChangePasswordClicked() {
-    NavigationManager.getInstance().showDialogView(new ChangePasswordItemView());
+    new ChangePasswordItemView().showDialogView();
   },
 
   onLogoutClicked() {
-    const confirmDialogItemView = new ConfirmDialogItemView({ title: 'Are you sure you want to logout?' });
-    this.listenToOnce(confirmDialogItemView, 'confirm', () => {
-      Session.logout();
-    });
-    this.listenToOnce(confirmDialogItemView, 'cancel', () => {
-      this.stopListening(confirmDialogItemView);
-    });
-    NavigationManager.getInstance().showDialogView(confirmDialogItemView);
+    NavigationManager.getInstance().showDialogForConfirmation(i18next.t('utility.confirm_logout_message'), '', i18next.t('common.logout_button_label'))
+      .then(() => {
+        Session.logout();
+      });
   },
 
   onDesktopQuitClicked() {
     if (window.isDesktop) {
-      const confirmDialogItemView = new ConfirmDialogItemView({ title: 'Are you sure you want to quit?' });
-      this.listenToOnce(confirmDialogItemView, 'confirm', () => {
-        window.quitDesktop();
-      });
-      this.listenToOnce(confirmDialogItemView, 'cancel', () => {
-        this.stopListening(confirmDialogItemView);
-      });
-      NavigationManager.getInstance().showDialogView(confirmDialogItemView);
+      NavigationManager.getInstance().showDialogForConfirmation(i18next.t('utility.confirm_quit_message'), '', i18next.t('common.quit_button_label'))
+        .then(() => {
+          window.quitDesktop();
+        });
     }
   },
 
   changeResolution() {
-    const res = parseInt(this.ui.$resolution.val());
+    const res = parseInt(this.ui.$resolution.val(), 10);
     if (CONFIG.resolution !== res) {
       CONFIG.resolution = res;
       Storage.set('resolution', res);

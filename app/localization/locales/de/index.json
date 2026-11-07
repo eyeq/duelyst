@@ -4091,15 +4091,14 @@
     "empty_rift_instruction_p4": "Dein erstes Portaldeck ist kostenlos und hat zu Beginn 5 Verbesserungen."
   },
   "settings": {
+    "category_window_label": "Fenster",
     "category_visual_label": "Visuell",
     "category_game_label": "Spiel",
     "category_audio_label": "Audio",
     "category_account_label": "Konto",
-    "audio_volume_master_label": "Gesamt",
-    "audio_volume_music_label": "Musik",
-    "audio_volume_voice_label": "Stimme",
-    "audio_volume_effects_label": "Effekte",
-    "account_change_password_button_label": "Passwort ändern",
+    "language": "Sprache",
+    "fullscreen": "Vollbild",
+    "viewport": "Ansichtsfenster",
     "viewport_not_supported": "(wird bei deiner Bildschirmauflösung nicht unterstützt)",
     "best_fit": "Optimal eingepasst (empfohlen)",
     "tightest_fit": "Maximale Bildfläche",
@@ -4131,11 +4130,9 @@
     "block_spectators_tooltip": "Verhindert, dass Freunde bei deinen Spielen zusehen.",
     "block_spectators": "Zuschauer blockieren",
     "relink_accounts": "BANDAI-Konto und Duelyst-Konto erneut verknüpfen",
-    "create_account": "BANDAI NAMCO-Konto erstellen",
     "change_username": "Benutzername ändern",
-    "redeem_code": "Empfehlungs-/Geschenkcode einlösen",
-    "logout": "ABMELDEN",
-    "quit": "BEENDEN"
+    "change_password_button_label": "Passwort ändern",
+    "account_change_password_button_label": "Passwort ändern"
   },
   "shop": {
     "confirm_purchase_dialog_purchase_button_label": "Kaufen",

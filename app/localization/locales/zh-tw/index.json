@@ -4132,15 +4132,14 @@
     "empty_rift_instruction_p4": "Your first Rift Run is free and starts with 5 upgrades."
   },
   "settings": {
+    "category_window_label": "Window",
     "category_visual_label": "Visual",
     "category_game_label": "Game",
     "category_audio_label": "Audio",
     "category_account_label": "Account",
-    "audio_volume_master_label": "Master",
-    "audio_volume_music_label": "Music",
-    "audio_volume_voice_label": "Voice",
-    "audio_volume_effects_label": "Effects",
-    "account_change_password_button_label": "Change Password",
+    "language": "Language",
+    "fullscreen": "Fullscreen",
+    "viewport": "Viewport",
     "viewport_not_supported": "(not supported at your screen size)",
     "best_fit": "Best Fit (recommended)",
     "tightest_fit": "Tightest Fit",
@@ -4171,12 +4170,9 @@
     "do_not_disturb": "Do Not Disturb",
     "block_spectators_tooltip": "Do not allow friends to spectate your games.",
     "block_spectators": "Block Spectators",
-    "create_account": "Create a DUELYST Account",
     "change_username": "Change Username",
-    "redeem_code": "Redeem Referral / Gift Code",
-    "logout": "LOGOUT",
-    "quit": "QUIT",
-    "manage_data": "Manage Data"
+    "change_password_button_label": "Change Password",
+    "account_change_password_button_label": "Change Password"
   },
   "shop": {
     "confirm_purchase_dialog_purchase_button_label": "PURCHASE",
