@@ -47,7 +47,7 @@ const EscMainMenuItemView = CompositeViewYao.extend({
       NavigationManager.getInstance().showDialogForConfirmation(i18next.t('settings.confirm_logout_message'), '', i18next.t('common.logout_button_label'))
         .then(() => {
           Session.logout();
-        });
+        }).catch(() => { });
     }
   },
 
@@ -56,7 +56,7 @@ const EscMainMenuItemView = CompositeViewYao.extend({
       NavigationManager.getInstance().showDialogForConfirmation(i18next.t('settings.confirm_quit_message'), '', i18next.t('common.quit_button_label'))
         .then(() => {
           window.quitDesktop();
-        });
+        }).catch(() => { });
     }
   },
 

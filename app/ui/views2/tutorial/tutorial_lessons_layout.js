@@ -244,7 +244,7 @@ var TutorialLessonsLayout = Backbone.Marionette.LayoutView.extend({
           NavigationManager.getInstance().destroyDialogView();
           NavigationManager.getInstance().requestUserTriggeredExit();
         });
-    }.bind(this));
+    }.bind(this)).catch(() => { });
   },
 
   onMouseEnterLesson: function () {
