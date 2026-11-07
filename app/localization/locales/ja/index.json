@@ -2293,10 +2293,6 @@
     "spell_desc": "Spells may be played to the battle field to activate the spell's text. Spells do not remain active after activation.",
     "copies_label": "Copies: "
   },
-  "utility": {
-    "confirm_logout_message": "Are you sure you want to logout?",
-    "confirm_quit_message": "Are you sure you want to quit?"
-  },
   "common": {
     "loading_dialog_one_moment_label": "ちょっと待ってね...",
     "success_title": "成功！",
@@ -4173,6 +4169,8 @@
     "block_spectators": "観戦拒否",
     "change_username": "ユーザー名変更",
     "change_password_button_label": "パスワード変更",
+    "confirm_logout_message": "本当にログアウトしてもよろしいですか？",
+    "confirm_quit_message": "本当に終了してもよろしいですか？",
     "account_change_password_button_label": "Change Password"
   },
   "shop": {

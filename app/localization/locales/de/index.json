@@ -2286,10 +2286,6 @@
   	"spell_desc": "Du kannst einen Zauber auf das Schlachtfeld wirken, um den Text des Zaubers zu aktivieren. Zauber bleiben nach ihrer Aktivierung nicht aktiv.",
   	"copies_label": "Kopien: "
   },
-  "utility": {
-    "confirm_logout_message": "Are you sure you want to logout?",
-    "confirm_quit_message": "Are you sure you want to quit?"
-  },
   "common": {
     "loading_dialog_one_moment_label": "Einen Augenblick ...",
     "success_title": "ERFOLG!",
@@ -4132,6 +4128,8 @@
     "relink_accounts": "BANDAI-Konto und Duelyst-Konto erneut verknüpfen",
     "change_username": "Benutzername ändern",
     "change_password_button_label": "Passwort ändern",
+    "confirm_logout_message": "Are you sure you want to logout?",
+    "confirm_quit_message": "Are you sure you want to quit?",
     "account_change_password_button_label": "Passwort ändern"
   },
   "shop": {

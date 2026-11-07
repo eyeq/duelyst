@@ -44,7 +44,7 @@ const EscMainMenuItemView = CompositeViewYao.extend({
 
   onLogoutClicked() {
     if (ProfileManager.getInstance().get('id')) {
-      NavigationManager.getInstance().showDialogForConfirmation(i18next.t('utility.confirm_logout_message'), '', i18next.t('common.logout_button_label'))
+      NavigationManager.getInstance().showDialogForConfirmation(i18next.t('settings.confirm_logout_message'), '', i18next.t('common.logout_button_label'))
         .then(() => {
           Session.logout();
         });
@@ -53,7 +53,7 @@ const EscMainMenuItemView = CompositeViewYao.extend({
 
   onDesktopQuitClicked() {
     if (window.isDesktop) {
-      NavigationManager.getInstance().showDialogForConfirmation(i18next.t('utility.confirm_quit_message'), '', i18next.t('common.quit_button_label'))
+      NavigationManager.getInstance().showDialogForConfirmation(i18next.t('settings.confirm_quit_message'), '', i18next.t('common.quit_button_label'))
         .then(() => {
           window.quitDesktop();
         });
