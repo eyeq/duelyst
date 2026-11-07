@@ -13,6 +13,7 @@ const Animations = require('app/ui/views/animations');
 const NavigationManager = require('app/ui/managers/navigation_manager');
 const ProfileManager = require('app/ui/managers/profile_manager');
 const ConfirmDialogItemView = require('app/ui/views/item/confirm_dialog');
+const ChangePasswordItemView = require('app/yao/ui/profile/change_password');
 const ChangeUsernameItemView = require('app/yao/ui/profile/change_username');
 
 const SettingsMenuView = Backbone.Marionette.ItemView.extend({
@@ -92,6 +93,7 @@ const SettingsMenuView = Backbone.Marionette.ItemView.extend({
     'change #checkbox-block-spectators': 'changeBlockSpectators',
 
     'click .change-username': 'onChangeUsernameClicked',
+    'click .change-password': 'onChangePasswordClicked',
   },
 
   templateHelpers: {
@@ -230,6 +232,10 @@ const SettingsMenuView = Backbone.Marionette.ItemView.extend({
 
   onChangeUsernameClicked() {
     NavigationManager.getInstance().showDialogView(new ChangeUsernameItemView({ model: ProfileManager.getInstance().profile }));
+  },
+
+  onChangePasswordClicked() {
+    NavigationManager.getInstance().showDialogView(new ChangePasswordItemView());
   },
 
   onLogoutClicked() {
