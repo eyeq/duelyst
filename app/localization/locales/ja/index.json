@@ -4065,7 +4065,14 @@
     "change_username_max_per_month_error": "今月は既にユーザー名を変更済みです。",
     "change_username_username_label": "新しいユーザー名",
     "change_username_success": "ユーザー名が変更されました！",
-    "change_username_validation_username_dont_change": "ユーザー名を変更してください。"
+    "change_username_validation_username_dont_change": "ユーザー名を変更してください。",
+    "change_password_title": "パスワード変更",
+    "change_password_current_password_label": "現在のパスワード",
+    "change_password_password_label": "新しいパスワード",
+    "change_password_password_confirmation_label": "新しいパスワード確認",
+    "change_password_success": "パスワードが変更されました！",
+    "change_password_validation_current_password": "現在のパスワードを入力してください。",
+    "change_password_validation_password_dont_change": "パスワードを変更してください。"
   },
   "rewards": {
     "level_up_reward_title": "Level {{level}} Reward",

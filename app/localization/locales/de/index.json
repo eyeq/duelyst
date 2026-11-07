@@ -4023,7 +4023,14 @@
     "change_username_max_per_month_error": "You have already changed your username the maximum allowed times this month.",
     "change_username_username_label": "New Username",
     "change_username_success": "Your username has been updated!",
-    "change_username_validation_username_dont_change": "Username must be different"
+    "change_username_validation_username_dont_change": "Username must be different",
+    "change_password_title": "Change Password",
+    "change_password_current_password_label": "Current Password",
+    "change_password_password_label": "New Password",
+    "change_password_password_confirmation_label": "Confirm New Password",
+    "change_password_success": "Your password has been updated!",
+    "change_password_validation_current_password": "Please enter current password",
+    "change_password_validation_password_dont_change": "Password cannot be the same"
   },
   "rewards": {
     "level_up_reward_title": "Belohnung für Stufe {{level}}",

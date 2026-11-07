@@ -1,6 +1,7 @@
 const Session = require('app/common/session2');
 const validator = require('validator');
 const Logger = require('app/common/logger');
+const i18next = require('i18next');
 const ModalDialogViewYao = require('app/yao/ui/common/modal_dialog_view_yao');
 
 const ChangePasswordItemView = ModalDialogViewYao.extend({
@@ -87,7 +88,7 @@ const ChangePasswordItemView = ModalDialogViewYao.extend({
 
     let isValid = true;
     if (!validator.isLength(passwordCurrent, 8)) {
-      this.showInvalidFormControl(this.ui.$passwordCurrent, passwordCurrent.length === 0 ? '' : 'Please enter current password');
+      this.showInvalidFormControl(this.ui.$passwordCurrent, passwordCurrent.length === 0 ? '' : i18next.t('registration.change_password_validation_current_password'));
       isValid = false;
     } else {
       this.hideInvalidFormControl(this.ui.$passwordCurrent);
@@ -101,12 +102,12 @@ const ChangePasswordItemView = ModalDialogViewYao.extend({
 
     let isValid = true;
     if (!validator.isLength(password, 8)) {
-      this.showInvalidFormControl(this.ui.$password, password.length === 0 ? '' : 'Minimum 8 characters');
+      this.showInvalidFormControl(this.ui.$password, password.length === 0 ? '' : i18next.t('registration.registration_validation_password_instructions'));
       this.hideInvalidFormControl(this.ui.$passwordConfirm);
       isValid = false;
     } else if (!validator.equals(password, passwordConfirm)) {
       this.hideInvalidFormControl(this.ui.$password);
-      this.showInvalidFormControl(this.ui.$passwordConfirm, passwordConfirm.length === 0 ? '' : 'Passwords must match');
+      this.showInvalidFormControl(this.ui.$passwordConfirm, passwordConfirm.length === 0 ? '' : i18next.t('registration.registration_validation_passwords_dont_match'));
       isValid = false;
     } else {
       this.hideInvalidFormControl(this.ui.$password);
@@ -121,7 +122,7 @@ const ChangePasswordItemView = ModalDialogViewYao.extend({
 
     let isValid = true;
     if (validator.equals(passwordCurrent, password)) {
-      this.showInvalidFormControl(this.ui.$password, 'Password cannot be the same');
+      this.showInvalidFormControl(this.ui.$password, i18next.t('registration.change_password_validation_password_dont_change'));
       isValid = false;
     }
     return isValid;
