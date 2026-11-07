@@ -1,17 +1,13 @@
-'use strict';
+const Session = require('app/common/session2');
+const validator = require('validator');
+const Logger = require('app/common/logger');
+const FormPromptDialogItemView = require('app/ui/views/item/form_prompt_dialog');
 
-var Session = require('app/common/session2');
-var validator = require('validator');
-var Logger = require('app/common/logger');
-var Animations = require('app/ui/views/animations');
-var ChangePasswordTmpl = require('app/yao/ui/profile/templates/change_password.hbs');
-var FormPromptDialogItemView = require('app/ui/views/item/form_prompt_dialog');
-
-var ChangePasswordItemView = FormPromptDialogItemView.extend({
-
-  template: ChangePasswordTmpl,
+const ChangePasswordItemView = FormPromptDialogItemView.extend({
 
   id: 'app-change-password',
+  template: require('app/yao/ui/profile/templates/change_password.hbs'),
+
 
   ui: {
     $form: '.prompt-form',
@@ -31,9 +27,9 @@ var ChangePasswordItemView = FormPromptDialogItemView.extend({
 
   /* region EVENTS */
 
-  onFormControlChangeContent: function (event) {
+  onFormControlChangeContent(event) {
     // update modified state
-    var $target = $(event.target);
+    const $target = $(event.target);
     if (this.ui.$password.is($target)) {
       this._hasModifiedPassword = true;
     } else if (this.ui.$passwordConfirm.is($target)) {
@@ -45,11 +41,11 @@ var ChangePasswordItemView = FormPromptDialogItemView.extend({
     FormPromptDialogItemView.prototype.onFormControlChangeContent.apply(this, arguments);
   },
 
-  onSubmit: function (e) {
+  onSubmit(e) {
     FormPromptDialogItemView.prototype.onSubmit.apply(this, arguments);
 
-    var passwordCurrent = this.ui.$passwordCurrent.val();
-    var password = this.ui.$password.val();
+    const passwordCurrent = this.ui.$passwordCurrent.val();
+    const password = this.ui.$password.val();
     Session.changePassword(passwordCurrent, password).bind(this)
       .then(function (res) {
         this.onSuccess(res);
@@ -64,13 +60,13 @@ var ChangePasswordItemView = FormPromptDialogItemView.extend({
 
   /* region STATE */
 
-  updateValidState: function () {
+  updateValidState() {
     FormPromptDialogItemView.prototype.updateValidState.apply(this, arguments);
 
-    var password = this.ui.$password.val();
-    var passwordConfirm = this.ui.$passwordConfirm.val();
-    var passwordCurrent = this.ui.$passwordCurrent.val();
-    var isValid = true;
+    const password = this.ui.$password.val();
+    const passwordConfirm = this.ui.$passwordConfirm.val();
+    const passwordCurrent = this.ui.$passwordCurrent.val();
+    let isValid = true;
 
     // check password
     if (this._hasModifiedPassword) {
@@ -106,5 +102,4 @@ var ChangePasswordItemView = FormPromptDialogItemView.extend({
 
 });
 
-// Expose the class either via CommonJS or the global object
 module.exports = ChangePasswordItemView;
