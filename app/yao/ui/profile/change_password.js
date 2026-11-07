@@ -1,104 +1,131 @@
 const Session = require('app/common/session2');
 const validator = require('validator');
 const Logger = require('app/common/logger');
-const FormPromptDialogItemView = require('app/ui/views/item/form_prompt_dialog');
+const ModalDialogViewYao = require('app/yao/ui/common/modal_dialog_view_yao');
 
-const ChangePasswordItemView = FormPromptDialogItemView.extend({
+const ChangePasswordItemView = ModalDialogViewYao.extend({
 
   id: 'app-change-password',
   template: require('app/yao/ui/profile/templates/change_password.hbs'),
 
+  _transparent: true,
 
   ui: {
     $form: '.prompt-form',
-    $password: '.password',
-    $passwordConfirm: '.password-confirm',
-    $passwordCurrent: '.password-current',
-    $submit: '.prompt-submit',
     $submitted: '.prompt-submitted',
+    $success: '.prompt-success',
     $error: '.prompt-error',
     $errorMessage: '.error-message',
-    $success: '.prompt-success',
+
+    $passwordCurrent: '.password-current',
+    $password: '.password',
+    $passwordConfirm: '.password-confirm',
   },
 
-  _hasModifiedPassword: false,
-  _hasModifiedPasswordConfirm: false,
-  _hasModifiedPasswordCurrent: false,
+  events: {
+    'click .prompt-submit': 'onSubmit',
+    'click .prompt-cancel': 'onCancel',
+    'click .prompt-error-back': 'onErrorBack',
 
-  /* region EVENTS */
+    'blur .form-control': 'onFormControlBlur',
+  },
 
-  onFormControlChangeContent(event) {
-    // update modified state
+  onFormControlBlur(event) {
     const $target = $(event.target);
-    if (this.ui.$password.is($target)) {
-      this._hasModifiedPassword = true;
-    } else if (this.ui.$passwordConfirm.is($target)) {
-      this._hasModifiedPasswordConfirm = true;
-    } else if (this.ui.$passwordCurrent.is($target)) {
-      this._hasModifiedPasswordCurrent = true;
+    if (this.ui.$passwordCurrent.is($target)) {
+      if (this.updateValidStateCurrentPassword()) {
+        this.updateValidStateSame();
+      }
+    } else if (this.ui.$password.is($target) || this.ui.$passwordConfirm.is($target)) {
+      if (this.updateValidStatePassword()) {
+        this.updateValidStateSame();
+      }
     }
-
-    FormPromptDialogItemView.prototype.onFormControlChangeContent.apply(this, arguments);
   },
 
-  onSubmit(e) {
-    FormPromptDialogItemView.prototype.onSubmit.apply(this, arguments);
-
+  submit() {
     const passwordCurrent = this.ui.$passwordCurrent.val();
     const password = this.ui.$password.val();
+
+    this.lockTriggeredNavigation();
     Session.changePassword(passwordCurrent, password).bind(this)
       .then(function (res) {
         this.onSuccess(res);
       })
       .catch(function (e) {
-      // onError expects a string not an actual error
+        // onError expects a string not an actual error
         this.onError(e.innerMessage || e.message);
       });
   },
 
-  /* endregion EVENTS */
-
-  /* region STATE */
-
-  updateValidState() {
-    FormPromptDialogItemView.prototype.updateValidState.apply(this, arguments);
-
-    const password = this.ui.$password.val();
-    const passwordConfirm = this.ui.$passwordConfirm.val();
-    const passwordCurrent = this.ui.$passwordCurrent.val();
-    let isValid = true;
-
-    // check password
-    if (this._hasModifiedPassword) {
-      if (!this._hasModifiedPasswordCurrent) {
-        this.showInvalidFormControl(this.ui.$passwordCurrent, 'Please enter current password');
-        isValid = false;
-      } else if (validator.equals(password, passwordCurrent)) {
-        // password matches current
-        this.showInvalidFormControl(this.ui.$password, 'Password cannot be the same');
-        isValid = false;
-      } else if (!validator.isLength(password, 8)) {
-        // password is not long enough
-        this.showInvalidFormControl(this.ui.$password, 'Minimum 8 characters');
-        isValid = false;
-      } else if (this._hasModifiedPasswordConfirm && !validator.equals(password, passwordConfirm)) {
-        // passwords don't match
-        this.showInvalidFormControl(this.ui.$passwordConfirm, 'Passwords must match');
-        isValid = false;
-      }
-    }
-
-    if (isValid) {
-      this.showValidFormControl(this.ui.$password);
-      this.showValidFormControl(this.ui.$passwordConfirm);
-      this.showValidFormControl(this.ui.$passwordCurrent);
-    }
-
-    // set valid state
-    this.isValid = isValid && this._hasModifiedPassword && this._hasModifiedPasswordConfirm && this._hasModifiedPasswordCurrent;
+  onSuccessComplete(res) {
+    this.unlockTriggeredNavigation();
+    this.destroyView();
   },
 
-  /* endregion STATE */
+  onErrorComplete() {
+    this.unlockTriggeredNavigation();
+  },
+
+  updateValidState() {
+    let isValid = ModalDialogViewYao.prototype.updateValidState.apply(this, arguments);
+
+    if (isValid) {
+      isValid = this.updateValidStateCurrentPassword();
+    }
+    if (isValid) {
+      isValid = this.updateValidStatePassword();
+    }
+    if (isValid) {
+      isValid = this.updateValidStateSame();
+    }
+    return isValid;
+  },
+
+  updateValidStateCurrentPassword() {
+    const passwordCurrent = this.ui.$passwordCurrent.val();
+
+    let isValid = true;
+    if (!validator.isLength(passwordCurrent, 8)) {
+      this.showInvalidFormControl(this.ui.$passwordCurrent, passwordCurrent.length === 0 ? '' : 'Please enter current password');
+      isValid = false;
+    } else {
+      this.hideInvalidFormControl(this.ui.$passwordCurrent);
+    }
+    return isValid;
+  },
+
+  updateValidStatePassword() {
+    const password = this.ui.$password.val();
+    const passwordConfirm = this.ui.$passwordConfirm.val();
+
+    let isValid = true;
+    if (!validator.isLength(password, 8)) {
+      this.showInvalidFormControl(this.ui.$password, password.length === 0 ? '' : 'Minimum 8 characters');
+      this.hideInvalidFormControl(this.ui.$passwordConfirm);
+      isValid = false;
+    } else if (!validator.equals(password, passwordConfirm)) {
+      this.hideInvalidFormControl(this.ui.$password);
+      this.showInvalidFormControl(this.ui.$passwordConfirm, passwordConfirm.length === 0 ? '' : 'Passwords must match');
+      isValid = false;
+    } else {
+      this.hideInvalidFormControl(this.ui.$password);
+      this.hideInvalidFormControl(this.ui.$passwordConfirm);
+    }
+    return isValid;
+  },
+
+  updateValidStateSame() {
+    const passwordCurrent = this.ui.$passwordCurrent.val();
+    const password = this.ui.$password.val();
+
+    let isValid = true;
+    if (validator.equals(passwordCurrent, password)) {
+      this.showInvalidFormControl(this.ui.$password, 'Password cannot be the same');
+      isValid = false;
+    }
+    return isValid;
+  },
 
 });
 
